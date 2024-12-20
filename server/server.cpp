@@ -4,23 +4,60 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <thread>
+#include <string.h>
 #include <vector>
+#include <sstream>
+#include <error.h>
+#include <errno.h>
 
 const int PORT = 8080;
 std::vector<int> clientSockets;
+
+
+std::vector<std::string> splitMessage(const std::string& message, char delimiter) {
+    std::vector<std::string> parts;
+    std::istringstream stream(message);
+    std::string part;
+
+    while (std::getline(stream, part, delimiter)) {
+        parts.push_back(part);
+    }
+
+    return parts;
+}
+
+int readMessage(int clientFd, char * buffer,int bufSize){
+    int n = recv(clientFd,buffer,bufSize,0);
+    if (n<0){
+        error(0,errno,"Error on read from client %d",clientFd);
+        std::cout << "Client disconnected gracefully\n";
+        close(clientFd);
+        return -1;
+        
+    }
+    else if (n==0){
+        std::cout << "Client disconnected gracefully\n";
+        close(clientFd);
+        return 0;
+    }
+
+    std::vector<std::string> parts = splitMessage(buffer, '|');
+    if(parts.size()>=2){
+        std::string operation = parts[0];
+        std::string message = parts[1];
+        std::cout << operation << ": "<< message << std::endl;
+    }
+    std::cout << "Received: " << buffer << std::endl;
+    return n;
+}
 
 void handleClient(int clientSocket) {
     char buffer[1024];
     while (true) {
         memset(buffer, 0, sizeof(buffer));
-        int bytesRead = read(clientSocket, buffer, sizeof(buffer));
-        if (bytesRead <= 0) {
-            std::cout << "Client disconnected\n";
-            close(clientSocket);
-            return;
-        }
-        std::cout << "Received: " << buffer << std::endl;
-
+        int n =readMessage(clientSocket,buffer,sizeof(buffer));
+        if(n<=0) return;
+        
         std::string response = "QUESTION|What is 2+2?";
         send(clientSocket, response.c_str(), response.size(), 0);
     }
