@@ -20,6 +20,8 @@ struct clientInfo{
     // later on we can add more info about client such as score, current_quiz, etc.
 };
 std::unordered_map<int, clientInfo> clientInfoMap;
+std::unordered_map<int, std::vector<int>> lobbyInfoMap;
+
 
 void printAllClients(){
     std::cout << "Number of clients: " << clientInfoMap.size() << std::endl;
@@ -33,6 +35,39 @@ void printAllClients(){
         std::cout <<"----------------------------------"<< std::endl;
     }
     std::cout << std::endl;
+}
+
+void destroyLobby(int LobbyId){
+    lobbyInfoMap.erase(LobbyId);
+    std::cout << "Lobby " << LobbyId << " destroyed" << std::endl;
+}
+void handleLobby(int LobbyId){
+
+    while(true){
+
+        
+        std::vector<int> clients = lobbyInfoMap[LobbyId];
+        std::cout << "Clients in lobby " << clients.size() << std::endl;   
+        for(auto& clientfd: clients){
+            std::cout << "Clientfd: " << clientInfoMap[clientfd].nick << std::endl;
+        }
+        sleep(5);
+        if(clients.size()==0){
+            destroyLobby(LobbyId);
+            return;
+        }
+    }
+}
+void createLobby(int LobbyId){
+    lobbyInfoMap[LobbyId] = {};
+    std::thread(handleLobby,LobbyId).detach();
+}
+void joinLobby(int LobbyId, int clientFd){
+    if(lobbyInfoMap.find(LobbyId)==lobbyInfoMap.end()){
+        createLobby(LobbyId);
+    }
+    lobbyInfoMap[LobbyId].push_back(clientFd);
+    std::cout << "Client " << clientInfoMap[clientFd].nick << " joined lobby " << LobbyId << std::endl;
 }
 
 std::vector<std::string> splitMessage(const std::string& message, char delimiter) {
@@ -49,7 +84,15 @@ std::vector<std::string> splitMessage(const std::string& message, char delimiter
 void disconnectClient(int clientFd){
     close(clientFd);
     clientInfoMap.erase(clientFd);
+    // check if client is in any lobby and remove it
+    for(auto &lobby: lobbyInfoMap){
+        std::vector<int>& clients = lobby.second;
+        // clients.erase(std::remove(clients.begin(), clients.end(), clientFd), clients.end());
+        
+    }
+
 }
+
 
 int readMessage(int clientFd, char * buffer,int bufSize){
     int n = recv(clientFd,buffer,bufSize,0);
@@ -72,6 +115,7 @@ int readMessage(int clientFd, char * buffer,int bufSize){
             printAllClients();
         } else if (operation == "JOIN") {
             std::cout << "Client " << clientInfoMap[clientFd].nick << " joined room number: "<< message << std::endl;
+            joinLobby(std::stoi(message),clientFd);
         } else {
             std::cout << "Unknown operation: " << operation << std::endl;
         }
@@ -91,6 +135,10 @@ void handleClient(int clientSocket) {
         send(clientSocket, response.c_str(), response.size(), 0);
     }
 }
+
+
+
+
 
 int main() {
     int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
