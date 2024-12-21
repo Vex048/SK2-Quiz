@@ -16,4 +16,4 @@ class Lobby(tk.Frame):
 
     def connectToRoom(self,room):
         print(f"Connect to room: {room}")
-        self.socket.send(f"JOIN |  joined room:{room}".encode())
+        self.socket.send(f"JOIN|{room}".encode())
