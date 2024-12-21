@@ -4,6 +4,7 @@ class Login(tk.Frame):
     def __init__(self,masterRoot,lobbyframe,socket):
         super().__init__(masterRoot)
         self.socket=socket
+        self.rooms=[]
         tk.Label(self, text="Login", font=("Arial", 24)).pack(pady=20)
         self.nick_entry = tk.Entry(self, width=20)
         self.nick_entry.pack(pady=10)

@@ -5,6 +5,9 @@
 #include <unistd.h>
 #include <thread>
 #include <vector>
+#include <arpa/inet.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 const int PORT = 8080;
 std::vector<int> clientSockets;
@@ -53,12 +56,15 @@ int main() {
     std::cout << "Server is listening on port " << PORT << std::endl;
 
     while (true) {
+        sockaddr_in clientAddr;
+        socklen_t clientAddrLen = sizeof(clientAddr);
         int clientSocket = accept(serverSocket, nullptr, nullptr);
         if (clientSocket < 0) {
             perror("Accept failed");
             continue;
         }
         std::cout << "New client connected\n";
+        std::cout << "Connecttion from " << inet_ntoa(clientAddr.sin_addr) << " On port:" <<ntohs(clientAddr.sin_port);
         clientSockets.push_back(clientSocket);
         std::thread(handleClient, clientSocket).detach();
     }

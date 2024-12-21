@@ -4,7 +4,7 @@ import tkinter as tk
 from tkinter import messagebox
 from gui.login import Login
 from gui.lobby import Lobby
-
+from gui.gameRoom import GameRoom
 SERVER_IP = "127.0.0.1"
 SERVER_PORT = 8080
 
@@ -25,13 +25,15 @@ class QuizClient:
         #self.connect_to_server()
 
     def addFrames(self):
-        self.lobbyFrame = Lobby(root)
+        self.gameRoom = GameRoom(root,self.client_socket)
+        self.lobbyFrame = Lobby(root,self.client_socket,self.gameRoom)
         self.loginFrame = Login(root,self.lobbyFrame,self.client_socket)
         
 
     def setGridFrames(self):
         self.loginFrame.grid(row=0, column=0, sticky='news',pady=(0,100))
         self.lobbyFrame.grid(row=0, column=0, sticky='news',pady=(0,100))
+        self.gameRoom.grid(row=0, column=0, sticky='news',pady=(0,100))
     def initializeGui(self):
         self.root.geometry('1000x600')
         self.root.resizable(0,0)
