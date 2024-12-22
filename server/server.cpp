@@ -7,6 +7,7 @@
 #include <string.h>
 #include <vector>
 #include <unordered_map>
+#include <algorithm>
 
 #include <sstream>
 #include <error.h>
@@ -47,9 +48,10 @@ void handleLobby(int LobbyId){
 
         
         std::vector<int> clients = lobbyInfoMap[LobbyId];
-        std::cout << "Clients in lobby " << clients.size() << std::endl;   
+        std::cout<<"----------------------------------"<<std::endl;
+        std::cout << "Lobby " << LobbyId << " has " << clients.size() << " clients" << std::endl;
         for(auto& clientfd: clients){
-            std::cout << "Clientfd: " << clientInfoMap[clientfd].nick << std::endl;
+            std::cout << "Client's nickname: " << clientInfoMap[clientfd].nick << std::endl;
         }
         sleep(5);
         if(clients.size()==0){
@@ -63,6 +65,17 @@ void createLobby(int LobbyId){
     std::thread(handleLobby,LobbyId).detach();
 }
 void joinLobby(int LobbyId, int clientFd){
+
+    // check if client is already in a lobby - client can't be in multiple lobbies at the same time
+    for(auto& lobby: lobbyInfoMap){
+        std::vector<int> &clients = lobby.second;
+        auto it = std::find(clients.begin(),clients.end(),clientFd);
+        if(it!=clients.end()){
+            return; // client is already in a lobby, terminate function
+        }
+    }
+
+    // check if lobby exists, if not create it
     if(lobbyInfoMap.find(LobbyId)==lobbyInfoMap.end()){
         createLobby(LobbyId);
     }
@@ -86,9 +99,11 @@ void disconnectClient(int clientFd){
     clientInfoMap.erase(clientFd);
     // check if client is in any lobby and remove it
     for(auto &lobby: lobbyInfoMap){
-        std::vector<int>& clients = lobby.second;
-        // clients.erase(std::remove(clients.begin(), clients.end(), clientFd), clients.end());
-        
+        std::vector<int> &clients = lobby.second;
+        auto it = std::find(clients.begin(),clients.end(),clientFd);
+        if (it!=clients.end()){
+            clients.erase(it);
+        }
     }
 
 }
@@ -114,7 +129,6 @@ int readMessage(int clientFd, char * buffer,int bufSize){
             std::cout << "New client's username: "<< clientInfoMap[clientFd].nick << std::endl;
             printAllClients();
         } else if (operation == "JOIN") {
-            std::cout << "Client " << clientInfoMap[clientFd].nick << " joined room number: "<< message << std::endl;
             joinLobby(std::stoi(message),clientFd);
         } else {
             std::cout << "Unknown operation: " << operation << std::endl;
