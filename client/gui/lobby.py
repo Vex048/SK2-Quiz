@@ -4,12 +4,17 @@ from tkinter import simpledialog,messagebox
 global games 
 games =3
 class Lobby(tk.Frame):
-    def __init__(self,masterRoot,socket,gameRoom):
+    def __init__(self,masterRoot,FrameManager,socket):
         self.buttons=[]
         super().__init__(masterRoot)
         self.socket=socket
-        self.gameRoom=gameRoom
+        self.frameManager=FrameManager
+        self.rooms = [] # Get it from JSON
         tk.Label(self, text="Lobby", font=("Arial", 18)).pack(pady=20)
+        self.initialize()
+
+
+    def initialize(self):
         self.rooms_tree = ttk.Treeview(self, columns=("Players", "Status"), show="headings", height=15)
         self.rooms_tree.heading("Players", text="Players")
         self.rooms_tree.heading("Status", text="Status")
@@ -17,17 +22,16 @@ class Lobby(tk.Frame):
         tk.Button(self, text="Create Room", command=self.create_room).pack(side="left", padx=10)
         tk.Button(self, text="Join Room", command=self.join_room).pack(side="left", padx=10)
 
-    # def connectToRoom(self,room):
-    #     print(f"Connect to room: {room}")
-    #     self.socket.send(f"Server connected a player to room {room}".encode())
+
     def create_room(self):
+        # Push a info to server
         room_name = tk.simpledialog.askstring("Create Room", "Enter room name:")
-        print(type(room_name))
         self.socket.send(f"Creating room: {room_name}".encode())
         messagebox.showinfo("Success", f"Room '{room_name}' created!")
         self.refresh_rooms()
 
     def join_room(self):
+        # Push a info to server
         selected = self.rooms_tree.focus()
         if not selected:
             messagebox.showwarning("No Selection", "Please select a room to join.")
@@ -40,9 +44,11 @@ class Lobby(tk.Frame):
             messagebox.showerror("Error", "Cannot join a game that has already started.")
             return
         print(f"Joining room: {room_name}")
-        self.gameRoom.tkraise()
+        self.frameManager.showFrame("GameRoom")
+        self.frameManager.frames['GameRoom'].connected()
 
     def refresh_rooms(self):
+        # Refresh view
         self.rooms = [
             {"name": "Room1", "players": 1, "status": "Waiting"},
             {"name": "Room2", "players": 5, "status": "Started"},
