@@ -6,12 +6,18 @@
 #include <thread>
 #include <string.h>
 #include <vector>
+<<<<<<< HEAD
+#include <arpa/inet.h>
+#include <stdio.h>
+#include <stdlib.h>
+=======
 #include <unordered_map>
 #include <algorithm>
 
 #include <sstream>
 #include <error.h>
 #include <errno.h>
+>>>>>>> main
 
 const int PORT = 8080;
 std::vector<int> clientSockets;
@@ -181,13 +187,19 @@ int main() {
     std::cout << "Server is listening on port " << PORT << std::endl;
 
     while (true) {
+        sockaddr_in clientAddr;
+        socklen_t clientAddrLen = sizeof(clientAddr);
         int clientSocket = accept(serverSocket, nullptr, nullptr);
         if (clientSocket < 0) {
             perror("Accept failed");
             continue;
         }
         std::cout << "New client connected\n";
+<<<<<<< HEAD
+        std::cout << "Connecttion from " << inet_ntoa(clientAddr.sin_addr) << " On port:" <<ntohs(clientAddr.sin_port);
+=======
         clientInfoMap[clientSocket] = {};
+>>>>>>> main
         clientSockets.push_back(clientSocket);
         std::thread(handleClient, clientSocket).detach();
     }
