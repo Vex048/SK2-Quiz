@@ -45,7 +45,7 @@ class Lobby(tk.Frame):
             return
         print(f"Joining room: {room_name}")
         self.frameManager.showFrame("GameRoom")
-        self.frameManager.frames['GameRoom'].connected()
+        self.frameManager.frames['GameRoom'].playerConnected()
 
     def refresh_rooms(self):
         # Refresh view

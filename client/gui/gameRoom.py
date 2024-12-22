@@ -10,5 +10,7 @@ class GameRoom(tk.Frame):
         self.socket=socket
     def connected(self):
         self.socket.send(f"Player wants to start a game".encode())
+    def playerConnected(self):
+        self.socket.send(f"Player joined a game".encode())
         
     
