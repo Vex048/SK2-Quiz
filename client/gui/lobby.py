@@ -6,6 +6,7 @@ games =3
 class Lobby(tk.Frame):
     def __init__(self,masterRoot,FrameManager,socket):
         self.buttons=[]
+        self.socket = socket
         super().__init__(masterRoot)
         self.socket=socket
         self.frameManager=FrameManager
@@ -61,3 +62,6 @@ class Lobby(tk.Frame):
             self.rooms_tree.insert("", "end", values=(f"{room['name']} ({room['players']}/5)", room['status']))
 
 
+    def connectToRoom(self,room):
+        print(f"Connect to room: {room}")
+        self.socket.send(f"JOIN|{room}".encode())

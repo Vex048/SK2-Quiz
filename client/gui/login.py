@@ -19,5 +19,5 @@ class Login(tk.Frame):
 
 
     def sendNickToserver(self,nick):
-        self.socket.send(f"Nick of this player: {nick}".encode())
+        self.socket.send(f"NICK|{nick}".encode())
         
