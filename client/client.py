@@ -25,7 +25,7 @@ class QuizClient:
         #self.connect_to_server()
 
     def addFrames(self):
-        self.lobbyFrame = Lobby(root)
+        self.lobbyFrame = Lobby(root,self.client_socket)
         self.loginFrame = Login(root,self.lobbyFrame,self.client_socket)
         
 
