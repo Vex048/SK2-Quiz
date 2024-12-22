@@ -6,18 +6,18 @@
 #include <thread>
 #include <string.h>
 #include <vector>
-<<<<<<< HEAD
 #include <arpa/inet.h>
 #include <stdio.h>
 #include <stdlib.h>
-=======
 #include <unordered_map>
 #include <algorithm>
 
+#include "json.hpp"
 #include <sstream>
 #include <error.h>
 #include <errno.h>
->>>>>>> main
+
+using json = nlohmann::json;
 
 const int PORT = 8080;
 std::vector<int> clientSockets;
@@ -115,7 +115,7 @@ void disconnectClient(int clientFd){
 }
 
 
-int readMessage(int clientFd, char * buffer,int bufSize){
+int readMessage(int clientFd, char * buffer,int bufSize){   
     int n = recv(clientFd,buffer,bufSize,0);
     if (n<=0){
         if(n<0) error(0,errno,"Error on read from client %d",clientFd);
@@ -140,7 +140,9 @@ int readMessage(int clientFd, char * buffer,int bufSize){
             std::cout << "Unknown operation: " << operation << std::endl;
         }
     }
-    // std::cout << "Received: " << buffer << std::endl;
+    std::cout << " Received1: " << buffer<< std::endl;
+    auto data = json::parse (buffer);
+     std::cout << " Received2: " << data<< std::endl;
     return n;
 }
 
@@ -195,11 +197,8 @@ int main() {
             continue;
         }
         std::cout << "New client connected\n";
-<<<<<<< HEAD
         std::cout << "Connecttion from " << inet_ntoa(clientAddr.sin_addr) << " On port:" <<ntohs(clientAddr.sin_port);
-=======
         clientInfoMap[clientSocket] = {};
->>>>>>> main
         clientSockets.push_back(clientSocket);
         std::thread(handleClient, clientSocket).detach();
     }
