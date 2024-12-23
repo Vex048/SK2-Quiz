@@ -6,17 +6,17 @@
             "maxPlayers": 5,
             "name": "Pokoj 1",
             "players": [
-                4
+                "Wiktor"
             ],
             "status": "waiting"
         },
         {
             "category": "",
-            "currentQuestionIndex": -1879044736,
+            "currentQuestionIndex": -1811935872,
             "maxPlayers": 5,
             "name": "Pokoj 2",
             "players": [
-                4
+                "Marcin"
             ],
             "status": "waiting"
         }

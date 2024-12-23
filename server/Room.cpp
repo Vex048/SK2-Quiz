@@ -2,7 +2,6 @@
 #include <algorithm> 
 #include <iostream>
 
-
 // Room::Room(std::string roomName) {
 //     name = roomName;
 //     status = "waiting";
@@ -21,17 +20,17 @@ void Room::setCategory(std::string newCategory) {
 }
 
 
-void Room::addPlayer(int playerSocket) {
+void Room::addPlayer(int playerSocket,std::unordered_map<int, clientInfo> &clientInfoMap) {
     if (players.size() < maxPlayers) {
-        players.push_back(playerSocket);
+        players.push_back(clientInfoMap[playerSocket].nick);
     } else {
         std::cerr << "Room " << name << " is full. Cannot add player " << playerSocket << std::endl;
     }
 }
 
-void Room::removePlayer(int playerSocket) {
-    players.erase(std::remove(players.begin(), players.end(), playerSocket), players.end());
-}
+// void Room::removePlayer(int playerSocket,std::unordered_map<int, clientInfo> clientInfoMap) {
+//     players.erase(std::remove(players.begin(), players.end(), clientInfoMap[playerSocket].name), players.end());
+// }
 
 json Room::toJSON() const {
     json roomInfo = {

@@ -24,10 +24,7 @@ const int PORT = 8080;
 std::vector<int> clientSockets;
 std::vector<Room> Rooms;
 
-struct clientInfo{
-    std::string nick;
-    // later on we can add more info about client such as score, current_quiz, etc.
-};
+
 std::unordered_map<int, clientInfo> clientInfoMap;
 std::unordered_map<int, std::vector<int>> lobbyInfoMap;
 
@@ -146,7 +143,7 @@ void handleRoomCreate(json data,int clientsocket){
         std::string room_name = data["name"];
         std::cout << room_name << std::endl;
         Room newRoom(room_name);
-        newRoom.addPlayer(clientsocket);
+        newRoom.addPlayer(clientsocket,clientInfoMap);
         Rooms.push_back(newRoom);
         std::cout << "Here room should be stored in json" << std::endl;
         roomsToFile(Rooms);
@@ -162,6 +159,10 @@ void handleRoomCreate(json data,int clientsocket){
         std::cout << "Room name is equall to null" << std::endl;
     }
 }
+void handleNickname(json data,int clientsocket){
+    std::string nick = data["nickname"];
+    clientInfoMap[clientsocket].nick = nick;
+}
 
 
 int readMessage(int clientFd, char * buffer,int bufSize){   
@@ -176,7 +177,13 @@ int readMessage(int clientFd, char * buffer,int bufSize){
 
     std::cout << " Received1: " << buffer<< std::endl;
     json data = json::parse (buffer);
-    handleRoomCreate(data,clientFd);
+    if (data["type"] == "create_room"){
+        handleRoomCreate(data,clientFd);
+    }
+    else if (data["type"] == "create_nickname"){
+        handleNickname(data,clientFd);
+    }
+    
     std::cout << " Received2: " << data<< std::endl;
     return n;
 }
@@ -237,6 +244,7 @@ int main() {
         std::cout << "Connecttion from " << inet_ntoa(clientAddr.sin_addr) << " On port:" <<ntohs(clientAddr.sin_port);
         clientInfoMap[clientSocket] = {};
         clientSockets.push_back(clientSocket);
+        printAllClients();
         std::thread(handleClient, clientSocket).detach();
     }
 

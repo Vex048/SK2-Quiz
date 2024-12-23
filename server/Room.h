@@ -15,6 +15,7 @@
 #include <sstream>
 #include <error.h>
 #include <errno.h>
+#include "clientInfo.h"
 using json = nlohmann::json;
 
 class Room {
@@ -26,14 +27,14 @@ class Room {
         };
         std::string name;
         int maxPlayers;
-        std::vector<int> players;
+        std::vector<std::string> players;
         std::string status;     
         std::string category;               
         //std::<vector><json> questions;        
         int currentQuestionIndex;      
         void setStatus(std::string status);
         void setCategory(std::string status);
-        void addPlayer(int playerSocket);
-        void removePlayer(int playerSocket);
+        void addPlayer(int playerSocket,std::unordered_map<int, clientInfo> &clientInfoMap);
+        //void removePlayer(int playerSocket,std::unordered_map<int, clientInfo> clientInfoMap);
         json toJSON() const;
 };
