@@ -24,6 +24,9 @@ class Lobby(tk.Frame):
         self.rooms_tree.pack(pady=10, padx=20)
         tk.Button(self, text="Create Room", command=self.create_room).pack(side="left", padx=10)
         tk.Button(self, text="Join Room", command=self.join_room).pack(side="left", padx=10)
+        tk.Button(self, text="Refresh", command=self.refresh_rooms).pack(side="left", padx=10)
+        listenForServerUpdate = threading.Thread(target=self.listenForServerUpdates)
+        listenForServerUpdate.start()
 
 
     def create_room(self):
@@ -37,8 +40,6 @@ class Lobby(tk.Frame):
         jsonStringRoom = json.dumps(message)
         print(jsonStringRoom)
         self.socket.send(jsonStringRoom.encode("utf-8"))
-        listenForServerUpdate = threading.Thread(target=self.listenForServerUpdates)
-        listenForServerUpdate.start()
         self.refresh_rooms()
 
     def join_room(self):
@@ -59,10 +60,6 @@ class Lobby(tk.Frame):
         self.frameManager.frames['GameRoom'].playerConnected()
 
     def refresh_rooms(self):
-        # self.rooms = [
-        #     {"name": "Room1", "players": 1, "status": "Waiting"},
-        #     {"name": "Room2", "players": 5, "status": "Started"},
-        # ]
 
         for row in self.rooms_tree.get_children():
             self.rooms_tree.delete(row)
@@ -88,7 +85,6 @@ class Lobby(tk.Frame):
                 break
 
     def handleUpdate(self,update):
-        print(update)
         if update['type'] == "room_create":
             room_name = update["room_name"]
             players=update['players']

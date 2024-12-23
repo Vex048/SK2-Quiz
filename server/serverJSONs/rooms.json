@@ -1,5 +1,24 @@
 {
     "rooms": [
-
+        {
+            "category": "",
+            "currentQuestionIndex": -1879044736,
+            "maxPlayers": 5,
+            "name": "Pokoj 1",
+            "players": [
+                4
+            ],
+            "status": "waiting"
+        },
+        {
+            "category": "",
+            "currentQuestionIndex": -1879044736,
+            "maxPlayers": 5,
+            "name": "Pokoj 2",
+            "players": [
+                4
+            ],
+            "status": "waiting"
+        }
     ]
 }

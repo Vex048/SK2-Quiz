@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <unordered_map>
 #include <algorithm>
-
+#include <fstream>
 #include "json.hpp"
 #include <sstream>
 #include <error.h>
@@ -22,6 +22,7 @@ using json = nlohmann::json;
 
 const int PORT = 8080;
 std::vector<int> clientSockets;
+std::vector<Room> Rooms;
 
 struct clientInfo{
     std::string nick;
@@ -55,7 +56,6 @@ void destroyLobby(int LobbyId){
     std::cout << "Lobby " << LobbyId << " destroyed" << std::endl;
 }
 void handleLobby(int LobbyId){
-
     while(true){
 
         
@@ -120,6 +120,49 @@ void disconnectClient(int clientFd){
 
 }
 
+void writeToFile(json data){
+    std::ofstream o("serverJSONs/rooms.json");
+    if (!o) {
+        std::cerr << "Error: Unable to open file for writing.\n";
+        return;
+    }
+    o << std::setw(4) << data << std::endl; // Pretty print with indentation
+    o.close();
+}
+
+
+void roomsToFile(std::vector<Room>& rooms){
+    json data;
+    data["rooms"] = json::array();
+     for (const Room& room : rooms) {
+        json roomJson = room.toJSON();
+        data["rooms"].push_back(roomJson);
+    }
+    writeToFile(data);
+}
+
+void handleRoomCreate(json data,int clientsocket){
+    if (data["name"] != nullptr){
+        std::string room_name = data["name"];
+        std::cout << room_name << std::endl;
+        Room newRoom(room_name);
+        newRoom.addPlayer(clientsocket);
+        Rooms.push_back(newRoom);
+        std::cout << "Here room should be stored in json" << std::endl;
+        roomsToFile(Rooms);
+        json response;
+        response["status"] = "success";
+        response["type"] = "room_create";
+        response["room_name"] = room_name;
+        response["players"] = 1;
+        std::string responseStr = response.dump();
+        sendToAllClients(responseStr);
+    }
+    else{
+        std::cout << "Room name is equall to null" << std::endl;
+    }
+}
+
 
 int readMessage(int clientFd, char * buffer,int bufSize){   
     int n = recv(clientFd,buffer,bufSize,0);
@@ -130,45 +173,15 @@ int readMessage(int clientFd, char * buffer,int bufSize){
         std::cout << "Client disconnected gracefully\n";
         return -1;
     }
-    /*
-    std::vector<std::string> parts = splitMessage(buffer, '|');
-    if(parts.size()>=2){
-        std::string operation = parts[0];
-        std::string message = parts[1];
-        
-        if (operation == "NICK") {
-            clientInfoMap[clientFd].nick = message;
-            std::cout << "New client's username: "<< clientInfoMap[clientFd].nick << std::endl;
-            printAllClients();
-        } else if (operation == "JOIN") {
-            joinLobby(std::stoi(message),clientFd);
-        } 
-        else {
-            std::cout << "Unknown operation: " << operation << std::endl;
-        }      
-    }
-    */
+
     std::cout << " Received1: " << buffer<< std::endl;
     json data = json::parse (buffer);
-    
-    if (data["name"] != nullptr){
-        std::string room_name = data["name"];
-        std::cout << room_name << std::endl;
-        Room newRoom(room_name);
-
-        json response;
-        response["status"] = "success";
-        response["type"] = "room_create";
-        response["room_name"] = room_name;
-        response["players"] = 1;
-        std::string responseStr = response.dump();
-        sendToAllClients(responseStr);
-        //send(clientFd, responseStr.c_str(), responseStr.size(), 0);
-        //std::cout << "Response sent to client: " << responseStr << std::endl;
-    }
+    handleRoomCreate(data,clientFd);
     std::cout << " Received2: " << data<< std::endl;
     return n;
 }
+
+
 
 void handleClient(int clientSocket) {
     char buffer[1024];
