@@ -30,6 +30,11 @@ struct clientInfo{
 std::unordered_map<int, clientInfo> clientInfoMap;
 std::unordered_map<int, std::vector<int>> lobbyInfoMap;
 
+void sendToAllClients(std::string message){
+    for(auto& client: clientInfoMap){
+        send(client.first, message.c_str(), message.size(), 0);       
+    }
+}
 
 void printAllClients(){
     std::cout << "Number of clients: " << clientInfoMap.size() << std::endl;
@@ -157,8 +162,9 @@ int readMessage(int clientFd, char * buffer,int bufSize){
         response["room_name"] = room_name;
         response["players"] = 1;
         std::string responseStr = response.dump();
-        send(clientFd, responseStr.c_str(), responseStr.size(), 0);
-        std::cout << "Response sent to client: " << responseStr << std::endl;
+        sendToAllClients(responseStr);
+        //send(clientFd, responseStr.c_str(), responseStr.size(), 0);
+        //std::cout << "Response sent to client: " << responseStr << std::endl;
     }
     std::cout << " Received2: " << data<< std::endl;
     return n;
