@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import simpledialog,messagebox
+import json
+import threading
 global games 
 games =3
 class Lobby(tk.Frame):
@@ -27,8 +29,16 @@ class Lobby(tk.Frame):
     def create_room(self):
         # Push a info to server
         room_name = tk.simpledialog.askstring("Create Room", "Enter room name:")
-        self.socket.send(f"Creating room: {room_name}".encode())
         messagebox.showinfo("Success", f"Room '{room_name}' created!")
+        message = {
+            "type": "create_room",
+            "name": room_name
+        }
+        jsonStringRoom = json.dumps(message)
+        print(jsonStringRoom)
+        self.socket.send(jsonStringRoom.encode("utf-8"))
+        listenForServerUpdate = threading.Thread(target=self.listenForServerUpdates)
+        listenForServerUpdate.start()
         self.refresh_rooms()
 
     def join_room(self):
@@ -49,11 +59,10 @@ class Lobby(tk.Frame):
         self.frameManager.frames['GameRoom'].playerConnected()
 
     def refresh_rooms(self):
-        # Refresh view
-        self.rooms = [
-            {"name": "Room1", "players": 1, "status": "Waiting"},
-            {"name": "Room2", "players": 5, "status": "Started"},
-        ]
+        # self.rooms = [
+        #     {"name": "Room1", "players": 1, "status": "Waiting"},
+        #     {"name": "Room2", "players": 5, "status": "Started"},
+        # ]
 
         for row in self.rooms_tree.get_children():
             self.rooms_tree.delete(row)
@@ -62,6 +71,37 @@ class Lobby(tk.Frame):
             self.rooms_tree.insert("", "end", values=(f"{room['name']} ({room['players']}/5)", room['status']))
 
 
-    def connectToRoom(self,room):
-        print(f"Connect to room: {room}")
-        self.socket.send(f"JOIN|{room}".encode())
+    def listenForServerUpdates(self):
+        while True:
+            try:
+                message = self.socket.recv(1024).decode()
+                if not message:  
+                    print("Connection closed by the server")
+                    break
+                update = json.loads(message)  
+                self.handleUpdate(update)
+            except json.JSONDecodeError as e:
+                print(f"JSON decode error: {e}, received message: {message}")
+                break
+            except Exception as e:
+                print(f"Error: {e}")
+                break
+
+    def handleUpdate(self,update):
+        print(update)
+        if update['type'] == "room_create":
+            room_name = update["room_name"]
+            players=update['players']
+            d = {"name":room_name,"players":players,"status":"Waiting"}
+            self.rooms.append(d)
+            self.refresh_rooms()
+        elif update['type'] == "room_update":
+            room_name = update["room_name"]
+            players=update['players']
+            self.rooms[room_name]["players"] = players
+            self.refresh_rooms()
+
+
+
+
+

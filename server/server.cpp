@@ -16,6 +16,7 @@
 #include <sstream>
 #include <error.h>
 #include <errno.h>
+#include "Room.h"
 
 using json = nlohmann::json;
 
@@ -124,7 +125,7 @@ int readMessage(int clientFd, char * buffer,int bufSize){
         std::cout << "Client disconnected gracefully\n";
         return -1;
     }
-
+    /*
     std::vector<std::string> parts = splitMessage(buffer, '|');
     if(parts.size()>=2){
         std::string operation = parts[0];
@@ -136,13 +137,30 @@ int readMessage(int clientFd, char * buffer,int bufSize){
             printAllClients();
         } else if (operation == "JOIN") {
             joinLobby(std::stoi(message),clientFd);
-        } else {
+        } 
+        else {
             std::cout << "Unknown operation: " << operation << std::endl;
-        }
+        }      
     }
+    */
     std::cout << " Received1: " << buffer<< std::endl;
-    auto data = json::parse (buffer);
-     std::cout << " Received2: " << data<< std::endl;
+    json data = json::parse (buffer);
+    
+    if (data["name"] != nullptr){
+        std::string room_name = data["name"];
+        std::cout << room_name << std::endl;
+        Room newRoom(room_name);
+
+        json response;
+        response["status"] = "success";
+        response["type"] = "room_create";
+        response["room_name"] = room_name;
+        response["players"] = 1;
+        std::string responseStr = response.dump();
+        send(clientFd, responseStr.c_str(), responseStr.size(), 0);
+        std::cout << "Response sent to client: " << responseStr << std::endl;
+    }
+    std::cout << " Received2: " << data<< std::endl;
     return n;
 }
 
@@ -153,8 +171,8 @@ void handleClient(int clientSocket) {
         int n = readMessage(clientSocket,buffer,sizeof(buffer));
         if(n<=0) return;
         
-        std::string response = "QUESTION|What is 2+2?";
-        send(clientSocket, response.c_str(), response.size(), 0);
+        // std::string response = "QUESTION|What is 2+2?";
+        // send(clientSocket, response.c_str(), response.size(), 0);
     }
 }
 
