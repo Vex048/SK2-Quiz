@@ -113,6 +113,7 @@ class Lobby(tk.Frame):
             self.refresh_rooms()
         elif update['type'] == "rooms_info":
             if update["status"] == "succes":
+                self.rooms=[]
                 for room in update["rooms"]:
                     temp = {"name":room["name"],"players":room["players"],"status":room["status"]}
                     self.rooms.append(temp)

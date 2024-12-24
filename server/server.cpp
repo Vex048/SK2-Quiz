@@ -185,7 +185,8 @@ void sendToClientRoomsInfo(int clientsocket){
     
     std::string responseStr = response.dump();
     std::cout << responseStr << std::endl;
-    send(clientsocket, responseStr.c_str(), responseStr.size(), 0); 
+    sendToAllClients(responseStr);
+    //send(clientsocket, responseStr.c_str(), responseStr.size(), 0); 
 }
 
 void handlePlayer(json data,int clientsocket){
@@ -195,6 +196,7 @@ void handlePlayer(json data,int clientsocket){
         if (name == room_name){
             room.addPlayer(clientsocket,clientInfoMap);
             roomsToFile(Rooms);
+            sendToClientRoomsInfo(clientsocket);
         }
         
     }

@@ -22,7 +22,7 @@ class Room {
     public:
         Room(std::string roomName){ 
             name = roomName; 
-            status = "waiting";
+            status = "Waiting";
             maxPlayers=5; 
         };
         std::string name;
