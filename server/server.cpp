@@ -89,6 +89,7 @@ void joinLobby(int LobbyId, int clientFd){
     std::cout << "Client " << clientInfoMap[clientFd].nick << " joined lobby " << LobbyId << std::endl;
 }
 
+
 std::vector<std::string> splitMessage(const std::string& message, char delimiter) {
     std::vector<std::string> parts;
     std::istringstream stream(message);
@@ -100,6 +101,7 @@ std::vector<std::string> splitMessage(const std::string& message, char delimiter
 
     return parts;
 }
+
 void disconnectClient(int clientFd){
     close(clientFd);
     clientInfoMap.erase(clientFd);
@@ -141,8 +143,29 @@ int readMessage(int clientFd, char * buffer,int bufSize){
         }
     }
     std::cout << " Received1: " << buffer<< std::endl;
-    auto data = json::parse (buffer);
-     std::cout << " Received2: " << data<< std::endl;
+    json data;
+    try {
+        data = json::parse(buffer);
+        std::cout << " Received2: " << data<< std::endl;
+    }
+    catch(json::parse_error& e){
+        std::cout << "______________________" << std::endl;
+        std::cout << "Error parsing json: " << e.what() << std::endl;
+        std::cout << "Data received might not be in json format" <<std::endl;
+        std::cout << "Data received: " << buffer << std::endl;
+        std::cout << "______________________" << std::endl;
+    }
+    std::string type = data.at("type");
+        if (type == "NICK") {
+            clientInfoMap[clientFd].nick = data.at("nick");
+            std::cout << "New client's username: "<< clientInfoMap[clientFd].nick << std::endl;
+            printAllClients();
+        } else if (type == "JOIN") {
+            // joinLobby(std::stoi(message),clientFd);
+        } else {
+            std::cout << "Unknown type: " << type << std::endl;
+        }
+
     return n;
 }
 
