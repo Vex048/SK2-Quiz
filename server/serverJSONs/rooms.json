@@ -2,21 +2,21 @@
     "rooms": [
         {
             "category": "",
-            "currentQuestionIndex": -1879044736,
+            "currentQuestionIndex": -1006620960,
             "maxPlayers": 5,
-            "name": "Pokoj 1",
+            "name": "Marcin pokoj 1",
             "players": [
-                "Wiktor"
+                "marcin"
             ],
             "status": "waiting"
         },
         {
             "category": "",
-            "currentQuestionIndex": -1811935872,
+            "currentQuestionIndex": -872403232,
             "maxPlayers": 5,
-            "name": "Pokoj 2",
+            "name": "Wiktor pokoj 1",
             "players": [
-                "Marcin"
+                "Wiktor"
             ],
             "status": "waiting"
         }

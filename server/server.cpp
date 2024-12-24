@@ -17,6 +17,9 @@
 #include <error.h>
 #include <errno.h>
 #include "Room.h"
+#include <fstream>
+#include <csignal>
+
 
 using json = nlohmann::json;
 
@@ -150,8 +153,8 @@ void handleRoomCreate(json data,int clientsocket){
         json response;
         response["status"] = "success";
         response["type"] = "room_create";
-        response["room_name"] = room_name;
-        response["players"] = 1;
+        response["room_name"] = newRoom.name;
+        response["players"] = newRoom.players;
         std::string responseStr = response.dump();
         sendToAllClients(responseStr);
     }
@@ -164,6 +167,26 @@ void handleNickname(json data,int clientsocket){
     clientInfoMap[clientsocket].nick = nick;
 }
 
+void sendToClientRoomsInfo(int clientsocket){
+    std::ifstream ifs("serverJSONs/rooms.json");
+    json jf = json::parse(ifs);
+    json response;
+    response["type"] = "rooms_info";
+    if (jf["rooms"].size() > 0){
+        
+        response["status"] = "succes";
+        response["rooms"] = jf["rooms"];
+    }
+    else{
+        response["status"] = "failure";
+    }
+    
+    
+    std::string responseStr = response.dump();
+    std::cout << responseStr << std::endl;
+    send(clientsocket, responseStr.c_str(), responseStr.size(), 0); 
+
+}
 
 int readMessage(int clientFd, char * buffer,int bufSize){   
     int n = recv(clientFd,buffer,bufSize,0);
@@ -182,6 +205,9 @@ int readMessage(int clientFd, char * buffer,int bufSize){
     }
     else if (data["type"] == "create_nickname"){
         handleNickname(data,clientFd);
+    }
+    else if (data["type"] == "rooms_info"){
+        sendToClientRoomsInfo(clientFd);
     }
     
     std::cout << " Received2: " << data<< std::endl;
@@ -202,12 +228,27 @@ void handleClient(int clientSocket) {
     }
 }
 
+void clearJsonFIle(const std::string& filePath){
+    json emptyData;
+    emptyData["rooms"] = json::array();
+    std::ofstream ofs(filePath, std::ofstream::trunc);
+    if (ofs.is_open()) {
+        ofs << emptyData.dump(4) << std::endl;
+        ofs.close();
+        std::cout << "JSON file cleared: " << filePath << std::endl;
+    } else {
+        std::cerr << "Failed to open file for clearing: " << filePath << std::endl;
+    }
+}
 
-
-
+void shutdownJson(int signal){
+    clearJsonFIle("serverJSONs/rooms.json");
+    exit(0);
+}
 
 int main() {
     int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+    std::signal(SIGINT, shutdownJson);
     if (serverSocket == 0) {
         perror("Socket failed");
         exit(EXIT_FAILURE);
@@ -247,7 +288,6 @@ int main() {
         printAllClients();
         std::thread(handleClient, clientSocket).detach();
     }
-
     close(serverSocket);
     return 0;
 }
