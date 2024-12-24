@@ -1,24 +1,3 @@
 {
-    "rooms": [
-        {
-            "category": "",
-            "currentQuestionIndex": -1006620960,
-            "maxPlayers": 5,
-            "name": "Marcin pokoj 1",
-            "players": [
-                "marcin"
-            ],
-            "status": "waiting"
-        },
-        {
-            "category": "",
-            "currentQuestionIndex": -872403232,
-            "maxPlayers": 5,
-            "name": "Wiktor pokoj 1",
-            "players": [
-                "Wiktor"
-            ],
-            "status": "waiting"
-        }
-    ]
+    "rooms": []
 }

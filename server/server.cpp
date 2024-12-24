@@ -27,6 +27,7 @@ const int PORT = 8080;
 std::vector<int> clientSockets;
 std::vector<Room> Rooms;
 
+int serverSocket;
 
 std::unordered_map<int, clientInfo> clientInfoMap;
 std::unordered_map<int, std::vector<int>> lobbyInfoMap;
@@ -185,7 +186,19 @@ void sendToClientRoomsInfo(int clientsocket){
     std::string responseStr = response.dump();
     std::cout << responseStr << std::endl;
     send(clientsocket, responseStr.c_str(), responseStr.size(), 0); 
+}
 
+void handlePlayer(json data,int clientsocket){
+    std::string room_name = data["name"];
+    for (Room& room : Rooms) {
+        std::string name = room.getRoomName();
+        if (name == room_name){
+            room.addPlayer(clientsocket,clientInfoMap);
+            roomsToFile(Rooms);
+        }
+        
+    }
+    
 }
 
 int readMessage(int clientFd, char * buffer,int bufSize){   
@@ -208,6 +221,9 @@ int readMessage(int clientFd, char * buffer,int bufSize){
     }
     else if (data["type"] == "rooms_info"){
         sendToClientRoomsInfo(clientFd);
+    }
+    else if (data["type"] == "player_join_room"){
+        handlePlayer(data,clientFd);
     }
     
     std::cout << " Received2: " << data<< std::endl;
@@ -240,14 +256,15 @@ void clearJsonFIle(const std::string& filePath){
         std::cerr << "Failed to open file for clearing: " << filePath << std::endl;
     }
 }
-
 void shutdownJson(int signal){
     clearJsonFIle("serverJSONs/rooms.json");
+    close(serverSocket);
     exit(0);
 }
 
+
 int main() {
-    int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+    serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     std::signal(SIGINT, shutdownJson);
     if (serverSocket == 0) {
         perror("Socket failed");

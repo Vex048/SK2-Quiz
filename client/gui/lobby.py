@@ -31,7 +31,7 @@ class Lobby(tk.Frame):
         self.rooms_tree.pack(pady=10, padx=20)
         tk.Button(self, text="Create Room", command=self.create_room).pack(side="left", padx=10)
         tk.Button(self, text="Join Room", command=self.join_room).pack(side="left", padx=10)
-        tk.Button(self, text="Refresh", command=self.refresh_rooms).pack(side="left", padx=10)
+        tk.Button(self, text="Refresh", command=self.getCurrentRooms).pack(side="left", padx=10)
         listenForServerUpdate = threading.Thread(target=self.listenForServerUpdates)
         listenForServerUpdate.start()
         self.getCurrentRooms()
@@ -49,6 +49,7 @@ class Lobby(tk.Frame):
         print(jsonStringRoom)
         self.socket.send(jsonStringRoom.encode("utf-8"))
         self.refresh_rooms()
+        self.frameManager.frames["GameRoom"].setName(room_name)
         self.frameManager.showFrame("GameRoom")
 
     def join_room(self):
@@ -57,23 +58,28 @@ class Lobby(tk.Frame):
         if not selected:
             messagebox.showwarning("No Selection", "Please select a room to join.")
             return
-
         room_name = self.rooms_tree.item(selected, "values")[0].split(" (")[0]
-        room_status = self.rooms_tree.item(selected, "values")[1]
-        
+        room_status = self.rooms_tree.item(selected, "values")[1]      
         if room_status == "Started":
             messagebox.showerror("Error", "Cannot join a game that has already started.")
             return
         print(f"Joining room: {room_name}")
+        message = {
+            "type": "player_join_room",
+            "name": room_name
+        }
+        jsonStringPlayer = json.dumps(message)
+        print(jsonStringPlayer)
+        self.socket.send(jsonStringPlayer.encode("utf-8"))
+        self.getCurrentRooms()
         self.frameManager.showFrame("GameRoom")
-        self.frameManager.frames['GameRoom'].playerConnected()
+
+
 
     def refresh_rooms(self):
         for row in self.rooms_tree.get_children():
             self.rooms_tree.delete(row)
-
         for room in self.rooms:
-            print(type(room['players']),room['players'])
             self.rooms_tree.insert("", "end", values=(f"{room['name']} ({len(room['players'])}/5)", room['status']))
 
 

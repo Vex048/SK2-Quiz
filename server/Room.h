@@ -35,6 +35,7 @@ class Room {
         void setStatus(std::string status);
         void setCategory(std::string status);
         void addPlayer(int playerSocket,std::unordered_map<int, clientInfo> &clientInfoMap);
+        std::string getRoomName();
         //void removePlayer(int playerSocket,std::unordered_map<int, clientInfo> clientInfoMap);
         json toJSON() const;
 };

@@ -18,6 +18,9 @@ void Room::setStatus(std::string newStatus) {
 void Room::setCategory(std::string newCategory) {
     category = newCategory;
 }
+std::string Room::getRoomName(){
+    return name;
+}
 
 
 void Room::addPlayer(int playerSocket,std::unordered_map<int, clientInfo> &clientInfoMap) {

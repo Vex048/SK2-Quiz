@@ -14,7 +14,6 @@ class Login(tk.Frame):
     def login(self):
         name = self.nick_entry.get()
         print(f"Próba zalogowania jako: {name}")
-
         self.sendNickToserver(name)
         self.frameManager.showFrame("Lobby")
 
