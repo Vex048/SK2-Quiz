@@ -16,6 +16,13 @@ class Lobby(tk.Frame):
         tk.Label(self, text="Lobby", font=("Arial", 18)).pack(pady=20)
         self.initialize()
 
+    def getCurrentRooms(self):
+        message = {
+            "type": "rooms_info"
+        }
+        jsonStringRoom = json.dumps(message)
+        print(jsonStringRoom)
+        self.socket.send(jsonStringRoom.encode("utf-8"))
 
     def initialize(self):
         self.rooms_tree = ttk.Treeview(self, columns=("Players", "Status"), show="headings", height=15)
@@ -27,6 +34,7 @@ class Lobby(tk.Frame):
         tk.Button(self, text="Refresh", command=self.refresh_rooms).pack(side="left", padx=10)
         listenForServerUpdate = threading.Thread(target=self.listenForServerUpdates)
         listenForServerUpdate.start()
+        self.getCurrentRooms()
 
 
     def create_room(self):
@@ -41,6 +49,7 @@ class Lobby(tk.Frame):
         print(jsonStringRoom)
         self.socket.send(jsonStringRoom.encode("utf-8"))
         self.refresh_rooms()
+        self.frameManager.showFrame("GameRoom")
 
     def join_room(self):
         # Push a info to server
@@ -60,12 +69,12 @@ class Lobby(tk.Frame):
         self.frameManager.frames['GameRoom'].playerConnected()
 
     def refresh_rooms(self):
-
         for row in self.rooms_tree.get_children():
             self.rooms_tree.delete(row)
 
         for room in self.rooms:
-            self.rooms_tree.insert("", "end", values=(f"{room['name']} ({room['players']}/5)", room['status']))
+            print(type(room['players']),room['players'])
+            self.rooms_tree.insert("", "end", values=(f"{room['name']} ({len(room['players'])}/5)", room['status']))
 
 
     def listenForServerUpdates(self):
@@ -96,6 +105,15 @@ class Lobby(tk.Frame):
             players=update['players']
             self.rooms[room_name]["players"] = players
             self.refresh_rooms()
+        elif update['type'] == "rooms_info":
+            if update["status"] == "succes":
+                for room in update["rooms"]:
+                    temp = {"name":room["name"],"players":room["players"],"status":room["status"]}
+                    self.rooms.append(temp)
+                self.refresh_rooms()
+            else:
+                print("No rooms name")
+
 
 
 
