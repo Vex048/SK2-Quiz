@@ -1,5 +1,5 @@
 import tkinter as tk
-
+import json
 class Login(tk.Frame):
     def __init__(self,masterRoot,FrameManager,socket):
         super().__init__(masterRoot)
@@ -19,5 +19,16 @@ class Login(tk.Frame):
 
 
     def sendNickToserver(self,nick):
-        self.socket.send(f"NICK|{nick}".encode())
+        nickname = {
+            "type": "create_nickname",
+            "nickname": nick
+        }
+        jsonString = json.dumps(nickname)
+        #print(type(jsonString))
+        #self.socket.send(nickname.encode())
+        self.socket.send(jsonString.encode("utf-8"))
+        #self.socket.send(f"NICK|{nick}".encode())
+
+
+    
         

@@ -11,24 +11,32 @@
 #include <stdlib.h>
 #include <unordered_map>
 #include <algorithm>
-
+#include <fstream>
 #include "json.hpp"
 #include <sstream>
 #include <error.h>
 #include <errno.h>
+#include "Room.h"
+#include <fstream>
+#include <csignal>
+
 
 using json = nlohmann::json;
 
 const int PORT = 8080;
 std::vector<int> clientSockets;
+std::vector<Room> Rooms;
 
-struct clientInfo{
-    std::string nick;
-    // later on we can add more info about client such as score, current_quiz, etc.
-};
+int serverSocket;
+
 std::unordered_map<int, clientInfo> clientInfoMap;
 std::unordered_map<int, std::vector<int>> lobbyInfoMap;
 
+void sendToAllClients(std::string message){
+    for(auto& client: clientInfoMap){
+        send(client.first, message.c_str(), message.size(), 0);       
+    }
+}
 
 void printAllClients(){
     std::cout << "Number of clients: " << clientInfoMap.size() << std::endl;
@@ -49,7 +57,6 @@ void destroyLobby(int LobbyId){
     std::cout << "Lobby " << LobbyId << " destroyed" << std::endl;
 }
 void handleLobby(int LobbyId){
-
     while(true){
 
         
@@ -114,6 +121,99 @@ void disconnectClient(int clientFd){
 
 }
 
+void writeToFile(json data){
+    std::ofstream o("serverJSONs/rooms.json");
+    if (!o) {
+        std::cerr << "Error: Unable to open file for writing.\n";
+        return;
+    }
+    o << std::setw(4) << data << std::endl; // Pretty print with indentation
+    o.close();
+}
+
+
+void roomsToFile(std::vector<Room>& rooms){
+    json data;
+    data["rooms"] = json::array();
+     for (const Room& room : rooms) {
+        json roomJson = room.toJSON();
+        data["rooms"].push_back(roomJson);
+    }
+    writeToFile(data);
+}
+
+void handleRoomCreate(json data,int clientsocket){
+    if (data["name"] != nullptr){
+        std::string room_name = data["name"];
+        std::cout << room_name << std::endl;
+        Room newRoom(room_name);
+        newRoom.addPlayer(clientsocket,clientInfoMap);
+        Rooms.push_back(newRoom);
+        std::cout << "Here room should be stored in json" << std::endl;
+        roomsToFile(Rooms);
+        json response;
+        response["status"] = "success";
+        response["type"] = "room_create";
+        response["room_name"] = newRoom.name;
+        response["players"] = newRoom.players;
+        std::string responseStr = response.dump();
+        sendToAllClients(responseStr);
+    }
+    else{
+        std::cout << "Room name is equall to null" << std::endl;
+    }
+}
+void handleNickname(json data,int clientsocket){
+    std::string nick = data["nickname"];
+    clientInfoMap[clientsocket].nick = nick;
+}
+
+void sendToClientsRoomsInfo(int clientsocket){
+    std::ifstream ifs("serverJSONs/rooms.json");
+    json jf = json::parse(ifs);
+    json response;
+    response["type"] = "rooms_info";
+    if (jf["rooms"].size() > 0){
+        
+        response["status"] = "succes";
+        response["rooms"] = jf["rooms"];
+    }
+    else{
+        response["status"] = "failure";
+    }
+    
+    
+    std::string responseStr = response.dump();
+    std::cout << responseStr << std::endl;
+    sendToAllClients(responseStr);
+    //send(clientsocket, responseStr.c_str(), responseStr.size(), 0); 
+}
+
+void handlePlayer(json data,int clientsocket){
+    std::string room_name = data["name"];
+    for (Room& room : Rooms) {
+        std::string name = room.getRoomName();
+        if (name == room_name){
+            room.addPlayer(clientsocket,clientInfoMap);
+            roomsToFile(Rooms);
+            sendToClientsRoomsInfo(clientsocket);
+        }
+        
+    }
+    
+}
+void RemovePlayerFromRoom(json data,int clientsocket){
+    std::string room_name = data["name"];
+    for (Room& room : Rooms) {
+            std::string name = room.getRoomName();
+            if (name == room_name){
+                room.removePlayer(clientsocket,clientInfoMap);
+                roomsToFile(Rooms);
+                sendToClientsRoomsInfo(clientsocket);
+            }
+            
+        }
+}
 
 int readMessage(int clientFd, char * buffer,int bufSize){   
     int n = recv(clientFd,buffer,bufSize,0);
@@ -125,26 +225,29 @@ int readMessage(int clientFd, char * buffer,int bufSize){
         return -1;
     }
 
-    std::vector<std::string> parts = splitMessage(buffer, '|');
-    if(parts.size()>=2){
-        std::string operation = parts[0];
-        std::string message = parts[1];
-        
-        if (operation == "NICK") {
-            clientInfoMap[clientFd].nick = message;
-            std::cout << "New client's username: "<< clientInfoMap[clientFd].nick << std::endl;
-            printAllClients();
-        } else if (operation == "JOIN") {
-            joinLobby(std::stoi(message),clientFd);
-        } else {
-            std::cout << "Unknown operation: " << operation << std::endl;
-        }
-    }
     std::cout << " Received1: " << buffer<< std::endl;
-    auto data = json::parse (buffer);
-     std::cout << " Received2: " << data<< std::endl;
+    json data = json::parse (buffer);
+    if (data["type"] == "create_room"){
+        handleRoomCreate(data,clientFd);
+    }
+    else if (data["type"] == "create_nickname"){
+        handleNickname(data,clientFd);
+    }
+    else if (data["type"] == "rooms_info"){
+        sendToClientsRoomsInfo(clientFd);
+    }
+    else if (data["type"] == "player_join_room"){
+        handlePlayer(data,clientFd);
+    }
+    else if (data["type"] == "player_exit_room"){
+        RemovePlayerFromRoom(data,clientFd);
+    }
+    
+    std::cout << " Received2: " << data<< std::endl;
     return n;
 }
+
+
 
 void handleClient(int clientSocket) {
     char buffer[1024];
@@ -153,17 +256,33 @@ void handleClient(int clientSocket) {
         int n = readMessage(clientSocket,buffer,sizeof(buffer));
         if(n<=0) return;
         
-        std::string response = "QUESTION|What is 2+2?";
-        send(clientSocket, response.c_str(), response.size(), 0);
+        // std::string response = "QUESTION|What is 2+2?";
+        // send(clientSocket, response.c_str(), response.size(), 0);
     }
 }
 
-
-
+void clearJsonFIle(const std::string& filePath){
+    json emptyData;
+    emptyData["rooms"] = json::array();
+    std::ofstream ofs(filePath, std::ofstream::trunc);
+    if (ofs.is_open()) {
+        ofs << emptyData.dump(4) << std::endl;
+        ofs.close();
+        std::cout << "JSON file cleared: " << filePath << std::endl;
+    } else {
+        std::cerr << "Failed to open file for clearing: " << filePath << std::endl;
+    }
+}
+void shutdownJson(int signal){
+    clearJsonFIle("serverJSONs/rooms.json");
+    close(serverSocket);
+    exit(0);
+}
 
 
 int main() {
-    int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+    serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+    std::signal(SIGINT, shutdownJson);
     if (serverSocket == 0) {
         perror("Socket failed");
         exit(EXIT_FAILURE);
@@ -200,9 +319,9 @@ int main() {
         std::cout << "Connecttion from " << inet_ntoa(clientAddr.sin_addr) << " On port:" <<ntohs(clientAddr.sin_port);
         clientInfoMap[clientSocket] = {};
         clientSockets.push_back(clientSocket);
+        printAllClients();
         std::thread(handleClient, clientSocket).detach();
     }
-
     close(serverSocket);
     return 0;
 }
