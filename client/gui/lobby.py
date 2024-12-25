@@ -49,7 +49,7 @@ class Lobby(tk.Frame):
         print(jsonStringRoom)
         self.socket.send(jsonStringRoom.encode("utf-8"))
         self.refresh_rooms()
-        self.frameManager.frames["GameRoom"].setName(room_name)
+        self.frameManager.frames["GameRoom"].setRoomName(room_name)
         self.frameManager.showFrame("GameRoom")
 
     def join_room(self):
@@ -72,6 +72,7 @@ class Lobby(tk.Frame):
         print(jsonStringPlayer)
         self.socket.send(jsonStringPlayer.encode("utf-8"))
         self.getCurrentRooms()
+        self.frameManager.frames["GameRoom"].setRoomName(room_name)
         self.frameManager.showFrame("GameRoom")
 
 

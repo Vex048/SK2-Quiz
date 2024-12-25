@@ -31,9 +31,9 @@ void Room::addPlayer(int playerSocket,std::unordered_map<int, clientInfo> &clien
     }
 }
 
-// void Room::removePlayer(int playerSocket,std::unordered_map<int, clientInfo> clientInfoMap) {
-//     players.erase(std::remove(players.begin(), players.end(), clientInfoMap[playerSocket].name), players.end());
-// }
+void Room::removePlayer(int playerSocket,std::unordered_map<int, clientInfo> clientInfoMap) {
+    players.erase(std::remove(players.begin(), players.end(), clientInfoMap[playerSocket].nick), players.end());
+}
 
 json Room::toJSON() const {
     json roomInfo = {

@@ -168,7 +168,7 @@ void handleNickname(json data,int clientsocket){
     clientInfoMap[clientsocket].nick = nick;
 }
 
-void sendToClientRoomsInfo(int clientsocket){
+void sendToClientsRoomsInfo(int clientsocket){
     std::ifstream ifs("serverJSONs/rooms.json");
     json jf = json::parse(ifs);
     json response;
@@ -196,11 +196,23 @@ void handlePlayer(json data,int clientsocket){
         if (name == room_name){
             room.addPlayer(clientsocket,clientInfoMap);
             roomsToFile(Rooms);
-            sendToClientRoomsInfo(clientsocket);
+            sendToClientsRoomsInfo(clientsocket);
         }
         
     }
     
+}
+void RemovePlayerFromRoom(json data,int clientsocket){
+    std::string room_name = data["name"];
+    for (Room& room : Rooms) {
+            std::string name = room.getRoomName();
+            if (name == room_name){
+                room.removePlayer(clientsocket,clientInfoMap);
+                roomsToFile(Rooms);
+                sendToClientsRoomsInfo(clientsocket);
+            }
+            
+        }
 }
 
 int readMessage(int clientFd, char * buffer,int bufSize){   
@@ -222,10 +234,13 @@ int readMessage(int clientFd, char * buffer,int bufSize){
         handleNickname(data,clientFd);
     }
     else if (data["type"] == "rooms_info"){
-        sendToClientRoomsInfo(clientFd);
+        sendToClientsRoomsInfo(clientFd);
     }
     else if (data["type"] == "player_join_room"){
         handlePlayer(data,clientFd);
+    }
+    else if (data["type"] == "player_exit_room"){
+        RemovePlayerFromRoom(data,clientFd);
     }
     
     std::cout << " Received2: " << data<< std::endl;
