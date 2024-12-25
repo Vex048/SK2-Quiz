@@ -8,6 +8,7 @@ class GameRoom(tk.Frame):
         self.roomName = "deafult"
         tk.Label(self, text="GameRoom", font=("Calibri", 24)).pack(pady=20)
         self.labelName = tk.Label(self, text=self.roomName, font=("Arial", 18))
+        self.labelName.pack(pady=20)
         tk.Button(self,text="Start a game",command=self.connected).pack()
         tk.Button(self,text="Exit Room",command=self.exitRoom).pack()
         
