@@ -48,9 +48,10 @@ class Lobby(tk.Frame):
         jsonStringRoom = json.dumps(message)
         print(jsonStringRoom)
         self.socket.send(jsonStringRoom.encode("utf-8"))
-        self.refresh_rooms()
+        self.refresh_rooms()  
         self.frameManager.frames["GameRoom"].setRoomName(room_name)
         self.frameManager.showFrame("GameRoom")
+        
 
     def join_room(self):
         # Push a info to server
@@ -63,6 +64,14 @@ class Lobby(tk.Frame):
         if room_status == "Started":
             messagebox.showerror("Error", "Cannot join a game that has already started.")
             return
+        print(room_name)
+        print(self.rooms)
+        for room in self.rooms:
+            if room["name"] == room_name:
+                if len(room["players"]) == 5:
+                    messagebox.showerror("Error", "Room is full.")
+                    return
+    
         print(f"Joining room: {room_name}")
         message = {
             "type": "player_join_room",
@@ -75,6 +84,9 @@ class Lobby(tk.Frame):
         self.frameManager.frames["GameRoom"].setRoomName(room_name)
         self.frameManager.showFrame("GameRoom")
 
+    def getPlayersFromRoom(self,roomname):
+        players = self.rooms[roomname]["players"]
+        return players
 
 
     def refresh_rooms(self):
@@ -106,6 +118,9 @@ class Lobby(tk.Frame):
             players=update['players']
             d = {"name":room_name,"players":players,"status":"Waiting"}
             self.rooms.append(d)
+            for room in self.rooms:
+                if self.frameManager.getNick() in room["players"]:
+                    self.frameManager.frames["GameRoom"].addPlayerListbox(room["players"])
             self.refresh_rooms()
         elif update['type'] == "room_update":
             room_name = update["room_name"]
@@ -117,6 +132,8 @@ class Lobby(tk.Frame):
                 self.rooms=[]
                 for room in update["rooms"]:
                     temp = {"name":room["name"],"players":room["players"],"status":room["status"]}
+                    if self.frameManager.getNick() in temp["players"]:
+                        self.frameManager.frames["GameRoom"].addPlayerListbox(room["players"])
                     self.rooms.append(temp)
                 self.refresh_rooms()
             else:
