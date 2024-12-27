@@ -31,7 +31,6 @@ class GameRoom(tk.Frame):
             "name": self.roomName
         }
         jsonStringRoom = json.dumps(message)
-        print(jsonStringRoom)
         self.socket.send(jsonStringRoom.encode("utf-8"))
         self.frameManager.showFrame("Lobby")
     def connected(self):

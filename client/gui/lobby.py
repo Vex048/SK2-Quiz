@@ -21,7 +21,6 @@ class Lobby(tk.Frame):
             "type": "rooms_info"
         }
         jsonStringRoom = json.dumps(message)
-        print(jsonStringRoom)
         self.socket.send(jsonStringRoom.encode("utf-8"))
 
     def initialize(self):
@@ -46,7 +45,6 @@ class Lobby(tk.Frame):
             "name": room_name
         }
         jsonStringRoom = json.dumps(message)
-        print(jsonStringRoom)
         self.socket.send(jsonStringRoom.encode("utf-8"))
         self.refresh_rooms()  
         self.frameManager.frames["GameRoom"].setRoomName(room_name)
@@ -64,8 +62,6 @@ class Lobby(tk.Frame):
         if room_status == "Started":
             messagebox.showerror("Error", "Cannot join a game that has already started.")
             return
-        print(room_name)
-        print(self.rooms)
         for room in self.rooms:
             if room["name"] == room_name:
                 if len(room["players"]) == 5:
@@ -78,7 +74,6 @@ class Lobby(tk.Frame):
             "name": room_name
         }
         jsonStringPlayer = json.dumps(message)
-        print(jsonStringPlayer)
         self.socket.send(jsonStringPlayer.encode("utf-8"))
         self.getCurrentRooms()
         self.frameManager.frames["GameRoom"].setRoomName(room_name)
