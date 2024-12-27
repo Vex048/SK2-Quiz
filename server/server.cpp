@@ -243,7 +243,7 @@ int readMessage(int clientFd, char * buffer,int bufSize){
         RemovePlayerFromRoom(data,clientFd);
     }
     
-    std::cout << " Received2: " << data<< std::endl;
+    //std::cout << " Received2: " << data<< std::endl;
     return n;
 }
 

@@ -8,6 +8,7 @@ class FrameManager():
         self.root=root
         self.states = {} # Do zrobienia
         self.socket=socket
+        self.nick=None
 
     def initFrames(self):
         for FrameClass in (Lobby, Login, GameRoom):
@@ -16,6 +17,13 @@ class FrameManager():
             frame.grid(row=0, column=0, sticky='news',pady=(0,100))
             self.frames[frame_name] = frame
 
+    def setNickname(self,nick):
+        self.nick = nick
+    def getNick(self):
+        if self.nick == None:
+            pass
+        else:
+            return self.nick
 
     def showFrame(self,frame):
         frame = self.frames[frame]
