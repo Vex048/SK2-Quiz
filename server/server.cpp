@@ -215,6 +215,19 @@ void RemovePlayerFromRoom(json data,int clientsocket){
         }
 }
 
+void StartGame(json data,int clientsocket){
+    std::string room_name = data["name"];
+    for (Room& room : Rooms) {
+            std::string name = room.getRoomName();
+            if (name == room_name){
+                room.setStatus("Started");
+                roomsToFile(Rooms);
+                sendToClientsRoomsInfo(clientsocket);
+            }
+            
+        }
+}
+
 int readMessage(int clientFd, char * buffer,int bufSize){   
     int n = recv(clientFd,buffer,bufSize,0);
     if (n<=0){
@@ -241,6 +254,9 @@ int readMessage(int clientFd, char * buffer,int bufSize){
     }
     else if (data["type"] == "player_exit_room"){
         RemovePlayerFromRoom(data,clientFd);
+    }
+    else if (data["type"] == "start_game"){
+        StartGame(data,clientFd);
     }
     
     //std::cout << " Received2: " << data<< std::endl;
