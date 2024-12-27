@@ -129,10 +129,18 @@ class Lobby(tk.Frame):
                     temp = {"name":room["name"],"players":room["players"],"status":room["status"]}
                     if self.frameManager.getNick() in temp["players"]:
                         self.frameManager.frames["GameRoom"].addPlayerListbox(room["players"])
+                        if temp["status"] == "Started":
+                            self.frameManager.showFrame("QuizView")
                     self.rooms.append(temp)
                 self.refresh_rooms()
             else:
                 print("No rooms name")
+        # elif update["type"] == "game_start":
+        #     room_name = update["room_name"]
+        #     players = self.getPlayersFromRoom(room_name)
+        #     if self.frameManager.getNick() in players:
+        #         self.frameManager.showFrame("QuizView")
+
 
 
 

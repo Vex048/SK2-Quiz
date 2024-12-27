@@ -9,7 +9,7 @@ class GameRoom(tk.Frame):
         tk.Label(self, text="GameRoom", font=("Calibri", 24)).pack(pady=20)
         self.labelName = tk.Label(self, text=self.roomName, font=("Arial", 18))
         self.labelName.pack(pady=20)
-        tk.Button(self,text="Start a game",command=self.connected).pack()
+        tk.Button(self,text="Start a game",command=self.gameStart).pack()
         tk.Button(self,text="Exit Room",command=self.exitRoom).pack()
         
         self.players_listbox = tk.Listbox(self)
@@ -33,8 +33,13 @@ class GameRoom(tk.Frame):
         jsonStringRoom = json.dumps(message)
         self.socket.send(jsonStringRoom.encode("utf-8"))
         self.frameManager.showFrame("Lobby")
-    def connected(self):
-        pass
+    def gameStart(self):
+        message = {
+            "type":"start_game",
+            "name":self.roomName
+        }
+        jsonStringRoom = json.dumps(message)
+        self.socket.send(jsonStringRoom.encode("utf-8"))
     def playerConnected(self):
         pass
 
