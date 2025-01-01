@@ -6,6 +6,7 @@ from gui.login import Login
 from gui.lobby import Lobby
 from gui.gameRoom import GameRoom
 from gui.frameManager import FrameManager 
+import json
 SERVER_IP = "127.0.0.1"
 SERVER_PORT = 8080
 
@@ -22,8 +23,26 @@ class QuizClient:
         self.frameManager = FrameManager(self.root,self.client_socket)
         self.frameManager.initFrames()
         self.frameManager.showFrame("Login")
+        listenForServerUpdate = threading.Thread(target=self.listenForServerUpdates)
+        listenForServerUpdate.start()
 
 
+
+    def listenForServerUpdates(self):
+        while True:
+            try:
+                message = self.client_socket.recv(1024).decode()
+                if not message:  
+                    print("Connection closed by the server")
+                    break
+                update = json.loads(message)  
+                self.frameManager.frames["Lobby"].handleUpdate(update)
+            except json.JSONDecodeError as e:
+                print(f"JSON decode error: {e}, received message: {message}")
+                break
+            except Exception as e:
+                print(f"Error: {e}")
+                break    
 
 if __name__ == "__main__":
     root = tk.Tk()

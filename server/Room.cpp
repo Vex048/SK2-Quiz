@@ -13,13 +13,25 @@
 void Room::setStatus(std::string newStatus) {
     status = newStatus;
 }
-
+std::string Room::getNewGameMaster(){
+    int numberOfPlayers = players.size();
+    if (numberOfPlayers > 0){
+        return players.front();
+    } 
+    return "No players in room";
+}
 
 void Room::setCategory(std::string newCategory) {
     category = newCategory;
 }
 std::string Room::getRoomName(){
     return name;
+}
+std::string Room::getGameMaster(){
+    return gameMaster;
+}
+void Room::setGameMaster(std::string player){
+    gameMaster = player;
 }
 
 
@@ -42,7 +54,8 @@ json Room::toJSON() const {
                 {"players", players},
                 {"category", category},
                 {"currentQuestionIndex", currentQuestionIndex},
-                {"maxPlayers", maxPlayers}
+                {"maxPlayers", maxPlayers},
+                {"gameMaster",gameMaster}
             };
     return roomInfo;
 }

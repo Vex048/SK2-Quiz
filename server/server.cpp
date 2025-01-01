@@ -148,6 +148,7 @@ void handleRoomCreate(json data,int clientsocket){
         std::cout << room_name << std::endl;
         Room newRoom(room_name);
         newRoom.addPlayer(clientsocket,clientInfoMap);
+        newRoom.setGameMaster(clientInfoMap[clientsocket].nick);
         Rooms.push_back(newRoom);
         std::cout << "Here room should be stored in json" << std::endl;
         roomsToFile(Rooms);
@@ -156,6 +157,7 @@ void handleRoomCreate(json data,int clientsocket){
         response["type"] = "room_create";
         response["room_name"] = newRoom.name;
         response["players"] = newRoom.players;
+        response["gameMaster"] = newRoom.getGameMaster();
         std::string responseStr = response.dump();
         sendToAllClients(responseStr);
     }
@@ -202,12 +204,29 @@ void handlePlayer(json data,int clientsocket){
     }
     
 }
+
+void checkIfGameMaster(int clientsocket,Room& room){
+    std::string player = room.getGameMaster();
+    std::cout << "Current Game master: " << player << std::endl;
+    if (player == clientInfoMap[clientsocket].nick){
+        std::string newGameMaster = room.getNewGameMaster();
+        std::cout << "New Game master: " << newGameMaster << std::endl;
+        if (newGameMaster != "No players in room"){
+            room.setGameMaster(newGameMaster);
+        }
+        else {
+            room.setGameMaster("");
+        }
+            
+    }
+}
 void RemovePlayerFromRoom(json data,int clientsocket){
     std::string room_name = data["name"];
     for (Room& room : Rooms) {
             std::string name = room.getRoomName();
             if (name == room_name){
                 room.removePlayer(clientsocket,clientInfoMap);
+                checkIfGameMaster(clientsocket,room);
                 roomsToFile(Rooms);
                 sendToClientsRoomsInfo(clientsocket);
             }
@@ -297,12 +316,20 @@ void shutdownJson(int signal){
 
 
 int main() {
+    clearJsonFIle("serverJSONs/rooms.json");
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     std::signal(SIGINT, shutdownJson);
     if (serverSocket == 0) {
         perror("Socket failed");
         exit(EXIT_FAILURE);
     }
+
+    int opt = 1;
+    if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+        perror("setsockopt failed");
+        return 1;
+    }
+
 
     sockaddr_in address{};
     address.sin_family = AF_INET;

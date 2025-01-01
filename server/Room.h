@@ -23,15 +23,19 @@ class Room {
         Room(std::string roomName){ 
             name = roomName; 
             status = "Waiting";
-            maxPlayers=5; 
+            maxPlayers=5;
         };
         std::string name;
         int maxPlayers;
         std::vector<std::string> players;
         std::string status;     
-        std::string category;               
+        std::string category; 
+        std::string gameMaster;      
         //std::<vector><json> questions;        
-        int currentQuestionIndex;      
+        int currentQuestionIndex;
+        void setGameMaster(std::string player);
+        std::string getNewGameMaster();
+        std::string getGameMaster();   
         void setStatus(std::string status);
         void setCategory(std::string category);
         void addPlayer(int playerSocket,std::unordered_map<int, clientInfo> &clientInfoMap);

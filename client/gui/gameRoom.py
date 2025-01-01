@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk 
 import json
 class GameRoom(tk.Frame):
     def __init__(self,masterRoot,FrameManager,socket):
@@ -6,9 +7,19 @@ class GameRoom(tk.Frame):
         self.socket=socket
         self.frameManager=FrameManager
         self.roomName = "deafult"
+        n = tk.StringVar()
+        self.categories = ttk.Combobox(self,width=27,textvariable=n)
+        self.categories["values"]= ("Sport","History","Geography","Music","Cultural")
+        #categories.grid(column = 1, row = 5) 
+        
+        
         tk.Label(self, text="GameRoom", font=("Calibri", 24)).pack(pady=20)
         self.labelName = tk.Label(self, text=self.roomName, font=("Arial", 18))
         self.labelName.pack(pady=20)
+        tk.Label(self, text="Please select quiz categroy", font=("Calibri", 12)).pack(pady=20)
+        
+        self.categories.pack()
+        self.categories.current(1) 
         tk.Button(self,text="Start a game",command=self.gameStart).pack()
         tk.Button(self,text="Exit Room",command=self.exitRoom).pack()
         
@@ -34,9 +45,14 @@ class GameRoom(tk.Frame):
         self.socket.send(jsonStringRoom.encode("utf-8"))
         self.frameManager.showFrame("Lobby")
     def gameStart(self):
+        if self.categories.get() == "":
+            print("Pusto")
+            return
+        print(self.categories.get())
         message = {
             "type":"start_game",
-            "name":self.roomName
+            "name":self.roomName,
+            "category": self.categories.get()
         }
         jsonStringRoom = json.dumps(message)
         self.socket.send(jsonStringRoom.encode("utf-8"))

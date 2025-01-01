@@ -1,5 +1,6 @@
 import tkinter as tk
 import json
+from tkinter import messagebox
 class Login(tk.Frame):
     def __init__(self,masterRoot,FrameManager,socket):
         super().__init__(masterRoot)
@@ -14,6 +15,9 @@ class Login(tk.Frame):
     def login(self):
         name = self.nick_entry.get()
         print(f"Próba zalogowania jako: {name}")
+        if name == "":
+            messagebox.showerror("Name error", "You cant enter a game as empty space.")
+            return
         self.sendNickToserver(name)
         self.frameManager.setNickname(name)
         self.frameManager.showFrame("Lobby")
