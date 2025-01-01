@@ -11,7 +11,7 @@ class GameRoom(tk.Frame):
         self.categories = ttk.Combobox(self,width=27,textvariable=n)
         self.categories["values"]= ("Sport","History","Geography","Music","Cultural")
         #categories.grid(column = 1, row = 5) 
-        
+        self.isGameMaster=False
         
         tk.Label(self, text="GameRoom", font=("Calibri", 24)).pack(pady=20)
         self.labelName = tk.Label(self, text=self.roomName, font=("Arial", 18))
@@ -19,14 +19,20 @@ class GameRoom(tk.Frame):
         tk.Label(self, text="Please select quiz categroy", font=("Calibri", 12)).pack(pady=20)
         
         self.categories.pack()
-        self.categories.current(1) 
-        tk.Button(self,text="Start a game",command=self.gameStart).pack()
+        self.categories.current(1)
+        self.gameMasterButton = tk.Button(self,text="Start a game",command=self.gameStart)
+        self.updateGameMasterButton()
         tk.Button(self,text="Exit Room",command=self.exitRoom).pack()
         
         self.players_listbox = tk.Listbox(self)
         self.players_listbox.pack(fill="both", expand=True)
         self.socket=socket
 
+    def updateGameMasterButton(self):
+        if self.isGameMaster == True:
+            self.gameMasterButton.pack()
+        else:
+            self.gameMasterButton.pack_forget()
 
     def setRoomName(self,name):
         self.roomName = name
@@ -41,6 +47,10 @@ class GameRoom(tk.Frame):
             "type": "player_exit_room",
             "name": self.roomName
         }
+        if self.isGameMaster ==True:
+            self.isGameMaster = False
+            self.updateGameMasterButton()
+        
         jsonStringRoom = json.dumps(message)
         self.socket.send(jsonStringRoom.encode("utf-8"))
         self.frameManager.showFrame("Lobby")

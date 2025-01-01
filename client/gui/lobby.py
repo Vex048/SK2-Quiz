@@ -97,6 +97,9 @@ class Lobby(tk.Frame):
             self.rooms.append(d)
             for room in self.rooms:
                 if self.frameManager.getNick() in room["players"]:
+                    if self.frameManager.getNick() == gameMaster:
+                        self.frameManager.frames["GameRoom"].isGameMaster=True 
+                        self.frameManager.frames["GameRoom"].updateGameMasterButton()                                    
                     self.frameManager.frames["GameRoom"].addPlayerListbox(room["players"])
             self.refresh_rooms()
         elif update['type'] == "room_update":
@@ -110,6 +113,9 @@ class Lobby(tk.Frame):
                 for room in update["rooms"]:
                     temp = {"name":room["name"],"players":room["players"],"status":room["status"],"gameMaster":room["gameMaster"]}
                     if self.frameManager.getNick() in temp["players"]:
+                        if temp["gameMaster"] == self.frameManager.getNick():
+                            self.frameManager.frames["GameRoom"].isGameMaster=True
+                            self.frameManager.frames["GameRoom"].updateGameMasterButton()
                         self.frameManager.frames["GameRoom"].addPlayerListbox(room["players"])
                         if temp["status"] == "Started":
                             self.frameManager.showFrame("QuizView")

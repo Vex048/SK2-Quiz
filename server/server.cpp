@@ -34,6 +34,7 @@ std::unordered_map<int, std::vector<int>> lobbyInfoMap;
 
 void sendToAllClients(std::string message){
     for(auto& client: clientInfoMap){
+        //message= message + "\n";
         send(client.first, message.c_str(), message.size(), 0);       
     }
 }
@@ -197,6 +198,9 @@ void handlePlayer(json data,int clientsocket){
         std::string name = room.getRoomName();
         if (name == room_name){
             room.addPlayer(clientsocket,clientInfoMap);
+            if (room.getGameMaster() == ""){
+                room.setGameMaster(clientInfoMap[clientsocket].nick);
+            }
             roomsToFile(Rooms);
             sendToClientsRoomsInfo(clientsocket);
         }
@@ -240,6 +244,7 @@ void StartGame(json data,int clientsocket){
             std::string name = room.getRoomName();
             if (name == room_name){
                 room.setStatus("Started");
+                room.setCategory(data["category"]);
                 roomsToFile(Rooms);
                 sendToClientsRoomsInfo(clientsocket);
             }
