@@ -20,8 +20,13 @@
 #include <fstream>
 #include <csignal>
 #include <set>
-
+#include <mutex>
 using json = nlohmann::json;
+
+std::mutex mutexRooms;
+std::mutex mutexClientInfoMap;
+std::mutex mutexPlayerList;
+std::mutex mutexClientSockets;
 
 const int PORT = 8080;
 std::vector<int> clientSockets;
@@ -33,13 +38,16 @@ std::unordered_map<int, clientInfo> clientInfoMap;
 std::unordered_map<int, std::vector<int>> lobbyInfoMap;
 
 void sendToAllClients(std::string message){
+    mutexClientInfoMap.lock();
     for(auto& client: clientInfoMap){
         message= message + "\n";
         send(client.first, message.c_str(), message.size(), 0);       
     }
+    mutexClientInfoMap.unlock();
 }
 
 void printAllClients(){
+    mutexClientInfoMap.lock();
     std::cout << "Number of clients: " << clientInfoMap.size() << std::endl;
     std::cout << "==============CLIENTS==============" << std::endl;
     for(auto& client: clientInfoMap){
@@ -51,6 +59,7 @@ void printAllClients(){
         std::cout <<"----------------------------------"<< std::endl;
     }
     std::cout << std::endl;
+    mutexClientInfoMap.unlock();
 }
 
 void destroyLobby(int LobbyId){
@@ -109,6 +118,8 @@ std::vector<std::string> splitMessage(const std::string& message, char delimiter
     return parts;
 }
 void disconnectClient(int clientFd){
+    mutexClientInfoMap.lock();
+    mutexPlayerList.lock();
     close(clientFd);
     playerList.erase(clientInfoMap[clientFd].nick);
     clientInfoMap.erase(clientFd);
@@ -120,6 +131,8 @@ void disconnectClient(int clientFd){
             clients.erase(it);
         }
     }
+    mutexClientInfoMap.unlock();
+    mutexPlayerList.unlock();
 
 }
 
@@ -146,6 +159,7 @@ void roomsToFile(std::vector<Room>& rooms){
 
 void handleRoomCreate(json data,int clientsocket){
     if (data["name"] != nullptr){
+        mutexRooms.lock();
         std::string room_name = data["name"];
         std::cout << room_name << std::endl;
         Room newRoom(room_name);
@@ -162,15 +176,18 @@ void handleRoomCreate(json data,int clientsocket){
         response["gameMaster"] = newRoom.getGameMaster();
         std::string responseStr = response.dump();
         sendToAllClients(responseStr);
+        mutexRooms.unlock();
     }
     else{
         std::cout << "Room name is equall to null" << std::endl;
     }
 }
 void handleNickname(json data,int clientsocket){
+    
     std::string nick = data["nickname"];
     json response;
     response["type"] = "create_nickname";
+    mutexPlayerList.lock();
     if (playerList.find(nick) != playerList.end()){
         response["status"] = "failure";
     }
@@ -178,12 +195,16 @@ void handleNickname(json data,int clientsocket){
         response["status"] = "succes";
         response["nickname"] = nick;
         playerList.insert(nick);
+        mutexClientInfoMap.lock();
         clientInfoMap[clientsocket].nick = nick;
+        mutexClientInfoMap.unlock();
     }
+    mutexPlayerList.unlock();
     std::string responseStr = response.dump();
     responseStr = responseStr + "\n";
     std::cout << responseStr << std::endl;
-    send(clientsocket, responseStr.c_str(), responseStr.size(), 0);  
+    send(clientsocket, responseStr.c_str(), responseStr.size(), 0);
+    
     
 }
 
@@ -200,6 +221,7 @@ void sendToClientsRoomsInfo(int clientsocket){
     else{
         response["status"] = "failure";
     }
+
     
     
     std::string responseStr = response.dump();
@@ -211,24 +233,30 @@ void sendToClientsRoomsInfo(int clientsocket){
 
 void handlePlayer(json data,int clientsocket){
     std::string room_name = data["name"];
+    mutexRooms.lock();
     for (Room& room : Rooms) {
         std::string name = room.getRoomName();
         if (name == room_name){
+            
+            mutexClientInfoMap.lock();
             room.addPlayer(clientsocket,clientInfoMap);
             if (room.getGameMaster() == ""){
                 room.setGameMaster(clientInfoMap[clientsocket].nick);
             }
+            mutexClientInfoMap.unlock();
             roomsToFile(Rooms);
             sendToClientsRoomsInfo(clientsocket);
-        }
-        
+            
+        }   
     }
+    mutexRooms.unlock();
     
 }
 
 void checkIfGameMaster(int clientsocket,Room& room){
     std::string player = room.getGameMaster();
     std::cout << "Current Game master: " << player << std::endl;
+    mutexClientInfoMap.lock();
     if (player == clientInfoMap[clientsocket].nick){
         std::string newGameMaster = room.getNewGameMaster();
         std::cout << "New Game master: " << newGameMaster << std::endl;
@@ -238,24 +266,30 @@ void checkIfGameMaster(int clientsocket,Room& room){
         else {
             room.setGameMaster("");
         }
-            
+        
     }
+    mutexClientInfoMap.unlock();  
 }
 void RemovePlayerFromRoom(json data,int clientsocket){
     std::string room_name = data["name"];
+    mutexRooms.lock();
     for (Room& room : Rooms) {
             std::string name = room.getRoomName();
             if (name == room_name){
+                mutexClientInfoMap.lock();
                 room.removePlayer(clientsocket,clientInfoMap);
+                mutexClientInfoMap.unlock();
                 checkIfGameMaster(clientsocket,room);
                 roomsToFile(Rooms);
                 sendToClientsRoomsInfo(clientsocket);
             }
-            
+    
         }
+    mutexRooms.unlock(); 
 }
 
 void StartGame(json data,int clientsocket){
+    mutexRooms.lock();
     std::string room_name = data["name"];
     for (Room& room : Rooms) {
             std::string name = room.getRoomName();
@@ -267,6 +301,7 @@ void StartGame(json data,int clientsocket){
             }
             
         }
+    mutexRooms.unlock(); 
 }
 
 void manageMessage(json data,int clientFd){
@@ -278,7 +313,9 @@ void manageMessage(json data,int clientFd){
         handleNickname(data,clientFd);
     }
     else if (data["type"] == "rooms_info"){
+        mutexRooms.lock();
         sendToClientsRoomsInfo(clientFd);
+        mutexRooms.unlock();
     }
     else if (data["type"] == "player_join_room"){
         handlePlayer(data,clientFd);
