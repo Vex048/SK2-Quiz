@@ -37,6 +37,8 @@ class Lobby(tk.Frame):
     def create_room(self):
         # Push a info to server
         room_name = tk.simpledialog.askstring("Create Room", "Enter room name:")
+        if room_name is None:
+            return
         messagebox.showinfo("Success", f"Room '{room_name}' created!")
         message = {
             "type": "create_room",
