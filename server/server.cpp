@@ -19,14 +19,14 @@
 #include "Room.h"
 #include <fstream>
 #include <csignal>
-
+#include <set>
 
 using json = nlohmann::json;
 
 const int PORT = 8080;
 std::vector<int> clientSockets;
 std::vector<Room> Rooms;
-
+std::set<std::string> playerList;
 int serverSocket;
 
 std::unordered_map<int, clientInfo> clientInfoMap;
@@ -34,7 +34,7 @@ std::unordered_map<int, std::vector<int>> lobbyInfoMap;
 
 void sendToAllClients(std::string message){
     for(auto& client: clientInfoMap){
-        //message= message + "\n";
+        message= message + "\n";
         send(client.first, message.c_str(), message.size(), 0);       
     }
 }
@@ -110,6 +110,7 @@ std::vector<std::string> splitMessage(const std::string& message, char delimiter
 }
 void disconnectClient(int clientFd){
     close(clientFd);
+    playerList.erase(clientInfoMap[clientFd].nick);
     clientInfoMap.erase(clientFd);
     // check if client is in any lobby and remove it
     for(auto &lobby: lobbyInfoMap){
@@ -168,7 +169,22 @@ void handleRoomCreate(json data,int clientsocket){
 }
 void handleNickname(json data,int clientsocket){
     std::string nick = data["nickname"];
-    clientInfoMap[clientsocket].nick = nick;
+    json response;
+    response["type"] = "create_nickname";
+    if (playerList.find(nick) != playerList.end()){
+        response["status"] = "failure";
+    }
+    else{
+        response["status"] = "succes";
+        response["nickname"] = nick;
+        playerList.insert(nick);
+        clientInfoMap[clientsocket].nick = nick;
+    }
+    std::string responseStr = response.dump();
+    responseStr = responseStr + "\n";
+    std::cout << responseStr << std::endl;
+    send(clientsocket, responseStr.c_str(), responseStr.size(), 0);  
+    
 }
 
 void sendToClientsRoomsInfo(int clientsocket){
@@ -187,6 +203,7 @@ void sendToClientsRoomsInfo(int clientsocket){
     
     
     std::string responseStr = response.dump();
+    responseStr = responseStr + "\n";
     std::cout << responseStr << std::endl;
     sendToAllClients(responseStr);
     //send(clientsocket, responseStr.c_str(), responseStr.size(), 0); 
@@ -252,18 +269,8 @@ void StartGame(json data,int clientsocket){
         }
 }
 
-int readMessage(int clientFd, char * buffer,int bufSize){   
-    int n = recv(clientFd,buffer,bufSize,0);
-    if (n<=0){
-        if(n<0) error(0,errno,"Error on read from client %d",clientFd);
+void manageMessage(json data,int clientFd){
 
-        disconnectClient(clientFd);
-        std::cout << "Client disconnected gracefully\n";
-        return -1;
-    }
-
-    std::cout << " Received1: " << buffer<< std::endl;
-    json data = json::parse (buffer);
     if (data["type"] == "create_room"){
         handleRoomCreate(data,clientFd);
     }
@@ -282,8 +289,37 @@ int readMessage(int clientFd, char * buffer,int bufSize){
     else if (data["type"] == "start_game"){
         StartGame(data,clientFd);
     }
-    
-    //std::cout << " Received2: " << data<< std::endl;
+}
+
+int readMessage(int clientFd, char * buffer,int bufSize){   
+    int n = recv(clientFd,buffer,bufSize,0);
+    if (n<=0){
+        if(n<0) error(0,errno,"Error on read from client %d",clientFd);
+
+        disconnectClient(clientFd);
+        std::cout << "Client disconnected gracefully\n";
+        return -1;
+    }
+    buffer[n] = '\0';
+    std::string data(buffer);
+
+    std::cout << " Received1: " << buffer<< std::endl;
+    //json data = json::parse (buffer);
+
+    size_t pos;
+    while ((pos = data.find("\n")) != std::string::npos) {
+            std::string jsonStr = data.substr(0, pos);
+            data.erase(0, pos + 1);
+
+            try {
+                json message = json::parse(jsonStr);
+                manageMessage(message,clientFd); 
+            } catch (const json::parse_error& e) {
+                std::cerr << "JSON parse error: " << e.what() << std::endl;
+            }
+        }
+
+
     return n;
 }
 
@@ -293,7 +329,7 @@ void handleClient(int clientSocket) {
     char buffer[1024];
     while (true) {
         memset(buffer, 0, sizeof(buffer));
-        int n = readMessage(clientSocket,buffer,sizeof(buffer));
+        int n = readMessage(clientSocket,buffer,sizeof(buffer)-1);
         if(n<=0) return;
         
         // std::string response = "QUESTION|What is 2+2?";

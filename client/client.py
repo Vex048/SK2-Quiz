@@ -29,17 +29,27 @@ class QuizClient:
 
 
     def listenForServerUpdates(self):
+        buffer=""
         while True:
             try:
                 message = self.client_socket.recv(1024).decode()
                 if not message:  
                     print("Connection closed by the server")
                     break
-                update = json.loads(message)  
-                self.frameManager.frames["Lobby"].handleUpdate(update)
-            except json.JSONDecodeError as e:
-                print(f"JSON decode error: {e}, received message: {message}")
-                break
+                buffer += message
+                while "\n" in buffer:
+                    json_str, buffer = buffer.split("\n", 1)
+                    if json_str.strip():
+                        print(f"Processing message: {json_str}")
+                        try:
+                            update = json.loads(json_str)
+                            if update["type"] == "create_nickname":
+                                  self.frameManager.frames["Login"].handleUpdateNick(update)
+                            else:
+                                self.frameManager.frames["Lobby"].handleUpdate(update)
+                        except json.JSONDecodeError as e:
+                            print(f"JSON decode error: {e}, received message: {json_str}")
+                            break
             except Exception as e:
                 print(f"Error: {e}")
                 break    

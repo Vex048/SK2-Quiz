@@ -20,7 +20,7 @@ class Lobby(tk.Frame):
         message = {
             "type": "rooms_info"
         }
-        jsonStringRoom = json.dumps(message)
+        jsonStringRoom = json.dumps(message) + "\n"
         self.socket.send(jsonStringRoom.encode("utf-8"))
 
     def initialize(self):
@@ -42,7 +42,7 @@ class Lobby(tk.Frame):
             "type": "create_room",
             "name": room_name
         }
-        jsonStringRoom = json.dumps(message)
+        jsonStringRoom = json.dumps(message) + "\n"
         self.socket.send(jsonStringRoom.encode("utf-8"))
         self.refresh_rooms()  
         self.frameManager.frames["GameRoom"].setRoomName(room_name)
@@ -71,7 +71,7 @@ class Lobby(tk.Frame):
             "type": "player_join_room",
             "name": room_name
         }
-        jsonStringPlayer = json.dumps(message)
+        jsonStringPlayer = json.dumps(message) + "\n"
         self.socket.send(jsonStringPlayer.encode("utf-8"))
         self.getCurrentRooms()
         self.frameManager.frames["GameRoom"].setRoomName(room_name)

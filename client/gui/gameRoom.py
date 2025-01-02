@@ -18,8 +18,8 @@ class GameRoom(tk.Frame):
         self.labelName.pack(pady=20)
         tk.Label(self, text="Please select quiz categroy", font=("Calibri", 12)).pack(pady=20)
         
-        self.categories.pack()
-        self.categories.current(1)
+        # self.categories.pack()
+        # self.categories.current(1)
         self.gameMasterButton = tk.Button(self,text="Start a game",command=self.gameStart)
         self.updateGameMasterButton()
         tk.Button(self,text="Exit Room",command=self.exitRoom).pack()
@@ -31,8 +31,11 @@ class GameRoom(tk.Frame):
     def updateGameMasterButton(self):
         if self.isGameMaster == True:
             self.gameMasterButton.pack()
+            self.categories.pack()
+            self.categories.current(1)
         else:
             self.gameMasterButton.pack_forget()
+            self.categories.pack_forget()
 
     def setRoomName(self,name):
         self.roomName = name
@@ -51,7 +54,7 @@ class GameRoom(tk.Frame):
             self.isGameMaster = False
             self.updateGameMasterButton()
         
-        jsonStringRoom = json.dumps(message)
+        jsonStringRoom = json.dumps(message) + "\n"
         self.socket.send(jsonStringRoom.encode("utf-8"))
         self.frameManager.showFrame("Lobby")
     def gameStart(self):
@@ -64,34 +67,12 @@ class GameRoom(tk.Frame):
             "name":self.roomName,
             "category": self.categories.get()
         }
-        jsonStringRoom = json.dumps(message)
+        jsonStringRoom = json.dumps(message) + "\n"
         self.socket.send(jsonStringRoom.encode("utf-8"))
     def playerConnected(self):
         pass
 
 
-    # def listenForServerUpdates(self):
-    #     while True:
-    #         try:
-    #             message = self.socket.recv(1024).decode()
-    #             if not message:  
-    #                 print("Connection closed by the server")
-    #                 break
-    #             update = json.loads(message)  
-    #             self.handleUpdate(update)
-    #         except json.JSONDecodeError as e:
-    #             print(f"JSON decode error: {e}, received message: {message}")
-    #             break
-    #         except Exception as e:
-    #             print(f"Error: {e}")
-    #             break
 
-    # def handleUpdate(self,update):
-    #     if update['type'] == "room_create":
-    #         room_name = update["room_name"]
-    #         players=update['players']
-    #         d = {"name":room_name,"players":players,"status":"Waiting"}
-    #         self.rooms.append(d)
-    #         self.refresh_rooms()
         
     

@@ -35,7 +35,8 @@ class QuizView(tk.Frame):
             "question_id": self.current_question["id"],
             "selected_option": selected_option
         }
-        self.socket.send(json.dumps(answer_data).encode())
+        jsonStr = json.dumps(answer_data) + "\n"
+        self.socket.send(jsonStr.encode("utf-8"))
         for button in self.answer_buttons:
             button.config(state="disabled")
 
