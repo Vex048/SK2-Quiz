@@ -20,7 +20,7 @@ class Lobby(tk.Frame):
         message = {
             "type": "rooms_info"
         }
-        jsonStringRoom = json.dumps(message)
+        jsonStringRoom = json.dumps(message) + "\n"
         self.socket.send(jsonStringRoom.encode("utf-8"))
 
     def initialize(self):
@@ -31,8 +31,6 @@ class Lobby(tk.Frame):
         tk.Button(self, text="Create Room", command=self.create_room).pack(side="left", padx=10)
         tk.Button(self, text="Join Room", command=self.join_room).pack(side="left", padx=10)
         tk.Button(self, text="Refresh", command=self.getCurrentRooms).pack(side="left", padx=10)
-        listenForServerUpdate = threading.Thread(target=self.listenForServerUpdates)
-        listenForServerUpdate.start()
         self.getCurrentRooms()
 
 
@@ -44,7 +42,7 @@ class Lobby(tk.Frame):
             "type": "create_room",
             "name": room_name
         }
-        jsonStringRoom = json.dumps(message)
+        jsonStringRoom = json.dumps(message) + "\n"
         self.socket.send(jsonStringRoom.encode("utf-8"))
         self.refresh_rooms()  
         self.frameManager.frames["GameRoom"].setRoomName(room_name)
@@ -73,7 +71,7 @@ class Lobby(tk.Frame):
             "type": "player_join_room",
             "name": room_name
         }
-        jsonStringPlayer = json.dumps(message)
+        jsonStringPlayer = json.dumps(message) + "\n"
         self.socket.send(jsonStringPlayer.encode("utf-8"))
         self.getCurrentRooms()
         self.frameManager.frames["GameRoom"].setRoomName(room_name)
@@ -90,31 +88,18 @@ class Lobby(tk.Frame):
         for room in self.rooms:
             self.rooms_tree.insert("", "end", values=(f"{room['name']} ({len(room['players'])}/5)", room['status']))
 
-
-    def listenForServerUpdates(self):
-        while True:
-            try:
-                message = self.socket.recv(1024).decode()
-                if not message:  
-                    print("Connection closed by the server")
-                    break
-                update = json.loads(message)  
-                self.handleUpdate(update)
-            except json.JSONDecodeError as e:
-                print(f"JSON decode error: {e}, received message: {message}")
-                break
-            except Exception as e:
-                print(f"Error: {e}")
-                break
-
     def handleUpdate(self,update):
         if update['type'] == "room_create":
             room_name = update["room_name"]
             players=update['players']
-            d = {"name":room_name,"players":players,"status":"Waiting"}
+            gameMaster = update['gameMaster']
+            d = {"name":room_name,"players":players,"status":"Waiting","gameMaster":gameMaster}
             self.rooms.append(d)
             for room in self.rooms:
                 if self.frameManager.getNick() in room["players"]:
+                    if self.frameManager.getNick() == gameMaster:
+                        self.frameManager.frames["GameRoom"].isGameMaster=True 
+                        self.frameManager.frames["GameRoom"].updateGameMasterButton()                                    
                     self.frameManager.frames["GameRoom"].addPlayerListbox(room["players"])
             self.refresh_rooms()
         elif update['type'] == "room_update":
@@ -126,13 +111,19 @@ class Lobby(tk.Frame):
             if update["status"] == "succes":
                 self.rooms=[]
                 for room in update["rooms"]:
-                    temp = {"name":room["name"],"players":room["players"],"status":room["status"]}
+                    temp = {"name":room["name"],"players":room["players"],"status":room["status"],"gameMaster":room["gameMaster"]}
                     if self.frameManager.getNick() in temp["players"]:
+                        if temp["gameMaster"] == self.frameManager.getNick():
+                            self.frameManager.frames["GameRoom"].isGameMaster=True
+                            self.frameManager.frames["GameRoom"].updateGameMasterButton()
                         self.frameManager.frames["GameRoom"].addPlayerListbox(room["players"])
+                        if temp["status"] == "Started":
+                            self.frameManager.showFrame("QuizView")
                     self.rooms.append(temp)
                 self.refresh_rooms()
             else:
                 print("No rooms name")
+
 
 
 

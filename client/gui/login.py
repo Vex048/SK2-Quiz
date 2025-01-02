@@ -1,5 +1,6 @@
 import tkinter as tk
 import json
+from tkinter import messagebox
 class Login(tk.Frame):
     def __init__(self,masterRoot,FrameManager,socket):
         super().__init__(masterRoot)
@@ -14,9 +15,10 @@ class Login(tk.Frame):
     def login(self):
         name = self.nick_entry.get()
         print(f"Próba zalogowania jako: {name}")
+        if name == "":
+            messagebox.showerror("Name error", "You cant enter a game as empty space.")
+            return
         self.sendNickToserver(name)
-        self.frameManager.setNickname(name)
-        self.frameManager.showFrame("Lobby")
 
 
     def sendNickToserver(self,nick):
@@ -24,11 +26,18 @@ class Login(tk.Frame):
             "type": "create_nickname",
             "nickname": nick
         }
-        jsonString = json.dumps(nickname)
-        #print(type(jsonString))
-        #self.socket.send(nickname.encode())
+        jsonString = json.dumps(nickname) + "\n"
         self.socket.send(jsonString.encode("utf-8"))
-        #self.socket.send(f"NICK|{nick}".encode())
+
+    def handleUpdateNick(self,update):
+        if update["type"] == "create_nickname":
+            if update["status"] == "succes":
+                self.frameManager.setNickname(update["nickname"])
+                self.frameManager.showFrame("Lobby")
+            else:
+                messagebox.showerror("Name error", "Nick already taken. Please choose another")
+
+
 
 
     
