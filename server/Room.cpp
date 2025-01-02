@@ -44,6 +44,13 @@ void Room::addPlayer(int playerSocket,std::unordered_map<int, clientInfo> &clien
     }
 }
 
+void Room::printRoomInfo(){
+    // std::cout << Room::getRoomName() << std::endl;
+    // std::cout << Room::getGameMaster() << std::endl;
+    std::cout << "Room Name: " << name << std::endl;
+    std::cout << "Game Master: " << gameMaster << std::endl;
+}
+
 void Room::removePlayer(int playerSocket,std::unordered_map<int, clientInfo> clientInfoMap) {
     players.erase(std::remove(players.begin(), players.end(), clientInfoMap[playerSocket].nick), players.end());
     timestamp_playerleftroom = std::chrono::system_clock::now();
@@ -52,7 +59,9 @@ int Room::getNumberOfPlayers(){
     return players.size();
 }
 
-
+std::chrono::time_point<std::chrono::system_clock> Room::getTimeStamp(){
+    return timestamp_playerleftroom;
+}
 
 
 json Room::toJSON() const {

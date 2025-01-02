@@ -23,7 +23,7 @@
 #include <mutex>
 #include <time.h>
 #include <chrono>
-
+#include <optional>
 using json = nlohmann::json;
 
 std::mutex mutexRooms;
@@ -161,18 +161,38 @@ void roomsToFile(std::vector<Room>& rooms){
     }
     writeToFile(data);
 }
-void handleRoom(Room& room){
-    int lastNumberOfPlayers = room.getNumberOfPlayers();
+
+Room* getRoomFromFile(std::string room_name){
+    for (Room& room : Rooms) {
+        std::string name = room.getRoomName();
+        if (name == room_name){
+            return &room;
+        }      
+    }
+    return nullptr;
+}
+
+
+void handleRoom(std::string room_name){
     while(true){ 
         sleep(1);
-        lastNumberOfPlayers = room.getNumberOfPlayers();
+        mutexRooms.lock();
+        Room* room = getRoomFromFile(room_name);
+        if (room==nullptr){
+            mutexRooms.unlock();
+            break;
+        }
+        int lastNumberOfPlayers = room->getNumberOfPlayers();        
         std::cout << "Number of players in room: " << lastNumberOfPlayers << std::endl;
-        if(room.getNumberOfPlayers()==0){
-            room.timestamp_playerleftroom;
+        if(lastNumberOfPlayers==0){
+            //room.timestamp_playerleftroom;
             std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
-            std::chrono::duration<double> elapsed_seconds = now - room.timestamp_playerleftroom;
+            std::chrono::duration<double> elapsed_seconds = now - room->getTimeStamp();
             std::cout << "Elapsed time room empty: " << elapsed_seconds.count() << "s\n";
         }
+        
+
+        mutexRooms.unlock();
     }
 }
 
@@ -195,11 +215,11 @@ void handleRoomCreate(json data,int clientsocket){
         response["gameMaster"] = newRoom.getGameMaster();
         std::string responseStr = response.dump();
 
-        std::thread roomThread(handleRoom, std::ref(newRoom));
-        roomThread.detach();
-
         sendToAllClients(responseStr);
         mutexRooms.unlock();
+
+        std::thread(handleRoom, newRoom.getRoomName()).detach();
+        //roomThread;
     }
     else{
         std::cout << "Room name is equall to null" << std::endl;
@@ -263,6 +283,7 @@ void handlePlayer(json data,int clientsocket){
             
             mutexClientInfoMap.lock();
             room.addPlayer(clientsocket,clientInfoMap);
+            std::cout << "Player joined a lobby,number of players: " << room.getNumberOfPlayers() << std::endl;
             if (room.getGameMaster() == ""){
                 room.setGameMaster(clientInfoMap[clientsocket].nick);
             }
@@ -301,6 +322,7 @@ void RemovePlayerFromRoom(json data,int clientsocket){
             if (name == room_name){
                 mutexClientInfoMap.lock();
                 room.removePlayer(clientsocket,clientInfoMap);
+                std::cout << "Player removed from a lobby,number of players: " << room.getNumberOfPlayers() << std::endl;
                 mutexClientInfoMap.unlock();
                 checkIfGameMaster(clientsocket,room);
                 roomsToFile(Rooms);

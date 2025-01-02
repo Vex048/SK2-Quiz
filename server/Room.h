@@ -35,10 +35,11 @@ class Room {
         std::string gameMaster;
 
         std::chrono::time_point<std::chrono::system_clock> timestamp_playerleftroom;
-
+        std::chrono::time_point<std::chrono::system_clock> getTimeStamp();
         //std::<vector><json> questions;        
         int currentQuestionIndex;
         void setGameMaster(std::string player);
+        void printRoomInfo();
         std::string getNewGameMaster();
         std::string getGameMaster();   
         void setStatus(std::string status);
