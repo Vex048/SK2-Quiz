@@ -6,6 +6,7 @@ from gui.login import Login
 from gui.lobby import Lobby
 from gui.gameRoom import GameRoom
 from gui.frameManager import FrameManager 
+import json
 SERVER_IP = "127.0.0.1"
 SERVER_PORT = 8080
 
@@ -15,28 +16,6 @@ class QuizClient:
         self.root.title("Quiz Game")
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.client_socket.connect((SERVER_IP, SERVER_PORT))
-<<<<<<< HEAD
-=======
-        self.initializeGui()
-        # self.frameContainer = tk.Frame(self)
-        # self.frameContainer.pack(fill="both",expand=True)
-        self.frames = {}
-        self.addFrames()
-
-        self.setGridFrames()
-        self.showLoginFrame()
-        #self.connect_to_server()
-
-    def addFrames(self):
-        self.lobbyFrame = Lobby(root,self.client_socket)
-        self.loginFrame = Login(root,self.lobbyFrame,self.client_socket)
-        
-
-    def setGridFrames(self):
-        self.loginFrame.grid(row=0, column=0, sticky='news',pady=(0,100))
-        self.lobbyFrame.grid(row=0, column=0, sticky='news',pady=(0,100))
-    def initializeGui(self):
->>>>>>> main
         self.root.geometry('1000x600')
         self.root.resizable(0,0)
 
@@ -44,8 +23,36 @@ class QuizClient:
         self.frameManager = FrameManager(self.root,self.client_socket)
         self.frameManager.initFrames()
         self.frameManager.showFrame("Login")
+        listenForServerUpdate = threading.Thread(target=self.listenForServerUpdates)
+        listenForServerUpdate.start()
 
 
+
+    def listenForServerUpdates(self):
+        buffer=""
+        while True:
+            try:
+                message = self.client_socket.recv(1024).decode()
+                if not message:  
+                    print("Connection closed by the server")
+                    break
+                buffer += message
+                while "\n" in buffer:
+                    json_str, buffer = buffer.split("\n", 1)
+                    if json_str.strip():
+                        print(f"Processing message: {json_str}")
+                        try:
+                            update = json.loads(json_str)
+                            if update["type"] == "create_nickname":
+                                  self.frameManager.frames["Login"].handleUpdateNick(update)
+                            else:
+                                self.frameManager.frames["Lobby"].handleUpdate(update)
+                        except json.JSONDecodeError as e:
+                            print(f"JSON decode error: {e}, received message: {json_str}")
+                            break
+            except Exception as e:
+                print(f"Error: {e}")
+                break    
 
 if __name__ == "__main__":
     root = tk.Tk()
