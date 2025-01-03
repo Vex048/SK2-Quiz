@@ -171,6 +171,17 @@ Room* getRoomFromFile(std::string room_name){
     }
     return nullptr;
 }
+void removeRoom(std::string room_name){
+    for (auto it = Rooms.begin();it!=Rooms.end();it++){
+        if (it->getRoomName() ==room_name){
+            Rooms.erase(it);
+            roomsToFile(Rooms);
+            // send info to clients so that clients don't have to refresh manually
+            mutexRooms.unlock();
+            break;
+        }
+    }
+}
 
 
 void handleRoom(std::string room_name){
@@ -189,6 +200,13 @@ void handleRoom(std::string room_name){
             std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
             std::chrono::duration<double> elapsed_seconds = now - room->getTimeStamp();
             std::cout << "Elapsed time room empty: " << elapsed_seconds.count() << "s\n";
+            if (elapsed_seconds.count() > 300){ 
+                std::cout << "Room is empty for more than 5 minutes, deleting room" << std::endl;
+                removeRoom(room_name);
+                roomsToFile(Rooms); 
+                mutexRooms.unlock();
+                break;
+            }
         }
         
 
