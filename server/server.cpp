@@ -40,6 +40,7 @@ int serverSocket;
 std::unordered_map<int, clientInfo> clientInfoMap;
 std::unordered_map<int, std::vector<int>> lobbyInfoMap;
 
+
 void sendToAllClients(std::string message){
     mutexClientInfoMap.lock();
     for(auto& client: clientInfoMap){
@@ -156,9 +157,14 @@ void roomsToFile(std::vector<Room>& rooms){
     json data;
     data["rooms"] = json::array();
      for (const Room& room : rooms) {
+
         json roomJson = room.toJSON();
         data["rooms"].push_back(roomJson);
     }
+    
+    
+
+
     writeToFile(data);
 }
 
@@ -352,6 +358,11 @@ void RemovePlayerFromRoom(json data,int clientsocket){
 }
 
 void StartGame(json data,int clientsocket){
+
+    std::ifstream questionsFile("serverJSONs/questions.json");
+    json questionsJson;
+    questionsFile >> questionsJson;
+
     mutexRooms.lock();
     std::string room_name = data["name"];
     for (Room& room : Rooms) {
@@ -359,6 +370,11 @@ void StartGame(json data,int clientsocket){
             if (name == room_name){
                 room.setStatus("Started");
                 room.setCategory(data["category"]);
+                json categoryQuestions = questionsJson["categories"][data["category"]];
+                std::unordered_map<int,std::string> playersAnswers;
+
+                room.setCurrentQuestion(categoryQuestions[0]["questionNumber"],categoryQuestions[0]["questionText"],categoryQuestions[0]["options"],categoryQuestions[0]["correctAnswer"],playersAnswers);
+
                 roomsToFile(Rooms);
                 sendToClientsRoomsInfo(clientsocket);
             }

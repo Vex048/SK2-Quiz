@@ -27,12 +27,23 @@ class Room {
             maxPlayers=5;
             
         };
+
+        struct currentQuestion{
+            std::string questionNumber;
+            std::string questionText;
+            std::string correctAnswer;
+            std::vector<std::string> options;
+            std::unordered_map<int,std::string> playersAnswers; // <playerNick, answer>
+        };
+
         std::string name;
         int maxPlayers;
         std::vector<std::string> players;
         std::string status;     
         std::string category; 
         std::string gameMaster;
+        struct currentQuestion curQuestion;
+    
 
         std::chrono::time_point<std::chrono::system_clock> timestamp_playerleftroom;
         std::chrono::time_point<std::chrono::system_clock> getTimeStamp();
@@ -48,5 +59,7 @@ class Room {
         int getNumberOfPlayers();
         std::string getRoomName();
         void removePlayer(int playerSocket,std::unordered_map<int, clientInfo> clientInfoMap);
+        void setCurrentQuestion(std::string questionNumber, std::string questionText,std::vector<std::string>Options, 
+                                std::string correctAnswer, std::unordered_map<int,std::string> playersAnswers);
         json toJSON() const;
 };

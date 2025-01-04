@@ -1,7 +1,36 @@
 {
     "categories": {
         "sports": [
-            {}
+             {
+                "questionNumber": 1,
+                "question": "Who won the FIFA World Cup in 2018?",
+                "options": ["France", "Croatia", "Brazil", "Germany"],
+                "correctAnswer": "France"
+            },
+            {
+                "questionNumber": 2,
+                "question": "Which country hosted the 2016 Summer Olympics?",
+                "options": ["Brazil", "China", "United Kingdom", "Russia"],
+                "correctAnswer": "Brazil"
+            },
+            {
+                "questionNumber": 3,
+                "question": "Who holds the record for the most home runs in a single MLB season?",
+                "options": ["Barry Bonds", "Babe Ruth", "Hank Aaron", "Mark McGwire"],
+                "correctAnswer": "Barry Bonds"
+            },
+            {
+                "questionNumber": 4,
+                "question": "Which tennis player has won the most Grand Slam titles?",
+                "options": ["Roger Federer", "Rafael Nadal", "Novak Djokovic", "Pete Sampras"],
+                "correctAnswer": "Novak Djokovic"
+            },
+            {
+                "questionNumber": 5,
+                "question": "In which sport would you perform a slam dunk?",
+                "options": ["Basketball", "Volleyball", "Tennis", "Football"],
+                "correctAnswer": "Basketball"
+            }
         ],
         "history": [
             {}

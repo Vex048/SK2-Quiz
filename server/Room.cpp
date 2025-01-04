@@ -63,8 +63,19 @@ std::chrono::time_point<std::chrono::system_clock> Room::getTimeStamp(){
     return timestamp_playerleftroom;
 }
 
+void Room::setCurrentQuestion(std::string questionNumber, std::string questionText,std::vector<std::string>Options, 
+                                std::string correctAnswer, std::unordered_map<int,std::string> playersAnswers){
+    curQuestion.questionNumber = questionNumber;
+    curQuestion.questionText = questionText;
+    curQuestion.correctAnswer = correctAnswer;
+    curQuestion.options = Options;
+    curQuestion.playersAnswers = playersAnswers;
+}
+
 
 json Room::toJSON() const {
+
+
     json roomInfo = {
                 {"name", name},
                 {"status", status},
@@ -72,7 +83,9 @@ json Room::toJSON() const {
                 {"category", category},
                 {"currentQuestionIndex", currentQuestionIndex},
                 {"maxPlayers", maxPlayers},
-                {"gameMaster",gameMaster}
+                {"gameMaster",gameMaster},
+                {"currentQuestion", curQuestion.questionText}
+                
             };
     return roomInfo;
 }

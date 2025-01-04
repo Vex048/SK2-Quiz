@@ -1,3 +1,16 @@
 {
-    "rooms": []
+    "rooms": [
+        {
+            "category": "",
+            "currentQuestion": "",
+            "currentQuestionIndex": -935331728,
+            "gameMaster": "vit",
+            "maxPlayers": 5,
+            "name": "pokojkammila",
+            "players": [
+                "vit"
+            ],
+            "status": "Waiting"
+        }
+    ]
 }

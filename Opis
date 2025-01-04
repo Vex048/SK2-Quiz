@@ -1,0 +1,19 @@
+Opis:
+Gracz wpisuje swój nick, a następnie łączy się z serwerem. W przypadku, kiedy nick został już użyty jest proszony przez serwer o podanie nowego nicku.
+
+Gracz trafia do lobby i może dołączyć do jednego z pokoi, w których widzi liczbę osób oraz czy gra się już zaczęła. W każdym z tych pokoi może być maksymalnie 5 graczy.
+Gracz może stworzyć nowy pokój lub dołączyć tylko do pokoju, w którym gra się jeszcze nie zaczęła, żeby każdy gracz miał równą szansę na zwycięstwo.
+W przypadku gdy pokój stoi pusty, to zostanie on usuwany. (np. po 5 minutach od stworzenia)
+
+Będzie 5 różnych kategorii quizów do wyboru: sportowa, historyczna, geograficzna, kulturowa, muzyczna 
+Po wejściu do pokoju, najdłużej czekający gracz może wybrać tematykę quizu oraz zacząć grę w przypadku jeżeli w pokoju są co najmniej 2 osoby. 
+
+Po rozpoczęciu gry, pojawia się pytanie wysłane przez serwer do wszystkich graczy, na które muszą oni odpowiedzieć w ciągu 15 sekund. 
+Po 15 sekundach pytanie się kończy, a gracze przypisuje się punkty w zależności ile czasu zajęło im odpowiedzenie oraz czy poprawnie odpowiedzieli.
+Po każdym pytaniu gracze serwer wysyła do graczy ranking wraz z punktami reszty graczy.
+
+Pytania do gry, będą tworzone własnoręcznie oraz przechowywane będą w plikach JSON.
+Gra kończy się po 15 pytaniach lub w momencie gdy wszyscy grający zawodnicy wyjdą z pokoju, następnie wyświetlane zostaje podium, gdzie widać punktację ostateczną wszystkich graczy, którzy zaczęli grę w danym pokoju.
+
+Po zakończeniu gry wszyscy gracze zostają rozłączeni oraz przetransportowani do lobby, w którym zachowuje się punktacja z poprzedniej gry. 
+Osoba, która zaczynała grę, może wybrać czy zachować punktację czy też zacząć od nowa.
