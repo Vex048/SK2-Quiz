@@ -29,7 +29,7 @@ class Room {
         };
 
         struct currentQuestion{
-            std::string questionNumber;
+            int questionNumber;
             std::string questionText;
             std::string correctAnswer;
             std::vector<std::string> options;
@@ -59,7 +59,7 @@ class Room {
         int getNumberOfPlayers();
         std::string getRoomName();
         void removePlayer(int playerSocket,std::unordered_map<int, clientInfo> clientInfoMap);
-        void setCurrentQuestion(std::string questionNumber, std::string questionText,std::vector<std::string>Options, 
+        void setCurrentQuestion(int questionNumber, std::string questionText,std::vector<std::string>Options, 
                                 std::string correctAnswer, std::unordered_map<int,std::string> playersAnswers);
         json toJSON() const;
 };
