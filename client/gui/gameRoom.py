@@ -9,7 +9,7 @@ class GameRoom(tk.Frame):
         self.roomName = "deafult"
         n = tk.StringVar()
         self.categories = ttk.Combobox(self,width=27,textvariable=n)
-        self.categories["values"]= ("Sport","History","Geography","Music","Cultural")
+        self.categories["values"]= ("Sports","History","Geography","Music","Cultural")
         #categories.grid(column = 1, row = 5) 
         self.isGameMaster=False
         
