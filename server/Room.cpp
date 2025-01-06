@@ -37,8 +37,9 @@ void Room::setGameMaster(std::string player){
 
 void Room::addPlayer(int playerSocket,std::unordered_map<int, clientInfo> &clientInfoMap) {
     if (players.size() < maxPlayers) {
-        
-        players.push_back(clientInfoMap[playerSocket].nick);
+        std::string playerNick = clientInfoMap[playerSocket].nick;
+        players.push_back(playerNick);
+        playersPoints[playerSocket] = 0;
     } else {
         std::cerr << "Room " << name << " is full. Cannot add player " << playerSocket << std::endl;
     }
@@ -52,7 +53,10 @@ void Room::printRoomInfo(){
 }
 
 void Room::removePlayer(int playerSocket,std::unordered_map<int, clientInfo> clientInfoMap) {
-    players.erase(std::remove(players.begin(), players.end(), clientInfoMap[playerSocket].nick), players.end());
+    std::string playerNick = clientInfoMap[playerSocket].nick;
+    players.erase(std::remove(players.begin(), players.end(), playerNick), players.end());
+    playersPoints.erase(playerSocket);
+
     timestamp_playerleftroom = std::chrono::system_clock::now();
 }
 int Room::getNumberOfPlayers(){
@@ -63,20 +67,25 @@ std::chrono::time_point<std::chrono::system_clock> Room::getTimeStamp(){
     return timestamp_playerleftroom;
 }
 
-void Room::setCurrentQuestion(int questionNumber, std::string questionText,std::vector<std::string>Options, 
-                                std::string correctAnswer, std::unordered_map<int,std::string> playersAnswers){
-    curQuestion.questionNumber = questionNumber;
+
+void Room::updatePlayersPoints(int playerSocket, std::string answer, std::unordered_map<int, clientInfo> clientInfoMap) {
+    if(answer == curQuestion.correctAnswer){
+        playersPoints[playerSocket] += 1;
+    }
+}
+void Room::setCurrentQuestion(int questionId, std::string questionText,std::vector<std::string>Options, 
+                                std::string correctAnswer){
+    curQuestion.questionId = questionId;
     curQuestion.questionText = questionText;
     curQuestion.correctAnswer = correctAnswer;
     curQuestion.options = Options;
-    curQuestion.playersAnswers = playersAnswers;
 }
 
 
 json Room::toJSON() const {
 
     json questionInfo = {
-                {"questionNumber", curQuestion.questionNumber},
+                {"questionId", curQuestion.questionId},
                 {"questionText", curQuestion.questionText},
                 {"options", curQuestion.options}
             };

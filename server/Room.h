@@ -29,11 +29,10 @@ class Room {
         };
 
         struct currentQuestion{
-            int questionNumber;
+            int questionId;
             std::string questionText;
             std::string correctAnswer;
             std::vector<std::string> options;
-            std::unordered_map<int,std::string> playersAnswers; // <playerNick, answer>
         };
 
         std::string name;
@@ -43,7 +42,10 @@ class Room {
         std::string category; 
         std::string gameMaster;
         struct currentQuestion curQuestion;
+
     
+        void updatePlayersPoints(int playerSocket, std::string answer, std::unordered_map<int, clientInfo> clientInfoMap);
+        std::unordered_map<int,int> playersPoints; // key: players socket, value: number of points
 
         std::chrono::time_point<std::chrono::system_clock> timestamp_playerleftroom;
         std::chrono::time_point<std::chrono::system_clock> getTimeStamp();
@@ -59,7 +61,7 @@ class Room {
         int getNumberOfPlayers();
         std::string getRoomName();
         void removePlayer(int playerSocket,std::unordered_map<int, clientInfo> clientInfoMap);
-        void setCurrentQuestion(int questionNumber, std::string questionText,std::vector<std::string>Options, 
-                                std::string correctAnswer, std::unordered_map<int,std::string> playersAnswers);
+        void setCurrentQuestion(int questionId, std::string questionText,std::vector<std::string>Options, 
+                                std::string correctAnswer);
         json toJSON() const;
 };
