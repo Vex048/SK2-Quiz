@@ -267,7 +267,7 @@ void handleRoom(std::string room_name){
                 std::chrono::duration<double> elapsed_seconds2 = now1 - room->getTimeStampPlayerQuestionUpdate();
                 std::cout << "Elapsed time for question: " << elapsed_seconds2.count() << "s\n";
 
-                if (elapsed_seconds2.count() > 15){ 
+                if (elapsed_seconds2.count() > 7){ 
                     std::cout << "15 second for question has finished" << std::endl;
                     
                     json categoryQuestions = questionsJson["categories"][RoomCategory];
@@ -276,7 +276,25 @@ void handleRoom(std::string room_name){
                     std::mt19937 rng(dev());
                     std::uniform_int_distribution<std::mt19937::result_type> dist(0,categoryQuestions.size()-1);
                     int randomIndex = dist(rng);
+                    int index = room->getIndex();
+                    if (index == 0){
+                        std::cout << "Game is finished" << std::endl;
+                        json response;                    
+                        response["type"] = "game_finished";
+                        json scores = room->getAllPoints(clientInfoMap);
+                        std::string scoresStr = scores.dump();
+                        scoresStr = scoresStr + "\n";
+                        std:: cout << scoresStr << std::endl;
+                        response["scores"] = scores;
+                        std::string responseStr = response.dump();
+                        responseStr = responseStr + "\n";
+                        room->sendToClientsInRoom(responseStr,nicknameToSocket);
+                        room->setStatus("Waiting");
+                        roomsToFile(Rooms);
 
+                    }
+                    else {                   
+                    room->setIndex(index+1);
                     room->setCurrentQuestion(categoryQuestions[randomIndex]["questionNumber"],
                     categoryQuestions[randomIndex]["question"],categoryQuestions[randomIndex]["options"],
                     categoryQuestions[randomIndex]["correctAnswer"]);
@@ -294,12 +312,12 @@ void handleRoom(std::string room_name){
                     std::string responseStr = response.dump();
                     responseStr = responseStr + "\n";
                     room->sendToClientsInRoom(responseStr,nicknameToSocket);
-                    //sendToClientsRoomsInfo(0);                   
+                    //sendToClientsRoomsInfo(0);   
+                    }                
                 }
             }
         }
         
-
         mutexRooms.unlock();
     }
 }
@@ -455,6 +473,7 @@ void StartGame(json data,int clientsocket){
                     std::mt19937 rng(dev());
                     std::uniform_int_distribution<std::mt19937::result_type> dist(0,categoryQuestions.size()-1);
                     int randomIndex = dist(rng);
+                    room.setIndex(1);
                     room.setCurrentQuestion(categoryQuestions[randomIndex]["questionNumber"],categoryQuestions[randomIndex]["question"],categoryQuestions[randomIndex]["options"],categoryQuestions[randomIndex]["correctAnswer"]);
                     room.setTimeStampQuestionUpdate(std::chrono::system_clock::now());
                     roomsToFile(Rooms);

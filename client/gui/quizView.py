@@ -51,3 +51,6 @@ class QuizView(tk.Frame):
     def handle_update(self, update):
         if update["type"] == "new_question":
             self.update_question(update["data"])
+        elif update["type"] == "game_finished":            
+            self.frameManager.showFrame("GameRoom")
+            messagebox.showerror("Error", update["scores"])

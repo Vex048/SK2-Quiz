@@ -25,7 +25,7 @@ class Room {
             name = roomName; 
             status = "Waiting";
             maxPlayers=5;
-            
+            maxQuestions=3;
         };
 
         struct currentQuestion{
@@ -41,11 +41,13 @@ class Room {
         std::string status;     
         std::string category; 
         std::string gameMaster;
+        int maxQuestions;
         struct currentQuestion curQuestion;
 
     
         void updatePlayersPoints(int playerSocket, std::string answer, std::unordered_map<int, clientInfo> clientInfoMap);
         std::unordered_map<int,int> playersPoints; // key: players socket, value: number of points
+        json getAllPoints(std::unordered_map<int, clientInfo> clientInfoMap);
 
         std::chrono::time_point<std::chrono::system_clock> timestamp_playerleftroom;
         std::chrono::time_point<std::chrono::system_clock> timestamp_questions;
@@ -59,6 +61,8 @@ class Room {
         std::string getGameMaster();   
         void setStatus(std::string status);
         std::string getStatus();
+        void setIndex(int index);
+        int getIndex();
         void setCategory(std::string category);
         void addPlayer(int playerSocket,std::unordered_map<int, clientInfo> &clientInfoMap);
         int getNumberOfPlayers();

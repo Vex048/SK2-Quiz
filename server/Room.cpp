@@ -21,6 +21,16 @@ std::string Room::getNewGameMaster(){
     return "No players in room";
 }
 
+void Room::setIndex(int index){
+    currentQuestionIndex=index;
+}
+int Room::getIndex(){
+    if (currentQuestionIndex+1>maxQuestions){
+        return 0;
+    }
+    return currentQuestionIndex;
+}
+
 void Room::setCategory(std::string newCategory) {
     category = newCategory;
 }
@@ -73,6 +83,15 @@ void Room::setTimeStampQuestionUpdate(std::chrono::time_point<std::chrono::syste
     timestamp_questions = timestamp;
 }
 
+json Room::getAllPoints(std::unordered_map<int, clientInfo> clientInfoMap){
+    json data;
+    for(auto& element : playersPoints)
+    {
+        std::string nick = clientInfoMap[element.first].nick;
+        data[nick] = element.second;
+    }
+    return data;
+}
 
 void Room::updatePlayersPoints(int playerSocket, std::string answer, std::unordered_map<int, clientInfo> clientInfoMap) {
     if(answer == curQuestion.correctAnswer){
