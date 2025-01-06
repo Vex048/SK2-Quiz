@@ -23,6 +23,7 @@
 #include <mutex>
 #include <time.h>
 #include <chrono>
+#include <random>
 #include <optional>
 using json = nlohmann::json;
 
@@ -38,6 +39,7 @@ std::set<std::string> playerList;
 int serverSocket;
 
 std::unordered_map<int, clientInfo> clientInfoMap;
+std::unordered_map<std::string, int> nicknameToSocket;
 std::unordered_map<int, std::vector<int>> lobbyInfoMap;
 
 
@@ -162,6 +164,7 @@ void disconnectClient(int clientFd){
     std::string nick = clientInfoMap[clientFd].nick;
     close(clientFd);
     playerList.erase(nick);
+    nicknameToSocket.erase(nick);
     clientInfoMap.erase(clientFd);
     // check if client is in any lobby and remove it
     // for(auto &lobby: lobbyInfoMap){
@@ -230,6 +233,9 @@ void GetAnswerFromClient(json data,int clientFd){
 
 
 void handleRoom(std::string room_name){
+    std::ifstream questionsFile("serverJSONs/questions.json");
+    json questionsJson;
+    questionsFile >> questionsJson;
     while(true){ 
         sleep(1);
         mutexRooms.lock();
@@ -243,15 +249,53 @@ void handleRoom(std::string room_name){
         if(lastNumberOfPlayers==0){
             //room.timestamp_playerleftroom;
             std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
-            std::chrono::duration<double> elapsed_seconds = now - room->getTimeStamp();
+            std::chrono::duration<double> elapsed_seconds = now - room->getTimeStampPlayerLeftRoom();
             std::cout << "Elapsed time room empty: " << elapsed_seconds.count() << "s\n";
-            if (elapsed_seconds.count() > 300){ 
+            if (elapsed_seconds.count() > 10){ 
                 std::cout << "Room is empty for more than 5 minutes, deleting room" << std::endl;
                 removeRoom(room_name);
                 roomsToFile(Rooms); 
                 sendToClientsRoomsInfo(0);
                 mutexRooms.unlock();
                 break;
+            }
+        }
+        else{ 
+            if (room->getStatus() == "Started"){
+                std::string RoomCategory = room->getCategory();
+                std::chrono::time_point<std::chrono::system_clock> now1 = std::chrono::system_clock::now();
+                std::chrono::duration<double> elapsed_seconds2 = now1 - room->getTimeStampPlayerQuestionUpdate();
+                std::cout << "Elapsed time for question: " << elapsed_seconds2.count() << "s\n";
+
+                if (elapsed_seconds2.count() > 15){ 
+                    std::cout << "15 second for question has finished" << std::endl;
+                    
+                    json categoryQuestions = questionsJson["categories"][RoomCategory];
+
+                    std::random_device dev;
+                    std::mt19937 rng(dev());
+                    std::uniform_int_distribution<std::mt19937::result_type> dist(0,categoryQuestions.size()-1);
+                    int randomIndex = dist(rng);
+
+                    room->setCurrentQuestion(categoryQuestions[randomIndex]["questionNumber"],
+                    categoryQuestions[randomIndex]["question"],categoryQuestions[randomIndex]["options"],
+                    categoryQuestions[randomIndex]["correctAnswer"]);
+
+                    room->setTimeStampQuestionUpdate(std::chrono::system_clock::now());                   
+                    roomsToFile(Rooms); 
+                    json response;
+                    response["type"] = "new_question";
+                    
+                    json quest;
+                    quest["questionText"] = categoryQuestions[randomIndex]["question"];
+                    quest["options"] = categoryQuestions[randomIndex]["options"];
+                    quest["questionId"] = categoryQuestions[randomIndex]["questionNumber"];
+                    response["data"] = quest;
+                    std::string responseStr = response.dump();
+                    responseStr = responseStr + "\n";
+                    room->sendToClientsInRoom(responseStr,nicknameToSocket);
+                    //sendToClientsRoomsInfo(0);                   
+                }
             }
         }
         
@@ -303,6 +347,7 @@ void handleNickname(json data,int clientsocket){
         playerList.insert(nick);
         mutexClientInfoMap.lock();
         clientInfoMap[clientsocket].nick = nick;
+        nicknameToSocket[nick] = clientsocket;
         mutexClientInfoMap.unlock();
     }
     mutexPlayerList.unlock();
@@ -404,11 +449,14 @@ void StartGame(json data,int clientsocket){
                 if (name == room_name){
                     room.setStatus("Started");
                     room.setCategory(category);
-                    // std::cout << categoryQuestions[0]["questionId"] <<", "<< categoryQuestions[0]["questionText"] << ", " << categoryQuestions[0]["options"] << categoryQuestions[0]["correctAnswer"] << std::endl;
-                    // std::cout << "Category questions: " << categoryQuestions << std::endl;
-
-                    room.setCurrentQuestion(categoryQuestions[0]["questionId"],categoryQuestions[0]["questionText"],categoryQuestions[0]["options"],categoryQuestions[0]["correctAnswer"]);
-
+                    //  std::cout << categoryQuestions[0]["questionNumber"] <<", "<< categoryQuestions[0]["question"] << ", " << categoryQuestions[0]["options"] << categoryQuestions[0]["correctAnswer"] << std::endl;
+                    std::cout << "Category questions: " << categoryQuestions << std::endl;
+                    std::random_device dev;
+                    std::mt19937 rng(dev());
+                    std::uniform_int_distribution<std::mt19937::result_type> dist(0,categoryQuestions.size()-1);
+                    int randomIndex = dist(rng);
+                    room.setCurrentQuestion(categoryQuestions[randomIndex]["questionNumber"],categoryQuestions[randomIndex]["question"],categoryQuestions[randomIndex]["options"],categoryQuestions[randomIndex]["correctAnswer"]);
+                    room.setTimeStampQuestionUpdate(std::chrono::system_clock::now());
                     roomsToFile(Rooms);
                     sendToClientsRoomsInfo(clientsocket);
 

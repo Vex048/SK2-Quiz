@@ -63,8 +63,14 @@ int Room::getNumberOfPlayers(){
     return players.size();
 }
 
-std::chrono::time_point<std::chrono::system_clock> Room::getTimeStamp(){
+std::chrono::time_point<std::chrono::system_clock> Room::getTimeStampPlayerLeftRoom(){
     return timestamp_playerleftroom;
+}
+std::chrono::time_point<std::chrono::system_clock> Room::getTimeStampPlayerQuestionUpdate(){
+    return timestamp_questions;
+}
+void Room::setTimeStampQuestionUpdate(std::chrono::time_point<std::chrono::system_clock> timestamp){
+    timestamp_questions = timestamp;
 }
 
 
@@ -79,6 +85,19 @@ void Room::setCurrentQuestion(int questionId, std::string questionText,std::vect
     curQuestion.questionText = questionText;
     curQuestion.correctAnswer = correctAnswer;
     curQuestion.options = Options;
+}
+std::string Room::getStatus(){
+    return status;
+}
+std::string Room::getCategory(){
+    return category;
+}
+
+void Room::sendToClientsInRoom(std::string data1,std::unordered_map<std::string, int> nicknameToSocket){
+    for (const auto& player : players){
+        int playerSocket = nicknameToSocket[player];  
+        send(playerSocket, data1.c_str(), data1.size(), 0);   
+    }
 }
 
 

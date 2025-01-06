@@ -127,6 +127,8 @@ class Lobby(tk.Frame):
                     self.rooms.append(temp)
                 self.refresh_rooms()
             else:
+                self.rooms=[]
+                self.refresh_rooms()
                 print("No rooms name")
 
 
