@@ -68,6 +68,7 @@ class Room {
         int getNumberOfPlayers();
         std::string getCategory();
         std::string getRoomName();
+        void setZeroPlayerPoints();
         void setTimeStampQuestionUpdate(std::chrono::time_point<std::chrono::system_clock> timestamp);
         void sendToClientsInRoom(std::string data,std::unordered_map<std::string, int> nicknameToSocket);
         void removePlayer(int playerSocket,std::unordered_map<int, clientInfo> clientInfoMap);

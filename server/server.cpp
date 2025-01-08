@@ -267,7 +267,7 @@ void handleRoom(std::string room_name){
                 std::chrono::duration<double> elapsed_seconds2 = now1 - room->getTimeStampPlayerQuestionUpdate();
                 std::cout << "Elapsed time for question: " << elapsed_seconds2.count() << "s\n";
 
-                if (elapsed_seconds2.count() > 7){ 
+                if (elapsed_seconds2.count() > 15){ 
                     std::cout << "15 second for question has finished" << std::endl;
                     
                     json categoryQuestions = questionsJson["categories"][RoomCategory];
@@ -454,7 +454,8 @@ void StartGame(json data,int clientsocket){
 
     mutexRooms.lock();
     std::string room_name = data["name"];
-    std::string category = data["category"]; 
+    std::string category = data["category"];
+    std::string savePoints = data["save_points"];
     toLowerCase(category); // in json categories are stored in lowercase
     std::cout << "Category: " << category << std::endl;
 
@@ -465,6 +466,10 @@ void StartGame(json data,int clientsocket){
         for (Room& room : Rooms) {
                 std::string name = room.getRoomName();
                 if (name == room_name){
+                    if (savePoints == "No"){
+                        room.setZeroPlayerPoints();
+                    }
+
                     room.setStatus("Started");
                     room.setCategory(category);
                     //  std::cout << categoryQuestions[0]["questionNumber"] <<", "<< categoryQuestions[0]["question"] << ", " << categoryQuestions[0]["options"] << categoryQuestions[0]["correctAnswer"] << std::endl;

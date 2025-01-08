@@ -24,13 +24,15 @@ class Lobby(tk.Frame):
         self.socket.send(jsonStringRoom.encode("utf-8"))
 
     def initialize(self):
-        self.rooms_tree = ttk.Treeview(self, columns=("Players", "Status"), show="headings", height=15)
+        self.rooms_tree = ttk.Treeview(self, columns=("Players", "Status"), show="headings", height=10)
         self.rooms_tree.heading("Players", text="Players")
         self.rooms_tree.heading("Status", text="Status")
-        self.rooms_tree.pack(pady=10, padx=20)
-        tk.Button(self, text="Create Room", command=self.create_room).pack(side="left", padx=10)
-        tk.Button(self, text="Join Room", command=self.join_room).pack(side="left", padx=10)
-        tk.Button(self, text="Refresh", command=self.getCurrentRooms).pack(side="left", padx=10)
+        self.rooms_tree.pack(pady=5, padx=10)
+        buttonFrame = tk.Frame(self)
+        buttonFrame.pack(pady=10)
+        tk.Button(buttonFrame, text="Create Room", command=self.create_room).pack(side="left", padx=10)
+        tk.Button(buttonFrame, text="Join Room", command=self.join_room).pack(side="left", padx=10)
+        tk.Button(buttonFrame, text="Refresh", command=self.getCurrentRooms).pack(side="left", padx=10)
         self.getCurrentRooms()
 
 

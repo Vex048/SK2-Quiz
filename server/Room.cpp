@@ -98,6 +98,13 @@ void Room::updatePlayersPoints(int playerSocket, std::string answer, std::unorde
         playersPoints[playerSocket] += 1;
     }
 }
+
+void Room::setZeroPlayerPoints(){
+    for (auto & element : playersPoints)
+{
+    element.second = 0;
+}
+}
 void Room::setCurrentQuestion(int questionId, std::string questionText,std::vector<std::string>Options, 
                                 std::string correctAnswer){
     curQuestion.questionId = questionId;

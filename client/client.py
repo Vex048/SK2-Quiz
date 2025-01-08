@@ -18,6 +18,10 @@ class QuizClient:
         self.client_socket.connect((SERVER_IP, SERVER_PORT))
         self.root.geometry('1000x600')
         self.root.resizable(0,0)
+        self.rootHeight=self.root.winfo_height()
+        self.rootWidth=self.root.winfo_width()
+        self.root.columnconfigure(0,weight=1)
+        self.root.rowconfigure(0,weight=1)
 
 
         self.frameManager = FrameManager(self.root,self.client_socket)

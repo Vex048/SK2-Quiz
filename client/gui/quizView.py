@@ -53,4 +53,5 @@ class QuizView(tk.Frame):
             self.update_question(update["data"])
         elif update["type"] == "game_finished":            
             self.frameManager.showFrame("GameRoom")
-            messagebox.showerror("Error", update["scores"])
+            score_text = "\n".join(f"{player}: {points}" for player, points in update["scores"].items())
+            messagebox.showinfo("Points", score_text)

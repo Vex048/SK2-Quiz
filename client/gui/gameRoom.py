@@ -21,6 +21,10 @@ class GameRoom(tk.Frame):
         # self.categories.pack()
         # self.categories.current(1)
         self.gameMasterButton = tk.Button(self,text="Start a game",command=self.gameStart)
+
+        self.Checkbutton2=tk.IntVar()
+        self.checkButtonSavePoints = tk.Checkbutton(self, text="Save points from previous game", 
+        variable=self.Checkbutton2, onvalue=1, offvalue=0)
         self.updateGameMasterButton()
         tk.Button(self,text="Exit Room",command=self.exitRoom).pack()
         
@@ -32,10 +36,12 @@ class GameRoom(tk.Frame):
         if self.isGameMaster == True:
             self.gameMasterButton.pack()
             self.categories.pack()
-            self.categories.current(1)
+            #self.categories.current(1)
+            self.checkButtonSavePoints.pack()
         else:
             self.gameMasterButton.pack_forget()
             self.categories.pack_forget()
+            self.checkButtonSavePoints.pack_forget()
 
     def setRoomName(self,name):
         self.roomName = name
@@ -57,6 +63,12 @@ class GameRoom(tk.Frame):
         jsonStringRoom = json.dumps(message) + "\n"
         self.socket.send(jsonStringRoom.encode("utf-8"))
         self.frameManager.showFrame("Lobby")
+    def getCheckboxCheck(self):
+        num = self.Checkbutton2.get()
+        if num == 1:
+            return "Yes"
+        else:
+            return "No"
     def gameStart(self):
         if self.categories.get() == "":
             print("Pusto")
@@ -65,7 +77,8 @@ class GameRoom(tk.Frame):
         message = {
             "type":"start_game",
             "name":self.roomName,
-            "category": self.categories.get()
+            "category": self.categories.get(),
+            "save_points": self.getCheckboxCheck()
         }
         jsonStringRoom = json.dumps(message) + "\n"
         self.socket.send(jsonStringRoom.encode("utf-8"))
