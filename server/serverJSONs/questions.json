@@ -30,26 +30,287 @@
                 "questionText": "In which sport would you perform a slam dunk?",
                 "options": ["Basketball", "Volleyball", "Tennis", "Football"],
                 "correctAnswer": "Basketball"
+            },
+            {
+                "questionId": 6,
+                "questionText": "Which country won the first ever World Cup in 1930?",
+                "options": ["Brazil", "Argentina", "Uruguay", "Italy"],
+                "correctAnswer": "Uruguay"
+            },
+            {
+                "questionId": 7,
+                "questionText": "Who is known as the fastest man in the world?",
+                "options": ["Usain Bolt", "Tyson Gay", "Yohan Blake", "Justin Gatlin"],
+                "correctAnswer": "Usain Bolt"
+            },
+            {
+                "questionId": 8,
+                "questionText": "Which sport is known as the 'king of sports'?",
+                "options": ["Soccer", "Basketball", "Cricket", "Tennis"],
+                "correctAnswer": "Soccer"
+            },
+            {
+                "questionId": 9,
+                "questionText": "How many players are there in a rugby team?",
+                "options": ["11", "13", "15", "18"],
+                "correctAnswer": "15"
+            },
+            {
+                "questionId": 10,
+                "questionText": "Which country has won the most Olympic gold medals in hockey?",
+                "options": ["India", "Australia", "Germany", "Netherlands"],
+                "correctAnswer": "India"
             }
         ],
         "history": [
-            {}
+            {
+                "questionId": 1,
+                "questionText": "Who was the first President of the United States?",
+                "options": ["George Washington", "Thomas Jefferson", "Abraham Lincoln", "John Adams"],
+                "correctAnswer": "George Washington"
+            },
+            {
+                "questionId": 2,
+                "questionText": "In which year did the Titanic sink?",
+                "options": ["1912", "1905", "1915", "1920"],
+                "correctAnswer": "1912"
+            },
+            {
+                "questionId": 3,
+                "questionText": "Who discovered penicillin?",
+                "options": ["Alexander Fleming", "Marie Curie", "Louis Pasteur", "Isaac Newton"],
+                "correctAnswer": "Alexander Fleming"
+            },
+            {
+                "questionId": 4,
+                "questionText": "Which war was fought between the North and South regions in the United States?",
+                "options": ["Civil War", "World War I", "World War II", "Revolutionary War"],
+                "correctAnswer": "Civil War"
+            },
+            {
+                "questionId": 5,
+                "questionText": "Who was the first man to step on the moon?",
+                "options": ["Neil Armstrong", "Buzz Aldrin", "Yuri Gagarin", "Michael Collins"],
+                "correctAnswer": "Neil Armstrong"
+            },
+            {
+                "questionId": 6,
+                "questionText": "What was the name of the ship that brought the Pilgrims to America in 1620?",
+                "options": ["Mayflower", "Santa Maria", "Pinta", "Nina"],
+                "correctAnswer": "Mayflower"
+            },
+            {
+                "questionId": 7,
+                "questionText": "Who was the British Prime Minister during World War II?",
+                "options": ["Winston Churchill", "Neville Chamberlain", "Clement Attlee", "Harold Macmillan"],
+                "correctAnswer": "Winston Churchill"
+            },
+            {
+                "questionId": 8,
+                "questionText": "Which ancient civilization built the Machu Picchu complex in Peru?",
+                "options": ["Inca", "Maya", "Aztec", "Olmec"],
+                "correctAnswer": "Inca"
+            },
+            {
+                "questionId": 9,
+                "questionText": "Who was the first female Prime Minister of the United Kingdom?",
+                "options": ["Margaret Thatcher", "Theresa May", "Angela Merkel", "Indira Gandhi"],
+                "correctAnswer": "Margaret Thatcher"
+            },
+            {
+                "questionId": 10,
+                "questionText": "What was the primary language spoken in the Roman Empire?",
+                "options": ["Latin", "Greek", "Italian", "Spanish"],
+                "correctAnswer": "Latin"
+            }
         ],
+
         "geography": [
-            {
-
-            }
-        ],
+        {
+            "questionId": 1,
+            "questionText": "What is the capital of France?",
+            "options": ["Paris", "London", "Berlin", "Madrid"],
+            "correctAnswer": "Paris"
+        },
+        {
+            "questionId": 2,
+            "questionText": "Which is the largest continent by land area?",
+            "options": ["Asia", "Africa", "North America", "Europe"],
+            "correctAnswer": "Asia"
+        },
+        {
+            "questionId": 3,
+            "questionText": "What is the longest river in the world?",
+            "options": ["Nile", "Amazon", "Yangtze", "Mississippi"],
+            "correctAnswer": "Nile"
+        },
+        {
+            "questionId": 4,
+            "questionText": "Which country has the most natural lakes?",
+            "options": ["Canada", "United States", "Russia", "Brazil"],
+            "correctAnswer": "Canada"
+        },
+        {
+            "questionId": 5,
+            "questionText": "What is the smallest country in the world by land area?",
+            "options": ["Vatican City", "Monaco", "San Marino", "Liechtenstein"],
+            "correctAnswer": "Vatican City"
+        },
+        {
+            "questionId": 6,
+            "questionText": "Which desert is the largest in the world?",
+            "options": ["Sahara", "Gobi", "Kalahari", "Arctic"],
+            "correctAnswer": "Sahara"
+        },
+        {
+            "questionId": 7,
+            "questionText": "What is the capital city of Australia?",
+            "options": ["Canberra", "Sydney", "Melbourne", "Brisbane"],
+            "correctAnswer": "Canberra"
+        },
+        {
+            "questionId": 8,
+            "questionText": "Which country is known as the Land of the Rising Sun?",
+            "options": ["Japan", "China", "South Korea", "Thailand"],
+            "correctAnswer": "Japan"
+        },
+        {
+            "questionId": 9,
+            "questionText": "What is the highest mountain in the world?",
+            "options": ["Mount Everest", "K2", "Kangchenjunga", "Lhotse"],
+            "correctAnswer": "Mount Everest"
+        },
+        {
+            "questionId": 10,
+            "questionText": "Which ocean is the largest by surface area?",
+            "options": ["Pacific Ocean", "Atlantic Ocean", "Indian Ocean", "Arctic Ocean"],
+            "correctAnswer": "Pacific Ocean"
+        }
+],
         "music": [
-            {
-
-            }
-        ],
+        {
+            "questionId": 1,
+            "questionText": "Who is known as the King of Pop?",
+            "options": ["Michael Jackson", "Elvis Presley", "Prince", "Madonna"],
+            "correctAnswer": "Michael Jackson"
+        },
+        {
+            "questionId": 2,
+            "questionText": "Which band released the album 'Abbey Road'?",
+            "options": ["The Beatles", "The Rolling Stones", "Pink Floyd", "Led Zeppelin"],
+            "correctAnswer": "The Beatles"
+        },
+        {
+            "questionId": 3,
+            "questionText": "Who composed the Four Seasons?",
+            "options": ["Antonio Vivaldi", "Johann Sebastian Bach", "Ludwig van Beethoven", "Wolfgang Amadeus Mozart"],
+            "correctAnswer": "Antonio Vivaldi"
+        },
+        {
+            "questionId": 4,
+            "questionText": "Which singer is known as the 'Material Girl'?",
+            "options": ["Madonna", "Britney Spears", "Lady Gaga", "Celine Dion"],
+            "correctAnswer": "Madonna"
+        },
+        {
+            "questionId": 5,
+            "questionText": "What is the title of the song that begins with 'Is this the real life? Is this just fantasy?'",
+            "options": ["Bohemian Rhapsody", "Stairway to Heaven", "Hotel California", "Imagine"],
+            "correctAnswer": "Bohemian Rhapsody"
+        },
+        {
+            "questionId": 6,
+            "questionText": "Who is the lead singer of the band U2?",
+            "options": ["Bono", "The Edge", "Adam Clayton", "Larry Mullen Jr."],
+            "correctAnswer": "Bono"
+        },
+        {
+            "questionId": 7,
+            "questionText": "Which classical composer became deaf later in life?",
+            "options": ["Ludwig van Beethoven", "Johann Sebastian Bach", "Franz Schubert", "Joseph Haydn"],
+            "correctAnswer": "Ludwig van Beethoven"
+        },
+        {
+            "questionId": 8,
+            "questionText": "What is the best-selling album of all time?",
+            "options": ["Thriller by Michael Jackson", "Back in Black by AC/DC", "The Dark Side of the Moon by Pink Floyd", "The Bodyguard by Whitney Houston"],
+            "correctAnswer": "Thriller by Michael Jackson"
+        },
+        {
+            "questionId": 9,
+            "questionText": "Which artist is known for the hit song 'Shape of You'?",
+            "options": ["Ed Sheeran", "Justin Bieber", "Bruno Mars", "Shawn Mendes"],
+            "correctAnswer": "Ed Sheeran"
+        },
+        {
+            "questionId": 10,
+            "questionText": "Which band is known for the song 'Hotel California'?",
+            "options": ["Eagles", "Fleetwood Mac", "The Doors", "The Beach Boys"],
+            "correctAnswer": "Eagles"
+    }
+],
         "cultural": [
-            {
-                
-            }
-        ]
+    {
+        "questionId": 1,
+        "questionText": "Which country is famous for the festival of Diwali?",
+        "options": ["India", "China", "Japan", "Thailand"],
+        "correctAnswer": "India"
+    },
+    {
+        "questionId": 2,
+        "questionText": "What is the traditional clothing of Japan called?",
+        "options": ["Kimono", "Sari", "Hanbok", "Cheongsam"],
+        "correctAnswer": "Kimono"
+    },
+    {
+        "questionId": 3,
+        "questionText": "Which city is known as the birthplace of jazz music?",
+        "options": ["New Orleans", "Chicago", "New York", "Los Angeles"],
+        "correctAnswer": "New Orleans"
+    },
+    {
+        "questionId": 4,
+        "questionText": "Which country is known for the dance style of Flamenco?",
+        "options": ["Spain", "Brazil", "Argentina", "Portugal"],
+        "correctAnswer": "Spain"
+    },
+    {
+        "questionId": 5,
+        "questionText": "What is the name of the famous ancient Greek epic poet?",
+        "options": ["Homer", "Virgil", "Ovid", "Sophocles"],
+        "correctAnswer": "Homer"
+    },
+    {
+        "questionId": 6,
+        "questionText": "Which festival is known as the Festival of Lights?",
+        "options": ["Diwali", "Hanukkah", "Christmas", "Eid"],
+        "correctAnswer": "Diwali"
+    },
+    {
+        "questionId": 7,
+        "questionText": "Which country is known for the martial art of Taekwondo?",
+        "options": ["South Korea", "China", "Japan", "Thailand"],
+        "correctAnswer": "South Korea"
+    },
+    {
+        "questionId": 8,
+        "questionText": "What is the traditional dance of Hawaii called?",
+        "options": ["Hula", "Samba", "Tango", "Ballet"],
+        "correctAnswer": "Hula"
+    },
+    {
+        "questionId": 9,
+        "questionText": "Which country is known for its maple syrup production?",
+        "options": ["Canada", "United States", "Sweden", "Finland"],
+        "correctAnswer": "Canada"
+    },
+    {
+        "questionId": 10,
+        "questionText": "Which language is primarily spoken in Brazil?",
+        "options": ["Portuguese", "Spanish", "French", "English"],
+        "correctAnswer": "Portuguese"
+    }
+]
 
     }
 }
