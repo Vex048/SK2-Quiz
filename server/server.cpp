@@ -295,8 +295,8 @@ void handleRoom(std::string room_name){
                     }
                     else {                   
                     room->setIndex(index+1);
-                    room->setCurrentQuestion(categoryQuestions[randomIndex]["questionNumber"],
-                    categoryQuestions[randomIndex]["question"],categoryQuestions[randomIndex]["options"],
+                    room->setCurrentQuestion(categoryQuestions[randomIndex]["questionId"],
+                    categoryQuestions[randomIndex]["questionText"],categoryQuestions[randomIndex]["options"],
                     categoryQuestions[randomIndex]["correctAnswer"]);
 
                     room->setTimeStampQuestionUpdate(std::chrono::system_clock::now());                   
@@ -305,9 +305,9 @@ void handleRoom(std::string room_name){
                     response["type"] = "new_question";
                     
                     json quest;
-                    quest["questionText"] = categoryQuestions[randomIndex]["question"];
+                    quest["questionText"] = categoryQuestions[randomIndex]["questionText"];
                     quest["options"] = categoryQuestions[randomIndex]["options"];
-                    quest["questionId"] = categoryQuestions[randomIndex]["questionNumber"];
+                    quest["questionId"] = categoryQuestions[randomIndex]["questionId"];
                     response["data"] = quest;
                     std::string responseStr = response.dump();
                     responseStr = responseStr + "\n";
@@ -479,7 +479,7 @@ void StartGame(json data,int clientsocket){
                     std::uniform_int_distribution<std::mt19937::result_type> dist(0,categoryQuestions.size()-1);
                     int randomIndex = dist(rng);
                     room.setIndex(1);
-                    room.setCurrentQuestion(categoryQuestions[randomIndex]["questionNumber"],categoryQuestions[randomIndex]["question"],categoryQuestions[randomIndex]["options"],categoryQuestions[randomIndex]["correctAnswer"]);
+                    room.setCurrentQuestion(categoryQuestions[randomIndex]["questionId"],categoryQuestions[randomIndex]["questionText"],categoryQuestions[randomIndex]["options"],categoryQuestions[randomIndex]["correctAnswer"]);
                     room.setTimeStampQuestionUpdate(std::chrono::system_clock::now());
                     roomsToFile(Rooms);
                     sendToClientsRoomsInfo(clientsocket);

@@ -1,3 +1,20 @@
 {
-    "rooms": []
+    "rooms": [
+        {
+            "category": "",
+            "currentQuestionIndex": -1207946080,
+            "gameMaster": "5345",
+            "maxPlayers": 5,
+            "name": "47547",
+            "players": [
+                "5345"
+            ],
+            "questionInfo": {
+                "options": [],
+                "questionId": -1207946080,
+                "questionText": ""
+            },
+            "status": "Waiting"
+        }
+    ]
 }

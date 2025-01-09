@@ -7,29 +7,39 @@ class GameRoom(tk.Frame):
         self.socket=socket
         self.frameManager=FrameManager
         self.roomName = "deafult"
-        n = tk.StringVar()
-        self.categories = ttk.Combobox(self,width=27,textvariable=n)
-        self.categories["values"]= ("Sports","History","Geography","Music","Cultural")
-        #categories.grid(column = 1, row = 5) 
-        self.isGameMaster=False
+        topFrame = tk.Frame(self)
+        topFrame.pack(fill="x", padx=10, pady=5)
+        midFrame=tk.Frame(self)
+        midFrame.pack(fill="x", padx=10, pady=5)
+        lowFrame=tk.Frame(self)
+        lowFrame.pack(fill="both",expand=True, padx=10, pady=5)
         
-        tk.Label(self, text="GameRoom", font=("Calibri", 24)).pack(pady=20)
-        self.labelName = tk.Label(self, text=self.roomName, font=("Arial", 18))
-        self.labelName.pack(pady=20)
-        tk.Label(self, text="Please select quiz categroy", font=("Calibri", 12)).pack(pady=20)
+        
+        tk.Label(topFrame, text="GameRoom", font=("Calibri", 24)).pack(pady=10)
+        self.labelName = tk.Label(topFrame, text=self.roomName, font=("Arial", 18))
+        self.labelName.pack(pady=5)
+        tk.Label(topFrame, text="Please select quiz categroy", font=("Calibri", 12)).pack(pady=10)
         
         # self.categories.pack()
         # self.categories.current(1)
-        self.gameMasterButton = tk.Button(self,text="Start a game",command=self.gameStart)
+        self.gameMasterButton = tk.Button(midFrame,text="Start a game",command=self.gameStart)
+        n = tk.StringVar()
+        self.categories = ttk.Combobox(midFrame,width=27,textvariable=n)
+        self.categories["values"]= ("Sports","History","Geography","Music","Cultural")
+        self.isGameMaster=False
 
         self.Checkbutton2=tk.IntVar()
-        self.checkButtonSavePoints = tk.Checkbutton(self, text="Save points from previous game", 
+        self.checkButtonSavePoints = tk.Checkbutton(midFrame, text="Save points from previous game", 
         variable=self.Checkbutton2, onvalue=1, offvalue=0)
         self.updateGameMasterButton()
+
+
+
         tk.Button(self,text="Exit Room",command=self.exitRoom).pack()
         
-        self.players_listbox = tk.Listbox(self)
-        self.players_listbox.pack(fill="both", expand=True)
+        self.players_listbox = tk.Listbox(lowFrame,height=5,width=25)
+        self.players_listbox.pack(pady=5)
+        #self.pack(fill="both", expand=True)
         self.socket=socket
 
     def updateGameMasterButton(self):
