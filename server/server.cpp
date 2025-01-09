@@ -21,6 +21,10 @@
 #include <csignal>
 #include <set>
 #include <mutex>
+#include <time.h>
+#include <chrono>
+#include <random>
+#include <optional>
 using json = nlohmann::json;
 
 std::mutex mutexRooms;
@@ -35,7 +39,9 @@ std::set<std::string> playerList;
 int serverSocket;
 
 std::unordered_map<int, clientInfo> clientInfoMap;
+std::unordered_map<std::string, int> nicknameToSocket;
 std::unordered_map<int, std::vector<int>> lobbyInfoMap;
+
 
 void sendToAllClients(std::string message){
     mutexClientInfoMap.lock();
@@ -106,108 +112,6 @@ void joinLobby(int LobbyId, int clientFd){
     std::cout << "Client " << clientInfoMap[clientFd].nick << " joined lobby " << LobbyId << std::endl;
 }
 
-std::vector<std::string> splitMessage(const std::string& message, char delimiter) {
-    std::vector<std::string> parts;
-    std::istringstream stream(message);
-    std::string part;
-
-    while (std::getline(stream, part, delimiter)) {
-        parts.push_back(part);
-    }
-
-    return parts;
-}
-void disconnectClient(int clientFd){
-    mutexClientInfoMap.lock();
-    mutexPlayerList.lock();
-    close(clientFd);
-    playerList.erase(clientInfoMap[clientFd].nick);
-    clientInfoMap.erase(clientFd);
-    // check if client is in any lobby and remove it
-    for(auto &lobby: lobbyInfoMap){
-        std::vector<int> &clients = lobby.second;
-        auto it = std::find(clients.begin(),clients.end(),clientFd);
-        if (it!=clients.end()){
-            clients.erase(it);
-        }
-    }
-    mutexClientInfoMap.unlock();
-    mutexPlayerList.unlock();
-
-}
-
-void writeToFile(json data){
-    std::ofstream o("serverJSONs/rooms.json");
-    if (!o) {
-        std::cerr << "Error: Unable to open file for writing.\n";
-        return;
-    }
-    o << std::setw(4) << data << std::endl; // Pretty print with indentation
-    o.close();
-}
-
-
-void roomsToFile(std::vector<Room>& rooms){
-    json data;
-    data["rooms"] = json::array();
-     for (const Room& room : rooms) {
-        json roomJson = room.toJSON();
-        data["rooms"].push_back(roomJson);
-    }
-    writeToFile(data);
-}
-
-void handleRoomCreate(json data,int clientsocket){
-    if (data["name"] != nullptr){
-        mutexRooms.lock();
-        std::string room_name = data["name"];
-        std::cout << room_name << std::endl;
-        Room newRoom(room_name);
-        newRoom.addPlayer(clientsocket,clientInfoMap);
-        newRoom.setGameMaster(clientInfoMap[clientsocket].nick);
-        Rooms.push_back(newRoom);
-        std::cout << "Here room should be stored in json" << std::endl;
-        roomsToFile(Rooms);
-        json response;
-        response["status"] = "success";
-        response["type"] = "room_create";
-        response["room_name"] = newRoom.name;
-        response["players"] = newRoom.players;
-        response["gameMaster"] = newRoom.getGameMaster();
-        std::string responseStr = response.dump();
-        sendToAllClients(responseStr);
-        mutexRooms.unlock();
-    }
-    else{
-        std::cout << "Room name is equall to null" << std::endl;
-    }
-}
-void handleNickname(json data,int clientsocket){
-    
-    std::string nick = data["nickname"];
-    json response;
-    response["type"] = "create_nickname";
-    mutexPlayerList.lock();
-    if (playerList.find(nick) != playerList.end()){
-        response["status"] = "failure";
-    }
-    else{
-        response["status"] = "succes";
-        response["nickname"] = nick;
-        playerList.insert(nick);
-        mutexClientInfoMap.lock();
-        clientInfoMap[clientsocket].nick = nick;
-        mutexClientInfoMap.unlock();
-    }
-    mutexPlayerList.unlock();
-    std::string responseStr = response.dump();
-    responseStr = responseStr + "\n";
-    std::cout << responseStr << std::endl;
-    send(clientsocket, responseStr.c_str(), responseStr.size(), 0);
-    
-    
-}
-
 void sendToClientsRoomsInfo(int clientsocket){
     std::ifstream ifs("serverJSONs/rooms.json");
     json jf = json::parse(ifs);
@@ -231,6 +135,250 @@ void sendToClientsRoomsInfo(int clientsocket){
     //send(clientsocket, responseStr.c_str(), responseStr.size(), 0); 
 }
 
+void writeToFile(json data){
+    std::ofstream o("serverJSONs/rooms.json");
+    if (!o) {
+        std::cerr << "Error: Unable to open file for writing.\n";
+        return;
+    }
+    o << std::setw(4) << data << std::endl; // Pretty print with indentation
+    o.close();
+}
+
+void roomsToFile(std::vector<Room>& rooms){
+    json data;
+    data["rooms"] = json::array();
+     for (const Room& room : rooms) {
+
+        json roomJson = room.toJSON();
+        data["rooms"].push_back(roomJson);
+    }
+    writeToFile(data);
+}
+
+
+void disconnectClient(int clientFd){
+    mutexClientInfoMap.lock();
+    mutexPlayerList.lock();
+
+    std::string nick = clientInfoMap[clientFd].nick;
+    close(clientFd);
+    playerList.erase(nick);
+    nicknameToSocket.erase(nick);
+    clientInfoMap.erase(clientFd);
+    // check if client is in any lobby and remove it
+    // for(auto &lobby: lobbyInfoMap){
+    //     std::vector<int> &clients = lobby.second;
+    //     auto it = std::find(clients.begin(),clients.end(),clientFd);
+    //     if (it!=clients.end()){
+    //         clients.erase(it);
+    //     }
+    // }
+    mutexRooms.lock();
+    for(Room& room: Rooms){ // doesnt work :((
+        auto it = std::find(room.players.begin(),room.players.end(),nick);
+        std::cout << "Player removed from room: " << room.getRoomName() << std::endl;
+        if(it!=room.players.end()){
+            room.removePlayer(clientFd,clientInfoMap);
+            std::cout << "Player removed from room: " << room.getRoomName() << ", number of players: " << room.getNumberOfPlayers() << std::endl;
+        }
+    }
+    roomsToFile(Rooms);
+    mutexRooms.unlock();
+    mutexClientInfoMap.unlock();
+    mutexPlayerList.unlock();
+    
+
+}
+
+Room* getRoomFromFile(std::string room_name){
+    for (Room& room : Rooms) {
+        std::string name = room.getRoomName();
+        if (name == room_name){
+            return &room;
+        }      
+    }
+    return nullptr;
+}
+void removeRoom(std::string room_name){
+    for (auto it = Rooms.begin();it!=Rooms.end();it++){
+        if (it->getRoomName() ==room_name){
+            Rooms.erase(it);
+            roomsToFile(Rooms);
+            // send info to clients so that clients don't have to refresh manually
+            mutexRooms.unlock();
+            break;
+        }
+    }
+}
+
+
+
+void GetAnswerFromClient(json data,int clientFd){
+    if(data["selectedOption"] != nullptr){
+        std::string answer = data["selectedOption"];
+        std::string room_name = data["roomName"];
+        mutexRooms.lock();
+        Room *room = getRoomFromFile(room_name);
+        if (room!=nullptr){
+            room->updatePlayersPoints(clientFd,answer,clientInfoMap);
+            std::cout << "Player " << clientInfoMap[clientFd].nick << " answered: " << answer << ", points: "<< room->playersPoints[clientFd] << std::endl;
+            roomsToFile(Rooms);
+        }
+        mutexRooms.unlock();
+    }
+    std::cout << "Answer from client: "<<data<< std::endl;
+    return;
+}
+
+
+void handleRoom(std::string room_name){
+    std::ifstream questionsFile("serverJSONs/questions.json");
+    json questionsJson;
+    questionsFile >> questionsJson;
+    while(true){ 
+        sleep(1);
+        mutexRooms.lock();
+        Room* room = getRoomFromFile(room_name);
+        if (room==nullptr){
+            mutexRooms.unlock();
+            break;
+        }
+        int lastNumberOfPlayers = room->getNumberOfPlayers();        
+        std::cout << "Number of players in room: " << lastNumberOfPlayers << std::endl;
+        if(lastNumberOfPlayers==0){
+            //room.timestamp_playerleftroom;
+            std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
+            std::chrono::duration<double> elapsed_seconds = now - room->getTimeStampPlayerLeftRoom();
+            std::cout << "Elapsed time room empty: " << elapsed_seconds.count() << "s\n";
+            if (elapsed_seconds.count() > 10){ 
+                std::cout << "Room is empty for more than 5 minutes, deleting room" << std::endl;
+                removeRoom(room_name);
+                roomsToFile(Rooms); 
+                sendToClientsRoomsInfo(0);
+                mutexRooms.unlock();
+                break;
+            }
+        }
+        else{ 
+            if (room->getStatus() == "Started"){
+                std::string RoomCategory = room->getCategory();
+                std::chrono::time_point<std::chrono::system_clock> now1 = std::chrono::system_clock::now();
+                std::chrono::duration<double> elapsed_seconds2 = now1 - room->getTimeStampPlayerQuestionUpdate();
+                std::cout << "Elapsed time for question: " << elapsed_seconds2.count() << "s\n";
+
+                if (elapsed_seconds2.count() > 15){ 
+                    std::cout << "15 second for question has finished" << std::endl;
+                    
+                    json categoryQuestions = questionsJson["categories"][RoomCategory];
+
+                    std::random_device dev;
+                    std::mt19937 rng(dev());
+                    std::uniform_int_distribution<std::mt19937::result_type> dist(0,categoryQuestions.size()-1);
+                    int randomIndex = dist(rng);
+                    int index = room->getIndex();
+                    if (index == 0){
+                        std::cout << "Game is finished" << std::endl;
+                        json response;                    
+                        response["type"] = "game_finished";
+                        json scores = room->getAllPoints(clientInfoMap);
+                        std::string scoresStr = scores.dump();
+                        scoresStr = scoresStr + "\n";
+                        std:: cout << scoresStr << std::endl;
+                        response["scores"] = scores;
+                        std::string responseStr = response.dump();
+                        responseStr = responseStr + "\n";
+                        room->sendToClientsInRoom(responseStr,nicknameToSocket);
+                        room->setStatus("Waiting");
+                        roomsToFile(Rooms);
+
+                    }
+                    else {                   
+                    room->setIndex(index+1);
+                    room->setCurrentQuestion(categoryQuestions[randomIndex]["questionId"],
+                    categoryQuestions[randomIndex]["questionText"],categoryQuestions[randomIndex]["options"],
+                    categoryQuestions[randomIndex]["correctAnswer"]);
+
+                    room->setTimeStampQuestionUpdate(std::chrono::system_clock::now());                   
+                    roomsToFile(Rooms); 
+                    json response;
+                    response["type"] = "new_question";
+                    
+                    json quest;
+                    quest["questionText"] = categoryQuestions[randomIndex]["questionText"];
+                    quest["options"] = categoryQuestions[randomIndex]["options"];
+                    quest["questionId"] = categoryQuestions[randomIndex]["questionId"];
+                    response["data"] = quest;
+                    std::string responseStr = response.dump();
+                    responseStr = responseStr + "\n";
+                    room->sendToClientsInRoom(responseStr,nicknameToSocket);
+                    //sendToClientsRoomsInfo(0);   
+                    }                
+                }
+            }
+        }
+        
+        mutexRooms.unlock();
+    }
+}
+
+void handleRoomCreate(json data,int clientsocket){
+    if (data["name"] != nullptr){
+        mutexRooms.lock();
+        std::string room_name = data["name"];
+        std::cout << room_name << std::endl;
+        Room newRoom(room_name);
+        newRoom.addPlayer(clientsocket,clientInfoMap);
+        newRoom.setGameMaster(clientInfoMap[clientsocket].nick);
+        Rooms.push_back(newRoom);
+        std::cout << "Here room should be stored in json" << std::endl;
+        roomsToFile(Rooms);
+        json response;
+        response["status"] = "success";
+        response["type"] = "room_create";
+        response["room_name"] = newRoom.name;
+        response["players"] = newRoom.players;
+        response["gameMaster"] = newRoom.getGameMaster();
+        std::string responseStr = response.dump();
+
+        sendToAllClients(responseStr);
+        mutexRooms.unlock();
+
+        std::thread(handleRoom, newRoom.getRoomName()).detach();
+    }
+    else{
+        std::cout << "Room name is equall to null" << std::endl;
+    }
+}
+void handleNickname(json data,int clientsocket){
+    
+    std::string nick = data["nickname"];
+    json response;
+    response["type"] = "create_nickname";
+    mutexPlayerList.lock();
+    if (playerList.find(nick) != playerList.end()){
+        response["status"] = "failure";
+    }
+    else{
+        response["status"] = "succes";
+        response["nickname"] = nick;
+        playerList.insert(nick);
+        mutexClientInfoMap.lock();
+        clientInfoMap[clientsocket].nick = nick;
+        nicknameToSocket[nick] = clientsocket;
+        mutexClientInfoMap.unlock();
+    }
+    mutexPlayerList.unlock();
+    std::string responseStr = response.dump();
+    responseStr = responseStr + "\n";
+    std::cout << responseStr << std::endl;
+    send(clientsocket, responseStr.c_str(), responseStr.size(), 0);
+    
+    
+}
+
+
+
 void handlePlayer(json data,int clientsocket){
     std::string room_name = data["name"];
     mutexRooms.lock();
@@ -240,6 +388,7 @@ void handlePlayer(json data,int clientsocket){
             
             mutexClientInfoMap.lock();
             room.addPlayer(clientsocket,clientInfoMap);
+            std::cout << "Player joined a lobby,number of players: " << room.getNumberOfPlayers() << std::endl;
             if (room.getGameMaster() == ""){
                 room.setGameMaster(clientInfoMap[clientsocket].nick);
             }
@@ -278,6 +427,7 @@ void RemovePlayerFromRoom(json data,int clientsocket){
             if (name == room_name){
                 mutexClientInfoMap.lock();
                 room.removePlayer(clientsocket,clientInfoMap);
+                std::cout << "Player removed from a lobby,number of players: " << room.getNumberOfPlayers() << std::endl;
                 mutexClientInfoMap.unlock();
                 checkIfGameMaster(clientsocket,room);
                 roomsToFile(Rooms);
@@ -288,19 +438,58 @@ void RemovePlayerFromRoom(json data,int clientsocket){
     mutexRooms.unlock(); 
 }
 
+void toLowerCase(std::string &str){
+    std::transform(str.begin(),str.end(),str.begin(),::tolower);
+}
+
 void StartGame(json data,int clientsocket){
+
+    std::ifstream questionsFile("serverJSONs/questions.json");
+    json questionsJson;
+    questionsFile >> questionsJson;
+    // print entire json
+    std::cout << questionsJson["categories"] << std::endl;
+
+
+
     mutexRooms.lock();
     std::string room_name = data["name"];
-    for (Room& room : Rooms) {
-            std::string name = room.getRoomName();
-            if (name == room_name){
-                room.setStatus("Started");
-                room.setCategory(data["category"]);
-                roomsToFile(Rooms);
-                sendToClientsRoomsInfo(clientsocket);
+    std::string category = data["category"];
+    std::string savePoints = data["save_points"];
+    toLowerCase(category); // in json categories are stored in lowercase
+    std::cout << "Category: " << category << std::endl;
+
+
+    if (questionsJson["categories"].contains(category)) {
+        json categoryQuestions = questionsJson["categories"][category];
+
+        for (Room& room : Rooms) {
+                std::string name = room.getRoomName();
+                if (name == room_name){
+                    if (savePoints == "No"){
+                        room.setZeroPlayerPoints();
+                    }
+
+                    room.setStatus("Started");
+                    room.setCategory(category);
+                    //  std::cout << categoryQuestions[0]["questionNumber"] <<", "<< categoryQuestions[0]["question"] << ", " << categoryQuestions[0]["options"] << categoryQuestions[0]["correctAnswer"] << std::endl;
+                    std::cout << "Category questions: " << categoryQuestions << std::endl;
+                    std::random_device dev;
+                    std::mt19937 rng(dev());
+                    std::uniform_int_distribution<std::mt19937::result_type> dist(0,categoryQuestions.size()-1);
+                    int randomIndex = dist(rng);
+                    room.setIndex(1);
+                    room.setCurrentQuestion(categoryQuestions[randomIndex]["questionId"],categoryQuestions[randomIndex]["questionText"],categoryQuestions[randomIndex]["options"],categoryQuestions[randomIndex]["correctAnswer"]);
+                    room.setTimeStampQuestionUpdate(std::chrono::system_clock::now());
+                    roomsToFile(Rooms);
+                    sendToClientsRoomsInfo(clientsocket);
+
+                    mutexRooms.unlock(); // after room is found and started, unlock mutex and exit function
+                    return;
+                }
+                
             }
-            
-        }
+    }
     mutexRooms.unlock(); 
 }
 
@@ -325,6 +514,9 @@ void manageMessage(json data,int clientFd){
     }
     else if (data["type"] == "start_game"){
         StartGame(data,clientFd);
+    }
+    else if (data["type"] == "answer"){
+        GetAnswerFromClient(data,clientFd);
     }
 }
 

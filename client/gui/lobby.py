@@ -24,19 +24,23 @@ class Lobby(tk.Frame):
         self.socket.send(jsonStringRoom.encode("utf-8"))
 
     def initialize(self):
-        self.rooms_tree = ttk.Treeview(self, columns=("Players", "Status"), show="headings", height=15)
+        self.rooms_tree = ttk.Treeview(self, columns=("Players", "Status"), show="headings", height=10)
         self.rooms_tree.heading("Players", text="Players")
         self.rooms_tree.heading("Status", text="Status")
-        self.rooms_tree.pack(pady=10, padx=20)
-        tk.Button(self, text="Create Room", command=self.create_room).pack(side="left", padx=10)
-        tk.Button(self, text="Join Room", command=self.join_room).pack(side="left", padx=10)
-        tk.Button(self, text="Refresh", command=self.getCurrentRooms).pack(side="left", padx=10)
+        self.rooms_tree.pack(pady=5, padx=10)
+        buttonFrame = tk.Frame(self)
+        buttonFrame.pack(pady=10)
+        tk.Button(buttonFrame, text="Create Room", command=self.create_room).pack(side="left", padx=10)
+        tk.Button(buttonFrame, text="Join Room", command=self.join_room).pack(side="left", padx=10)
+        tk.Button(buttonFrame, text="Refresh", command=self.getCurrentRooms).pack(side="left", padx=10)
         self.getCurrentRooms()
 
 
     def create_room(self):
         # Push a info to server
         room_name = tk.simpledialog.askstring("Create Room", "Enter room name:")
+        if room_name is None:
+            return
         messagebox.showinfo("Success", f"Room '{room_name}' created!")
         message = {
             "type": "create_room",
@@ -118,10 +122,15 @@ class Lobby(tk.Frame):
                             self.frameManager.frames["GameRoom"].updateGameMasterButton()
                         self.frameManager.frames["GameRoom"].addPlayerListbox(room["players"])
                         if temp["status"] == "Started":
+                            self.frameManager.frames["QuizView"].setRoomName(room["name"])
+                            print(room["questionInfo"])
+                            self.frameManager.frames["QuizView"].update_question(room["questionInfo"])
                             self.frameManager.showFrame("QuizView")
                     self.rooms.append(temp)
                 self.refresh_rooms()
             else:
+                self.rooms=[]
+                self.refresh_rooms()
                 print("No rooms name")
 
 

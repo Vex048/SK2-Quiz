@@ -1,4 +1,6 @@
 import tkinter as tk
+from tkinter import messagebox
+import json
 
 class QuizView(tk.Frame):
     def __init__(self,masterRoot,FrameManager,socket):
@@ -9,6 +11,7 @@ class QuizView(tk.Frame):
 
         self.question_label = tk.Label(self, text="", font=("Arial", 18), wraplength=500, justify="center")
         self.question_label.pack(pady=20)
+        self.room_name = ""
 
         self.answer_buttons = []
         for i in range(4):
@@ -19,11 +22,15 @@ class QuizView(tk.Frame):
         tk.Button(self,text="Exit Room",command=self.frameManager.frames["GameRoom"].exitRoom).pack()
         self.current_question = None
 
+    def setRoomName(self, room_name):
+        self.roomName = room_name
+
     def update_question(self, question_data):
         self.current_question = question_data
-        self.question_label.config(text=question_data["question"])
+        self.question_label.config(text=question_data["questionText"])
         for i, option in enumerate(question_data["options"]):
             self.answer_buttons[i].config(text=option, state="normal")
+        print(self.current_question)
 
     def send_answer(self, selected_option):
         if self.current_question is None:
@@ -32,8 +39,9 @@ class QuizView(tk.Frame):
 
         answer_data = {
             "type": "answer",
-            "question_id": self.current_question["id"],
-            "selected_option": selected_option
+            "questionId": self.current_question["questionId"],
+            "selectedOption": self.current_question["options"][selected_option],
+            "roomName": self.roomName
         }
         jsonStr = json.dumps(answer_data) + "\n"
         self.socket.send(jsonStr.encode("utf-8"))
@@ -43,3 +51,7 @@ class QuizView(tk.Frame):
     def handle_update(self, update):
         if update["type"] == "new_question":
             self.update_question(update["data"])
+        elif update["type"] == "game_finished":            
+            self.frameManager.showFrame("GameRoom")
+            score_text = "\n".join(f"{player}: {points}" for player, points in update["scores"].items())
+            messagebox.showinfo("Points", score_text)

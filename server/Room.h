@@ -15,6 +15,7 @@
 #include <sstream>
 #include <error.h>
 #include <errno.h>
+#include <chrono>
 #include "clientInfo.h"
 using json = nlohmann::json;
 
@@ -24,22 +25,54 @@ class Room {
             name = roomName; 
             status = "Waiting";
             maxPlayers=5;
+            maxQuestions=3;
         };
+
+        struct currentQuestion{
+            int questionId;
+            std::string questionText;
+            std::string correctAnswer;
+            std::vector<std::string> options;
+        };
+
         std::string name;
         int maxPlayers;
         std::vector<std::string> players;
         std::string status;     
         std::string category; 
-        std::string gameMaster;      
+        std::string gameMaster;
+        int maxQuestions;
+        struct currentQuestion curQuestion;
+
+    
+        void updatePlayersPoints(int playerSocket, std::string answer, std::unordered_map<int, clientInfo> clientInfoMap);
+        std::unordered_map<int,int> playersPoints; // key: players socket, value: number of points
+        json getAllPoints(std::unordered_map<int, clientInfo> clientInfoMap);
+
+        std::chrono::time_point<std::chrono::system_clock> timestamp_playerleftroom;
+        std::chrono::time_point<std::chrono::system_clock> timestamp_questions;
+        std::chrono::time_point<std::chrono::system_clock> getTimeStampPlayerLeftRoom();
+        std::chrono::time_point<std::chrono::system_clock> getTimeStampPlayerQuestionUpdate();
         //std::<vector><json> questions;        
         int currentQuestionIndex;
         void setGameMaster(std::string player);
+        void printRoomInfo();
         std::string getNewGameMaster();
         std::string getGameMaster();   
         void setStatus(std::string status);
+        std::string getStatus();
+        void setIndex(int index);
+        int getIndex();
         void setCategory(std::string category);
         void addPlayer(int playerSocket,std::unordered_map<int, clientInfo> &clientInfoMap);
+        int getNumberOfPlayers();
+        std::string getCategory();
         std::string getRoomName();
+        void setZeroPlayerPoints();
+        void setTimeStampQuestionUpdate(std::chrono::time_point<std::chrono::system_clock> timestamp);
+        void sendToClientsInRoom(std::string data,std::unordered_map<std::string, int> nicknameToSocket);
         void removePlayer(int playerSocket,std::unordered_map<int, clientInfo> clientInfoMap);
+        void setCurrentQuestion(int questionId, std::string questionText,std::vector<std::string>Options, 
+                                std::string correctAnswer);
         json toJSON() const;
 };

@@ -15,7 +15,9 @@ class FrameManager():
         for FrameClass in (Lobby, Login, GameRoom,QuizView):
             frame_name = FrameClass.__name__
             frame = FrameClass(self.root,self,self.socket)
-            frame.grid(row=0, column=0, sticky='news',pady=(0,100))
+            #frame.grid(row=0, column=0, sticky='news',pady=(0,100))
+            frame.pack(fill="both", expand=True)
+            frame.pack_forget()
             self.frames[frame_name] = frame
 
     def setNickname(self,nick):
@@ -27,8 +29,13 @@ class FrameManager():
             return self.nick
 
     def showFrame(self,frame):
-        frame = self.frames[frame]
-        frame.tkraise()
+        #frame = self.frames[frame]
+        # frame.tkraise()
+        for name, frame1 in self.frames.items():
+            if name == frame:
+                frame1.pack(fill="both", expand=True)  
+            else:
+                frame1.pack_forget()
 
 
 

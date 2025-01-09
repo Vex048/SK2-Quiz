@@ -5,7 +5,7 @@ from tkinter import messagebox
 from gui.login import Login
 from gui.lobby import Lobby
 from gui.gameRoom import GameRoom
-from gui.frameManager import FrameManager 
+from gui.frameManager import FrameManager
 import json
 SERVER_IP = "127.0.0.1"
 SERVER_PORT = 8080
@@ -18,6 +18,10 @@ class QuizClient:
         self.client_socket.connect((SERVER_IP, SERVER_PORT))
         self.root.geometry('1000x600')
         self.root.resizable(0,0)
+        self.rootHeight=self.root.winfo_height()
+        self.rootWidth=self.root.winfo_width()
+        self.root.columnconfigure(0,weight=1)
+        self.root.rowconfigure(0,weight=1)
 
 
         self.frameManager = FrameManager(self.root,self.client_socket)
@@ -45,6 +49,8 @@ class QuizClient:
                             update = json.loads(json_str)
                             if update["type"] == "create_nickname":
                                   self.frameManager.frames["Login"].handleUpdateNick(update)
+                            elif update["type"] == "new_question" or  update["type"] =="game_finished":
+                                self.frameManager.frames["QuizView"].handle_update(update)
                             else:
                                 self.frameManager.frames["Lobby"].handleUpdate(update)
                         except json.JSONDecodeError as e:
