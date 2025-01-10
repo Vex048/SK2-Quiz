@@ -170,17 +170,7 @@ void disconnectClient(int clientFd){
 
     std::string nick = clientInfoMap[clientFd].nick;
     close(clientFd);
-    playerList.erase(nick);
-    nicknameToSocket.erase(nick);
-    clientInfoMap.erase(clientFd);
-    // check if client is in any lobby and remove it
-    // for(auto &lobby: lobbyInfoMap){
-    //     std::vector<int> &clients = lobby.second;
-    //     auto it = std::find(clients.begin(),clients.end(),clientFd);
-    //     if (it!=clients.end()){
-    //         clients.erase(it);
-    //     }
-    // }
+
     mutexRooms.lock();
     for(Room& room: Rooms){ // doesnt work :((
         auto it = std::find(room.players.begin(),room.players.end(),nick);
@@ -192,6 +182,11 @@ void disconnectClient(int clientFd){
     }
     roomsToFile(Rooms);
     mutexRooms.unlock();
+
+    playerList.erase(nick);
+    nicknameToSocket.erase(nick);
+    clientInfoMap.erase(clientFd);
+
     mutexClientInfoMap.unlock();
     mutexPlayerList.unlock();
     

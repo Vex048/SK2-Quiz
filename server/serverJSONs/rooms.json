@@ -1,26 +1,3 @@
 {
-    "rooms": [
-        {
-            "category": "sports",
-            "currentQuestionIndex": 3,
-            "gameMaster": "www",
-            "maxPlayers": 5,
-            "name": "wwda",
-            "players": [
-                "www",
-                "marcin"
-            ],
-            "questionInfo": {
-                "options": [
-                    "Brazil",
-                    "Argentina",
-                    "Uruguay",
-                    "Italy"
-                ],
-                "questionId": 6,
-                "questionText": "Which country won the first ever World Cup in 1930?"
-            },
-            "status": "Waiting"
-        }
-    ]
+    "rooms": []
 }
