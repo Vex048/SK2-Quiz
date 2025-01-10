@@ -267,7 +267,7 @@ void handleRoom(std::string room_name){
                 std::chrono::duration<double> elapsed_seconds2 = now1 - room->getTimeStampPlayerQuestionUpdate();
                 std::cout << "Elapsed time for question: " << elapsed_seconds2.count() << "s\n";
 
-                if (elapsed_seconds2.count() > 15){ 
+                if (elapsed_seconds2.count() > 15 || room->curQuestion.numOfAnswers == room->getNumberOfPlayers()){ 
                     std::cout << "15 second for question has finished" << std::endl;
                     
                     json categoryQuestions = questionsJson["categories"][RoomCategory];
@@ -296,8 +296,8 @@ void handleRoom(std::string room_name){
                     else {                   
                     room->setIndex(index+1);
                     room->setCurrentQuestion(categoryQuestions[randomIndex]["questionId"],
-                    categoryQuestions[randomIndex]["questionText"],categoryQuestions[randomIndex]["options"],
-                    categoryQuestions[randomIndex]["correctAnswer"]);
+                            categoryQuestions[randomIndex]["questionText"],categoryQuestions[randomIndex]["options"],
+                            categoryQuestions[randomIndex]["correctAnswer"]);
 
                     room->setTimeStampQuestionUpdate(std::chrono::system_clock::now());                   
                     roomsToFile(Rooms); 

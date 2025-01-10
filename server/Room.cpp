@@ -97,6 +97,7 @@ void Room::updatePlayersPoints(int playerSocket, std::string answer, std::unorde
     if(answer == curQuestion.correctAnswer){
         playersPoints[playerSocket] += 1;
     }
+    curQuestion.numOfAnswers += 1;
 }
 
 void Room::setZeroPlayerPoints(){
@@ -111,6 +112,7 @@ void Room::setCurrentQuestion(int questionId, std::string questionText,std::vect
     curQuestion.questionText = questionText;
     curQuestion.correctAnswer = correctAnswer;
     curQuestion.options = Options;
+    curQuestion.numOfAnswers = 0;
 }
 std::string Room::getStatus(){
     return status;

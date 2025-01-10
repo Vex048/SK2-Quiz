@@ -33,6 +33,7 @@ class Room {
             std::string questionText;
             std::string correctAnswer;
             std::vector<std::string> options;
+            int numOfAnswers;
         };
 
         std::string name;
