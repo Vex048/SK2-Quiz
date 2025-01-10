@@ -43,36 +43,45 @@ class Room {
         std::string gameMaster;
         int maxQuestions;
         struct currentQuestion curQuestion;
-
-    
-        void updatePlayersPoints(int playerSocket, std::string answer, std::unordered_map<int, clientInfo> clientInfoMap);
-        std::unordered_map<int,int> playersPoints; // key: players socket, value: number of points
-        json getAllPoints(std::unordered_map<int, clientInfo> clientInfoMap);
+        int currentQuestionIndex;
 
         std::chrono::time_point<std::chrono::system_clock> timestamp_playerleftroom;
         std::chrono::time_point<std::chrono::system_clock> timestamp_questions;
+
+        std::unordered_map<int,int> playersPoints; // key: players socket, value: number of points
+        
+        void updatePlayersPoints(int playerSocket, std::string answer, std::unordered_map<int, clientInfo> clientInfoMap);     
+        json getAllPoints(std::unordered_map<int, clientInfo> clientInfoMap);
+        void setZeroPlayerPoints();
+
         std::chrono::time_point<std::chrono::system_clock> getTimeStampPlayerLeftRoom();
-        std::chrono::time_point<std::chrono::system_clock> getTimeStampPlayerQuestionUpdate();
-        //std::<vector><json> questions;        
-        int currentQuestionIndex;
+        std::chrono::time_point<std::chrono::system_clock> getTimeStampPlayerQuestionUpdate();  
+
+    
         void setGameMaster(std::string player);
-        void printRoomInfo();
         std::string getNewGameMaster();
-        std::string getGameMaster();   
+        std::string getGameMaster(); 
+
         void setStatus(std::string status);
         std::string getStatus();
+
         void setIndex(int index);
         int getIndex();
-        void setCategory(std::string category);
-        void addPlayer(int playerSocket,std::unordered_map<int, clientInfo> &clientInfoMap);
-        int getNumberOfPlayers();
+
         std::string getCategory();
-        std::string getRoomName();
-        void setZeroPlayerPoints();
-        void setTimeStampQuestionUpdate(std::chrono::time_point<std::chrono::system_clock> timestamp);
-        void sendToClientsInRoom(std::string data,std::unordered_map<std::string, int> nicknameToSocket);
-        void removePlayer(int playerSocket,std::unordered_map<int, clientInfo> clientInfoMap);
+        void setCategory(std::string category);
         void setCurrentQuestion(int questionId, std::string questionText,std::vector<std::string>Options, 
                                 std::string correctAnswer);
+        void setTimeStampQuestionUpdate(std::chrono::time_point<std::chrono::system_clock> timestamp);
+
+
+        void addPlayer(int playerSocket,std::unordered_map<int, clientInfo> &clientInfoMap);
+        void removePlayer(int playerSocket,std::unordered_map<int, clientInfo> clientInfoMap);
+        int getNumberOfPlayers();
+        
+        void sendToClientsInRoom(std::string data,std::unordered_map<std::string, int> nicknameToSocket);
+        
+        std::string getRoomName();
+        void printRoomInfo();
         json toJSON() const;
 };
