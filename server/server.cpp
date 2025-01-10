@@ -66,7 +66,12 @@ void printAllClients(){
 }
 
 
-
+void printVector(std::vector <int> vec){
+    for(auto element: vec){
+        std::cout << element << " ";
+    }
+    std::cout << std::endl;
+}
 
 
 void clearJsonFIle(const std::string& filePath){

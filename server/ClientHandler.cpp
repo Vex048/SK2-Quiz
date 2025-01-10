@@ -130,11 +130,8 @@ void ClientHandler::disconnectClient(int clientFd,RoomHandler& roomHandler){
 
     std::string nick = clientInfoMap[clientFd].nick;
     close(clientFd);
-    playerList.erase(nick);
-    nicknameToSocket.erase(nick);
-    clientInfoMap.erase(clientFd);
     mutexRooms.lock();
-    for(Room& room: Rooms){ // doesnt work :((
+    for(Room& room: Rooms){ 
         auto it = std::find(room.players.begin(),room.players.end(),nick);
         std::cout << "Player removed from room: " << room.getRoomName() << std::endl;
         if(it!=room.players.end()){
@@ -144,6 +141,11 @@ void ClientHandler::disconnectClient(int clientFd,RoomHandler& roomHandler){
     }
     roomHandler.roomsToFile(Rooms);
     mutexRooms.unlock();
+
+    playerList.erase(nick);
+    nicknameToSocket.erase(nick);
+    clientInfoMap.erase(clientFd);
+
     mutexClientInfoMap.unlock();
     mutexPlayerList.unlock();
     

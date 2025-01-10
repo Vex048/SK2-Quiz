@@ -43,7 +43,12 @@ std::string Room::getGameMaster(){
 void Room::setGameMaster(std::string player){
     gameMaster = player;
 }
-
+int Room::getMaxQustions(){
+    return maxQuestions;
+}
+void Room::setMaxQuestions(int maxQ){
+    maxQuestions = maxQ;
+}
 
 void Room::addPlayer(int playerSocket,std::unordered_map<int, clientInfo> &clientInfoMap) {
     if (players.size() < maxPlayers) {
@@ -97,13 +102,13 @@ void Room::updatePlayersPoints(int playerSocket, std::string answer, std::unorde
     if(answer == curQuestion.correctAnswer){
         playersPoints[playerSocket] += 1;
     }
+    curQuestion.numOfAnswers += 1;
 }
 
 void Room::setZeroPlayerPoints(){
-    for (auto & element : playersPoints)
-{
+    for (auto & element : playersPoints){
     element.second = 0;
-}
+    }
 }
 void Room::setCurrentQuestion(int questionId, std::string questionText,std::vector<std::string>Options, 
                                 std::string correctAnswer){
@@ -111,7 +116,21 @@ void Room::setCurrentQuestion(int questionId, std::string questionText,std::vect
     curQuestion.questionText = questionText;
     curQuestion.correctAnswer = correctAnswer;
     curQuestion.options = Options;
+    curQuestion.numOfAnswers = 0;
+    removeQuestionIndex(questionId-1); // indices start from 0, QuestionId starts from 1
 }
+
+
+void Room::resetQuestionIndices(int categoryQuestionSize){
+    questionIndices.clear();
+    for(int i=0;i<categoryQuestionSize;i++){
+        questionIndices.push_back(i);
+    }
+}
+void Room::removeQuestionIndex(int index){
+    questionIndices.erase(std::remove(questionIndices.begin(), questionIndices.end(),index),questionIndices.end());
+}
+
 std::string Room::getStatus(){
     return status;
 }

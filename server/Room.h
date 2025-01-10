@@ -33,6 +33,7 @@ class Room {
             std::string questionText;
             std::string correctAnswer;
             std::vector<std::string> options;
+            int numOfAnswers;
         };
 
         std::string name;
@@ -42,6 +43,10 @@ class Room {
         std::string category; 
         std::string gameMaster;
         int maxQuestions;
+        std::vector <int> questionIndices; // indices of questions from chosen category to eliminate occurence of the same question
+        /* [0,1,2,3,4,5,6,7,8,9,10] get size of given category from json during start game->create vector of this size->
+        ->draw question index based on the remaininng indices->proceed with the rest of already implemented code
+        */
         struct currentQuestion curQuestion;
         int currentQuestionIndex;
 
@@ -73,7 +78,10 @@ class Room {
         void setCurrentQuestion(int questionId, std::string questionText,std::vector<std::string>Options, 
                                 std::string correctAnswer);
         void setTimeStampQuestionUpdate(std::chrono::time_point<std::chrono::system_clock> timestamp);
-
+        int getMaxQustions();
+        void setMaxQuestions(int maxQ);
+        void resetQuestionIndices(int categoryQuestionSize);
+        void removeQuestionIndex(int index);
 
         void addPlayer(int playerSocket,std::unordered_map<int, clientInfo> &clientInfoMap);
         void removePlayer(int playerSocket,std::unordered_map<int, clientInfo> clientInfoMap);
