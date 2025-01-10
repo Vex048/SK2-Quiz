@@ -13,26 +13,24 @@
 void Room::setStatus(std::string newStatus) {
     status = newStatus;
 }
-std::string Room::getNewGameMaster(){
-    int numberOfPlayers = players.size();
-    if (numberOfPlayers > 0){
-        return players.front();
-    } 
-    return "No players in room";
-}
-
 void Room::setIndex(int index){
     currentQuestionIndex=index;
 }
+void Room::setCategory(std::string newCategory) {
+    category = newCategory;
+}
+void Room::setGameMaster(std::string player){
+    gameMaster = player;
+}
+void Room::setMaxQuestions(int maxQ){
+    maxQuestions = maxQ;
+}
+
 int Room::getIndex(){
     if (currentQuestionIndex+1>maxQuestions){
         return 0;
     }
     return currentQuestionIndex;
-}
-
-void Room::setCategory(std::string newCategory) {
-    category = newCategory;
 }
 std::string Room::getRoomName(){
     return name;
@@ -40,8 +38,15 @@ std::string Room::getRoomName(){
 std::string Room::getGameMaster(){
     return gameMaster;
 }
-void Room::setGameMaster(std::string player){
-    gameMaster = player;
+std::string Room::getNewGameMaster(){
+    int numberOfPlayers = players.size();
+    if (numberOfPlayers > 0){
+        return players.front();
+    } 
+    return "No players in room";
+}
+int Room::getMaxQustions(){
+    return maxQuestions;
 }
 
 
@@ -101,19 +106,29 @@ void Room::updatePlayersPoints(int playerSocket, std::string answer, std::unorde
 }
 
 void Room::setZeroPlayerPoints(){
-    for (auto & element : playersPoints)
-{
-    element.second = 0;
-}
+    for (auto & element : playersPoints){
+        element.second = 0;
+    }
 }
 void Room::setCurrentQuestion(int questionId, std::string questionText,std::vector<std::string>Options, 
-                                std::string correctAnswer){
+                              std::string correctAnswer){
     curQuestion.questionId = questionId;
     curQuestion.questionText = questionText;
     curQuestion.correctAnswer = correctAnswer;
     curQuestion.options = Options;
     curQuestion.numOfAnswers = 0;
+    removeQuestionIndex(questionId-1); // indices start from 0, QuestionId starts from 1
 }
+void Room::resetQuestionIndices(int categoryQuestionSize){
+    questionIndices.clear();
+    for(int i=0;i<categoryQuestionSize;i++){
+        questionIndices.push_back(i);
+    }
+}
+void Room::removeQuestionIndex(int index){
+    questionIndices.erase(std::remove(questionIndices.begin(), questionIndices.end(),index),questionIndices.end());
+}
+
 std::string Room::getStatus(){
     return status;
 }

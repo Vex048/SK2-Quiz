@@ -51,6 +51,13 @@ void sendToAllClients(std::string message){
     }
     mutexClientInfoMap.unlock();
 }
+// helper function
+void printVector(std::vector <int> vec){
+    for(auto element: vec){
+        std::cout << element << " ";
+    }
+    std::cout << std::endl;
+}
 
 void printAllClients(){
     mutexClientInfoMap.lock();
@@ -267,15 +274,15 @@ void handleRoom(std::string room_name){
                 std::chrono::duration<double> elapsed_seconds2 = now1 - room->getTimeStampPlayerQuestionUpdate();
                 std::cout << "Elapsed time for question: " << elapsed_seconds2.count() << "s\n";
 
-                if (elapsed_seconds2.count() > 15 || room->curQuestion.numOfAnswers == room->getNumberOfPlayers()){ 
+                if (elapsed_seconds2.count() > 40 || room->curQuestion.numOfAnswers == room->getNumberOfPlayers()){ 
                     std::cout << "15 second for question has finished" << std::endl;
                     
                     json categoryQuestions = questionsJson["categories"][RoomCategory];
 
                     std::random_device dev;
                     std::mt19937 rng(dev());
-                    std::uniform_int_distribution<std::mt19937::result_type> dist(0,categoryQuestions.size()-1);
-                    int randomIndex = dist(rng);
+                    // std::uniform_int_distribution<std::mt19937::result_type> dist(0,categoryQuestions.size()-1);
+                    
                     int index = room->getIndex();
                     if (index == 0){
                         std::cout << "Game is finished" << std::endl;
@@ -293,26 +300,32 @@ void handleRoom(std::string room_name){
                         roomsToFile(Rooms);
 
                     }
-                    else {                   
-                    room->setIndex(index+1);
-                    room->setCurrentQuestion(categoryQuestions[randomIndex]["questionId"],
-                            categoryQuestions[randomIndex]["questionText"],categoryQuestions[randomIndex]["options"],
-                            categoryQuestions[randomIndex]["correctAnswer"]);
+                    else {        
+                        std::uniform_int_distribution<std::mt19937::result_type> dist(0,room->questionIndices.size()-1);
+                        int randomIndex = dist(rng);
+                        randomIndex = room->questionIndices[randomIndex];
+                                    
+                        room->setIndex(index+1); // index = num of current question
+                        room->setCurrentQuestion(categoryQuestions[randomIndex]["questionId"],
+                                categoryQuestions[randomIndex]["questionText"],categoryQuestions[randomIndex]["options"],
+                                categoryQuestions[randomIndex]["correctAnswer"]);
 
-                    room->setTimeStampQuestionUpdate(std::chrono::system_clock::now());                   
-                    roomsToFile(Rooms); 
-                    json response;
-                    response["type"] = "new_question";
-                    
-                    json quest;
-                    quest["questionText"] = categoryQuestions[randomIndex]["questionText"];
-                    quest["options"] = categoryQuestions[randomIndex]["options"];
-                    quest["questionId"] = categoryQuestions[randomIndex]["questionId"];
-                    response["data"] = quest;
-                    std::string responseStr = response.dump();
-                    responseStr = responseStr + "\n";
-                    room->sendToClientsInRoom(responseStr,nicknameToSocket);
-                    //sendToClientsRoomsInfo(0);   
+                        room->setTimeStampQuestionUpdate(std::chrono::system_clock::now());
+                        printVector(room->questionIndices);
+
+                        roomsToFile(Rooms); 
+                        json response;
+                        response["type"] = "new_question";
+                        
+                        json quest;
+                        quest["questionText"] = categoryQuestions[randomIndex]["questionText"];
+                        quest["options"] = categoryQuestions[randomIndex]["options"];
+                        quest["questionId"] = categoryQuestions[randomIndex]["questionId"];
+                        response["data"] = quest;
+                        std::string responseStr = response.dump();
+                        responseStr = responseStr + "\n";
+                        room->sendToClientsInRoom(responseStr,nicknameToSocket);
+                        //sendToClientsRoomsInfo(0);   
                     }                
                 }
             }
@@ -474,9 +487,17 @@ void StartGame(json data,int clientsocket){
                     room.setCategory(category);
                     //  std::cout << categoryQuestions[0]["questionNumber"] <<", "<< categoryQuestions[0]["question"] << ", " << categoryQuestions[0]["options"] << categoryQuestions[0]["correctAnswer"] << std::endl;
                     std::cout << "Category questions: " << categoryQuestions << std::endl;
+                    int categorySize = categoryQuestions.size();
+
+                    if(room.getMaxQustions() > categorySize){
+                        room.setMaxQuestions(categorySize); 
+                        // Error prevention, if max questions is greater than category size, set max questions to category size
+                    }
+                    room.resetQuestionIndices(categorySize);
+
                     std::random_device dev;
                     std::mt19937 rng(dev());
-                    std::uniform_int_distribution<std::mt19937::result_type> dist(0,categoryQuestions.size()-1);
+                    std::uniform_int_distribution<std::mt19937::result_type> dist(0,categorySize-1);
                     int randomIndex = dist(rng);
                     room.setIndex(1);
                     room.setCurrentQuestion(categoryQuestions[randomIndex]["questionId"],categoryQuestions[randomIndex]["questionText"],categoryQuestions[randomIndex]["options"],categoryQuestions[randomIndex]["correctAnswer"]);
