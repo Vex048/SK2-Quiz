@@ -15,7 +15,7 @@ class QuizClient:
         self.root = root
         self.root.title("Quiz Game")
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client_socket.connect((SERVER_IP, SERVER_PORT))
+        #self.client_socket.connect((SERVER_IP, SERVER_PORT))
         self.root.geometry('1000x600')
         self.root.resizable(0,0)
         self.rootHeight=self.root.winfo_height()
@@ -25,10 +25,12 @@ class QuizClient:
 
 
         self.frameManager = FrameManager(self.root,self.client_socket)
-        self.frameManager.initFrames()
+        self.frameManager.initLoginFrame()
+        #self.frameManager.initFrames()
         self.frameManager.showFrame("Login")
         listenForServerUpdate = threading.Thread(target=self.listenForServerUpdates)
-        listenForServerUpdate.start()
+        self.frameManager.getThread(listenForServerUpdate)
+        #listenForServerUpdate.start()
 
 
 
