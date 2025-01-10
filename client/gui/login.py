@@ -32,6 +32,7 @@ class Login(tk.Frame):
             self.sendNickToserver(name)
         except Exception as e:
             print(e)
+            messagebox.showerror("Network error", "Couldnt find a host.")
         
 
 
