@@ -1,6 +1,0 @@
-* When client disconnects gracefully, it doesn't remove client from the room - 3 - 
-* create indices for each question in room.cpp so that they won't repeat in each game - 2 DONE
-* When every player answers given question, move on with the next question - 1 DONE
-* Immediate feedback to client on which question was right. Maybe implemented by changing button color to yellow/red/green maybe - 4
-
-* Inspect functions potentially causing deadlock! - Insert missing mutexes etc - LAST
