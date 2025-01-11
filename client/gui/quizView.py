@@ -12,6 +12,7 @@ class QuizView(tk.Frame):
         self.question_label = tk.Label(self, text="", font=("Arial", 18), wraplength=500, justify="center")
         self.question_label.pack(pady=20)
         self.room_name = ""
+        self.selected_option = None
 
         self.answer_buttons = []
         for i in range(4):
@@ -29,10 +30,11 @@ class QuizView(tk.Frame):
         self.current_question = question_data
         self.question_label.config(text=question_data["questionText"])
         for i, option in enumerate(question_data["options"]):
-            self.answer_buttons[i].config(text=option, state="normal")
+            self.answer_buttons[i].config(text=option, state="normal",bg="#f0f0f0")
         print(self.current_question)
 
     def send_answer(self, selected_option):
+        self.selected_option = selected_option
         if self.current_question is None:
             messagebox.showerror("Error", "No question loaded!")
             return
@@ -45,8 +47,17 @@ class QuizView(tk.Frame):
         }
         jsonStr = json.dumps(answer_data) + "\n"
         self.socket.send(jsonStr.encode("utf-8"))
+        self.answer_buttons[selected_option].config(bg="#f5c542")
         for button in self.answer_buttons:
             button.config(state="disabled")
+
+    def update_buttons_background(self,answer):
+        print("This is answer: ",answer)
+        for i, option in enumerate(self.current_question["options"]):
+            if option == answer:
+                self.answer_buttons[i].config(bg="#00bb00")
+            elif option == self.current_question["options"][self.selected_option]:
+                self.answer_buttons[i].config(bg="#ee0000")
 
     def handle_update(self, update):
         if update["type"] == "new_question":
@@ -55,3 +66,6 @@ class QuizView(tk.Frame):
             self.frameManager.showFrame("GameRoom")
             score_text = "\n".join(f"{player}: {points}" for player, points in update["scores"].items())
             messagebox.showinfo("Points", score_text)
+        elif update["type"]=="answer_to_cur_question":
+            correctAnswer = update["data"]["correctAnswer"]
+            self.update_buttons_background(correctAnswer)

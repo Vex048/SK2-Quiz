@@ -51,7 +51,7 @@ class QuizClient:
                             update = json.loads(json_str)
                             if update["type"] == "create_nickname":
                                   self.frameManager.frames["Login"].handleUpdateNick(update)
-                            elif update["type"] == "new_question" or  update["type"] =="game_finished":
+                            elif update["type"] == "new_question" or  update["type"] =="game_finished" or update["type"] == "answer_to_cur_question":
                                 self.frameManager.frames["QuizView"].handle_update(update)
                             else:
                                 self.frameManager.frames["Lobby"].handleUpdate(update)
