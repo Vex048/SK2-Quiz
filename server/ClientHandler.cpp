@@ -41,6 +41,7 @@ void ClientHandler::handleClient(int clientSocket,RoomHandler& roomHandler){
     char buffer[1024];
     while (true) {
         memset(buffer, 0, sizeof(buffer));
+        // Read is blocking, so no busy-waiting here 
         int n = readMessage(clientSocket,buffer,sizeof(buffer)-1,roomHandler);
         if(n<=0) return;
         
@@ -50,25 +51,38 @@ void ClientHandler::handleClient(int clientSocket,RoomHandler& roomHandler){
 void ClientHandler::manageMessage(json data,int clientFd,RoomHandler& roomHandler){
     if (data["type"] == "create_room"){
         //handleRoomCreate(data,clientFd);
+
         roomHandler.handleRoomCreate(data,clientFd);
+        std::lock_guard<std::mutex> lock(mtxRoom);
+        roomUpdated = true;
+        cvRoom.notify_one();
     }
     else if (data["type"] == "create_nickname"){
         handleNickname(data,clientFd);
     }
     else if (data["type"] == "rooms_info"){
         mutexRooms.lock();
-        sendToClientsRoomsInfo(clientFd);
+        sendToClientInfoRooms(clientFd);
         mutexRooms.unlock();
     }
     else if (data["type"] == "player_join_room"){
         roomHandler.handlePlayer(data,clientFd);
+        std::lock_guard<std::mutex> lock(mtxRoom);
+        roomUpdated = true;
+        cvRoom.notify_one();
     }
     else if (data["type"] == "player_exit_room"){
         //RemovePlayerFromRoom(data,clientFd);
         roomHandler.RemovePlayerFromRoom(data,clientFd);
+        std::lock_guard<std::mutex> lock(mtxRoom);
+        roomUpdated = true;
+        cvRoom.notify_one();
     }
     else if (data["type"] == "start_game"){
         roomHandler.StartGame(data,clientFd);
+        std::lock_guard<std::mutex> lock(mtxRoom);
+        roomUpdated = true;
+        cvRoom.notify_one();
     }
     else if (data["type"] == "answer"){
         GetAnswerFromClient(data,clientFd,roomHandler);
@@ -76,6 +90,40 @@ void ClientHandler::manageMessage(json data,int clientFd,RoomHandler& roomHandle
 }
 
 
+void ClientHandler::sendToLobbyClientsRoomsInfo(std::string response){
+    mutexLobbyClients.lock();
+    for (int clientFd : lobbyClients) {
+        sendToClient(clientFd,response);
+    }
+    mutexLobbyClients.unlock();
+}
+
+void ClientHandler::sendToLobbyClientsRoomsInfo(){
+    std::string response=getRoomsInfo();
+    mutexLobbyClients.lock();
+    for (int clientFd : lobbyClients) {
+        sendToClient(clientFd,response);
+    }
+    mutexLobbyClients.unlock();
+}
+
+
+void ClientHandler::sendToRoomClientsRoomsInfo(std::string response,std::string room_name){
+    mutexRoomClients.lock();
+    for (int clientFd : roomClients[room_name]) {
+        sendToClient(clientFd,response);
+    }
+    mutexRoomClients.unlock();
+}
+
+void ClientHandler::sendToRoomClientsRoomsInfo(std::string room_name){
+    std::string response=getRoomsInfo();
+    mutexRoomClients.lock();
+    for (int clientFd : roomClients[room_name]) {
+        sendToClient(clientFd,response);
+    }
+    mutexRoomClients.unlock();
+}
 
 
 
@@ -102,6 +150,9 @@ void ClientHandler::handleNickname(json data,int clientsocket){
     std::string responseStr = response.dump();
     responseStr = responseStr + "\n";
     std::cout << responseStr << std::endl;
+    mutexLobbyClients.lock();
+    lobbyClients.insert(clientsocket);
+    mutexLobbyClients.unlock();
     send(clientsocket, responseStr.c_str(), responseStr.size(), 0);   
 }
 
@@ -122,6 +173,8 @@ void ClientHandler::GetAnswerFromClient(json data,int clientFd,RoomHandler& room
     return;
 }
 
+
+
 void ClientHandler::sendToClient(int clientsocket,std::string message){
     message= message + "\n";
     send(clientsocket, message.c_str(), message.size(), 0);
@@ -139,7 +192,15 @@ void ClientHandler::disconnectClient(int clientFd,RoomHandler& roomHandler){
         std::cout << "Player removed from room: " << room.getRoomName() << std::endl;
         if(it!=room.players.end()){
             room.removePlayer(clientFd,clientInfoMap);
+            mutexRoomClients.lock();
+            roomClients[room.getRoomName()].erase(clientFd);
+            mutexRoomClients.unlock();
             std::cout << "Player removed from room: " << room.getRoomName() << ", number of players: " << room.getNumberOfPlayers() << std::endl;
+        }
+        else{
+            mutexLobbyClients.lock();
+            lobbyClients.erase(clientFd);
+            mutexLobbyClients.unlock();
         }
     }
     roomHandler.roomsToFile(Rooms);
@@ -155,8 +216,7 @@ void ClientHandler::disconnectClient(int clientFd,RoomHandler& roomHandler){
 
 }
 
-
-void ClientHandler::sendToClientsRoomsInfo(int clientsocket){
+std::string ClientHandler::getRoomsInfo(){
     std::ifstream ifs("serverJSONs/rooms.json");
     json jf = json::parse(ifs);
     json response;
@@ -171,6 +231,18 @@ void ClientHandler::sendToClientsRoomsInfo(int clientsocket){
     }
 
     std::string responseStr = response.dump();
+    return responseStr;
+}
+
+void ClientHandler::sendToClientInfoRooms(int clientsocket){
+    std::string responseStr = getRoomsInfo();
+    sendToClient(clientsocket,responseStr);
+}
+
+
+
+void ClientHandler::sendToClientsRoomsInfo(int clientsocket){
+    std::string responseStr = getRoomsInfo();
     responseStr = responseStr + "\n";
     std::cout << responseStr << std::endl;
     sendToAllClients(responseStr);

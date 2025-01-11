@@ -7,6 +7,7 @@ void RoomHandler::handleRoom(std::string room_name){
     questionsFile >> questionsJson;
     while(true){ 
         sleep(1);
+
         mutexRooms.lock();
         Room* room = getRoomFromFile(room_name);
         if (room==nullptr){
@@ -22,9 +23,14 @@ void RoomHandler::handleRoom(std::string room_name){
             std::cout << "Elapsed time room empty: " << elapsed_seconds.count() << "s\n";
             if (elapsed_seconds.count() > 10){ 
                 std::cout << "Room is empty for more than 5 minutes, deleting room" << std::endl;
+                
                 removeRoom(room_name);
-                roomsToFile(Rooms); 
-                clientHandler.sendToClientsRoomsInfo(0);
+                roomsToFile(Rooms);
+                mutexRoomClients.lock();
+                roomClients.erase(room_name);
+                mutexRoomClients.unlock();               
+
+                clientHandler.sendToLobbyClientsRoomsInfo();
                 // TUUTAJ ZROBIĆ COŚ Z WYSYŁNIAME DO KLIENTÓW
                 mutexRooms.unlock();
                 break;
@@ -181,7 +187,19 @@ void RoomHandler::handleRoomCreate(json data,int clientsocket){
         response["gameMaster"] = newRoom.getGameMaster();
         std::string responseStr = response.dump();
         // TUUTAJ ZROBIĆ COŚ Z WYSYŁNIAME DO KLIENTÓW
-        clientHandler.sendToAllClients(responseStr);
+
+
+        mutexLobbyClients.lock();
+        lobbyClients.erase(clientsocket);
+        mutexLobbyClients.unlock();
+
+        mutexRoomClients.lock();
+        roomClients[room_name].insert(clientsocket);
+        mutexRoomClients.unlock();
+
+        clientHandler.sendToLobbyClientsRoomsInfo(responseStr);
+        clientHandler.sendToRoomClientsRoomsInfo(responseStr,room_name);
+        //clientHandler.sendToAllClients(responseStr);
         mutexRooms.unlock();
 
         std::thread([this, roomName = newRoom.getRoomName()]() {
@@ -208,7 +226,17 @@ void RoomHandler::RemovePlayerFromRoom(json data,int clientsocket){
                 checkIfGameMaster(clientsocket,room);
                 roomsToFile(Rooms);
                 //Znowu wysyłanie wiadomości
-                clientHandler.sendToClientsRoomsInfo(clientsocket);
+                mutexLobbyClients.lock();
+                lobbyClients.insert(clientsocket);
+                mutexLobbyClients.unlock();
+
+                mutexRoomClients.lock();
+                roomClients[room_name].erase(clientsocket);
+                mutexRoomClients.unlock();
+
+                clientHandler.sendToLobbyClientsRoomsInfo();
+                clientHandler.sendToRoomClientsRoomsInfo(name);
+                //clientHandler.sendToClientsRoomsInfo(clientsocket);
             }
     
         }
@@ -255,9 +283,20 @@ void RoomHandler::handlePlayer(json data,int clientsocket){
                     room.setGameMaster(clientInfoMap[clientsocket].nick);
                 }
                 mutexClientInfoMap.unlock();
-                
+
+                mutexLobbyClients.lock();
+                lobbyClients.erase(clientsocket);
+                mutexLobbyClients.unlock();
+
+                mutexRoomClients.lock();
+                roomClients[room_name].insert(clientsocket);
+                mutexRoomClients.unlock();
+
                 roomsToFile(Rooms);
-                clientHandler.sendToClientsRoomsInfo(clientsocket);
+
+                clientHandler.sendToLobbyClientsRoomsInfo();
+                clientHandler.sendToRoomClientsRoomsInfo(name);
+                //clientHandler.sendToClientsRoomsInfo(clientsocket);
             }
             std::string responseStr = response.dump();
             clientHandler.sendToClient(clientsocket,responseStr);
@@ -316,7 +355,10 @@ void RoomHandler::StartGame(json data,int clientsocket){
                     room.setCurrentQuestion(categoryQuestions[randomIndex]["questionId"],categoryQuestions[randomIndex]["questionText"],categoryQuestions[randomIndex]["options"],categoryQuestions[randomIndex]["correctAnswer"]);
                     room.setTimeStampQuestionUpdate(std::chrono::system_clock::now());
                     roomsToFile(Rooms);
-                    clientHandler.sendToClientsRoomsInfo(clientsocket);
+
+                    clientHandler.sendToLobbyClientsRoomsInfo();
+                    clientHandler.sendToRoomClientsRoomsInfo(name);
+                    //clientHandler.sendToClientsRoomsInfo(clientsocket);
 
                     mutexRooms.unlock(); // after room is found and started, unlock mutex and exit function
                     return;

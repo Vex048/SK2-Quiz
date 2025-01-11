@@ -45,5 +45,11 @@ class ClientHandler{
     void sendToClientsRoomsInfo(int clientsocket);
     void sendToAllClients(std::string response);
     void sendToClient(int clientsocket,std::string message);
+    void sendToLobbyClientsRoomsInfo(std::string response);
+    void sendToLobbyClientsRoomsInfo();
+    void sendToRoomClientsRoomsInfo(std::string response,std::string room_name);
+    void sendToRoomClientsRoomsInfo(std::string room_name);
+    void sendToClientInfoRooms(int clientsocket);
+    std::string getRoomsInfo();
     //void checkIfGameMaster(int clientsocket,Room& room);
 };

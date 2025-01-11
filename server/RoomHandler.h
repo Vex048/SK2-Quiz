@@ -33,6 +33,7 @@ class ClientHandler;
 class RoomHandler{
     private:
     ClientHandler& clientHandler;
+
     public:
     RoomHandler(ClientHandler& handler) : clientHandler(handler) {};
     void handleRoom(std::string room_name);

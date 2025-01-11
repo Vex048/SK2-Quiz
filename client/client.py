@@ -7,7 +7,7 @@ from gui.lobby import Lobby
 from gui.gameRoom import GameRoom
 from gui.frameManager import FrameManager
 import json
-SERVER_IP = "127.0.0.1"
+SERVER_IP = "172.18.43.116"
 SERVER_PORT = 8080
 
 class QuizClient:

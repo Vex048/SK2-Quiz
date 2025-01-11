@@ -5,10 +5,19 @@
 #include <unordered_map>
 #include <string>
 #include "Room.h"
+#include <condition_variable>
+
+
+
 extern std::mutex mutexRooms;
 extern std::mutex mutexClientInfoMap;
 extern std::mutex mutexPlayerList;
 extern std::mutex mutexClientSockets;
+
+extern std::unordered_map<std::string, std::set<int>> roomClients;  
+extern std::set<int> lobbyClients;
+extern std::mutex mutexLobbyClients;
+extern std::mutex mutexRoomClients;
 
 extern std::vector<int> clientSockets;
 extern std::vector<Room> Rooms;
