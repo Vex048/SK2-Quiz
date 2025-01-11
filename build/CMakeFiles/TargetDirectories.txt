@@ -1,3 +1,0 @@
-/mnt/data/Programming/C projects/SK2-Quiz/build/CMakeFiles/SK2-Quiz-Server.dir
-/mnt/data/Programming/C projects/SK2-Quiz/build/CMakeFiles/edit_cache.dir
-/mnt/data/Programming/C projects/SK2-Quiz/build/CMakeFiles/rebuild_cache.dir

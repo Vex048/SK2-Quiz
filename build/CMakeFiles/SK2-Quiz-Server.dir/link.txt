@@ -1,1 +1,0 @@
-/usr/bin/c++ "CMakeFiles/SK2-Quiz-Server.dir/server/server.cpp.o" "CMakeFiles/SK2-Quiz-Server.dir/server/Room.cpp.o" "CMakeFiles/SK2-Quiz-Server.dir/server/ClientHandler.cpp.o" "CMakeFiles/SK2-Quiz-Server.dir/server/RoomHandler.cpp.o" "CMakeFiles/SK2-Quiz-Server.dir/server/globals.cpp.o" -o SK2-Quiz-Server 
