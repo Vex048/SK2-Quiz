@@ -167,7 +167,7 @@ std::string Room::getCategory(){
 // Sending an data to all clients in current room 
 void Room::sendToClientsInRoom(std::string data1,std::unordered_map<std::string, int> nicknameToSocket){
     for (const auto& player : players){
-        int playerSocket = nicknameToSocket[player];  
+        int playerSocket = nicknameToSocket[player];
         send(playerSocket, data1.c_str(), data1.size(), 0);   
     }
 }

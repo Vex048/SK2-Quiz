@@ -27,6 +27,7 @@ class QuizView(tk.Frame):
         self.roomName = room_name
 
     def update_question(self, question_data):
+        self.selected_option = None
         self.current_question = question_data
         self.question_label.config(text=question_data["questionText"])
         for i, option in enumerate(question_data["options"]):
@@ -55,8 +56,9 @@ class QuizView(tk.Frame):
         for i, option in enumerate(self.current_question["options"]):
             if option == answer:
                 self.answer_buttons[i].config(bg="#00bb00")
-            elif option == self.current_question["options"][self.selected_option]:
+            elif self.selected_option is not None and option == self.current_question["options"][self.selected_option]:
                 self.answer_buttons[i].config(bg="#ee0000")
+
 
 
     def handle_update(self, update):
@@ -66,6 +68,6 @@ class QuizView(tk.Frame):
             self.frameManager.showFrame("GameRoom")
             score_text = "\n".join(f"{player}: {points}" for player, points in update["scores"].items())
             messagebox.showinfo("Points", score_text)
-        elif update["type"]=="answer_to_cur_question":
+        elif update["type"]=="answer_to_cur_question":         
             correctAnswer = update["data"]["correctAnswer"]
             self.update_buttons_background(correctAnswer)
