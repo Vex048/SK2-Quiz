@@ -101,7 +101,7 @@ void ClientHandler::manageMessage(json data,int clientFd,RoomHandler& roomHandle
     }
     else if (data["type"] == "start_game"){
         //Assigning roomHandler to handle a game start in given room
-        roomHandler.StartGame(data,clientFd);
+        roomHandler.StartGame(data);
         std::string room_name = data["name"];
         // Setting flag up for a condition variable
         roomFlagsEvents[room_name] = true;

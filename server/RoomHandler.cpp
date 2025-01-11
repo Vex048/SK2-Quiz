@@ -391,7 +391,7 @@ void RoomHandler::handlePlayer(json data,int clientsocket){
 }
 
 // Method that handle Game start by a game master
-void RoomHandler::StartGame(json data,int clientsocket){
+void RoomHandler::StartGame(json data){
     // Getting questions from questions.json
     std::ifstream questionsFile("serverJSONs/questions.json");
     json questionsJson;
