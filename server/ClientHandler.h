@@ -42,7 +42,7 @@ class ClientHandler{
     void GetAnswerFromClient(json data,int clientFd,RoomHandler& roomHandler);
     void disconnectClient(int clientFd,RoomHandler& roomHandler);
     //void disconnectClient(int clientFd);
-    void sendToClientsRoomsInfo(int clientsocket);
+    void sendToClientsRoomsInfo();
     void sendToAllClients(std::string response);
     //void checkIfGameMaster(int clientsocket,Room& room);
 };

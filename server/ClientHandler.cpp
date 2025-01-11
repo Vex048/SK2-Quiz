@@ -57,7 +57,7 @@ void ClientHandler::manageMessage(json data,int clientFd,RoomHandler& roomHandle
     }
     else if (data["type"] == "rooms_info"){
         mutexRooms.lock();
-        sendToClientsRoomsInfo(clientFd);
+        sendToClientsRoomsInfo();
         mutexRooms.unlock();
     }
     else if (data["type"] == "player_join_room"){
@@ -68,7 +68,7 @@ void ClientHandler::manageMessage(json data,int clientFd,RoomHandler& roomHandle
         roomHandler.RemovePlayerFromRoom(data,clientFd);
     }
     else if (data["type"] == "start_game"){
-        roomHandler.StartGame(data,clientFd);
+        roomHandler.StartGame(data);
     }
     else if (data["type"] == "answer"){
         GetAnswerFromClient(data,clientFd,roomHandler);
@@ -112,7 +112,7 @@ void ClientHandler::GetAnswerFromClient(json data,int clientFd,RoomHandler& room
         mutexRooms.lock();
         Room *room = roomHandler.getRoomFromFile(room_name);
         if (room!=nullptr){
-            room->updatePlayersPoints(clientFd,answer,clientInfoMap);
+            room->updatePlayersPoints(clientFd,answer);
             std::cout << "Player " << clientInfoMap[clientFd].nick << " answered: " << answer << ", points: "<< room->playersPoints[clientFd] << std::endl;
             roomHandler.roomsToFile(Rooms);
         }
@@ -153,7 +153,7 @@ void ClientHandler::disconnectClient(int clientFd,RoomHandler& roomHandler){
 }
 
 
-void ClientHandler::sendToClientsRoomsInfo(int clientsocket){
+void ClientHandler::sendToClientsRoomsInfo(){
     std::ifstream ifs("serverJSONs/rooms.json");
     json jf = json::parse(ifs);
     json response;

@@ -25,7 +25,7 @@ void RoomHandler::handleRoom(std::string room_name){
                 std::cout << "Room is empty for more than 5 minutes, deleting room" << std::endl;
                 removeRoom(room_name);
                 roomsToFile(Rooms); 
-                clientHandler.sendToClientsRoomsInfo(0);
+                clientHandler.sendToClientsRoomsInfo();
                 // TUUTAJ ZROBIĆ COŚ Z WYSYŁNIAME DO KLIENTÓW
                 mutexRooms.unlock();
                 break;
@@ -195,7 +195,7 @@ void RoomHandler::RemovePlayerFromRoom(json data,int clientsocket){
                 checkIfGameMaster(clientsocket,room);
                 roomsToFile(Rooms);
                 //Znowu wysyłanie wiadomości
-                clientHandler.sendToClientsRoomsInfo(clientsocket);
+                clientHandler.sendToClientsRoomsInfo();
             }
     
         }
@@ -235,7 +235,7 @@ void RoomHandler::handlePlayer(json data,int clientsocket){
             }
             mutexClientInfoMap.unlock();
             roomsToFile(Rooms);
-            clientHandler.sendToClientsRoomsInfo(clientsocket);
+            clientHandler.sendToClientsRoomsInfo();
             
         }   
     }
@@ -243,7 +243,7 @@ void RoomHandler::handlePlayer(json data,int clientsocket){
     
 }
 
-void RoomHandler::StartGame(json data,int clientsocket){
+void RoomHandler::StartGame(json data){
 
     std::ifstream questionsFile("serverJSONs/questions.json");
     json questionsJson;
@@ -291,7 +291,7 @@ void RoomHandler::StartGame(json data,int clientsocket){
                     room.setCurrentQuestion(categoryQuestions[randomIndex]["questionId"],categoryQuestions[randomIndex]["questionText"],categoryQuestions[randomIndex]["options"],categoryQuestions[randomIndex]["correctAnswer"]);
                     room.setTimeStampQuestionUpdate(std::chrono::system_clock::now());
                     roomsToFile(Rooms);
-                    clientHandler.sendToClientsRoomsInfo(clientsocket);
+                    clientHandler.sendToClientsRoomsInfo();
 
                     mutexRooms.unlock(); // after room is found and started, unlock mutex and exit function
                     return;

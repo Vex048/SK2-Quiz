@@ -44,6 +44,6 @@ class RoomHandler{
     void RemovePlayerFromRoom(json data,int clientsocket);
     void checkIfGameMaster(int clientsocket,Room& room);
     void handlePlayer(json data,int clientsocket);
-    void StartGame(json data,int clientsocket);
+    void StartGame(json data);
     void toLowerCase(std::string &str);
 };

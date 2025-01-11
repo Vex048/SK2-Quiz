@@ -86,7 +86,7 @@ void clearJsonFIle(const std::string& filePath){
         std::cerr << "Failed to open file for clearing: " << filePath << std::endl;
     }
 }
-void shutdownJson(int signal){
+void shutdownJson(int ){
     clearJsonFIle("serverJSONs/rooms.json");
     close(serverSocket);
     exit(0);
@@ -134,7 +134,7 @@ int main() {
     RoomHandler roomHandler(clientHandler);
     while (true) {
         sockaddr_in clientAddr;
-        socklen_t clientAddrLen = sizeof(clientAddr);
+        // socklen_t clientAddrLen = sizeof(clientAddr);
         int clientSocket = accept(serverSocket, nullptr, nullptr);
         if (clientSocket < 0) {
             perror("Accept failed");

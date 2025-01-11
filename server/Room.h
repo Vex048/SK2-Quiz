@@ -37,7 +37,7 @@ class Room {
         };
 
         std::string name;
-        int maxPlayers;
+        std::size_t maxPlayers;
         std::vector<std::string> players;
         std::string status;     
         std::string category; 
@@ -55,7 +55,7 @@ class Room {
 
         std::unordered_map<int,int> playersPoints; // key: players socket, value: number of points
         
-        void updatePlayersPoints(int playerSocket, std::string answer, std::unordered_map<int, clientInfo> clientInfoMap);     
+        void updatePlayersPoints(int playerSocket, std::string answer);     
         json getAllPoints(std::unordered_map<int, clientInfo> clientInfoMap);
         void setZeroPlayerPoints();
 
