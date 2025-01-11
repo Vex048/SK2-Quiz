@@ -75,7 +75,11 @@ void ClientHandler::manageMessage(json data,int clientFd,RoomHandler& roomHandle
     else if (data["type"] == "rooms_info"){
         //Sending information to client who asked about rooms
         mutexRooms.lock();
+<<<<<<< HEAD
         sendToClientInfoRooms(clientFd);
+=======
+        sendToClientsRoomsInfo();
+>>>>>>> 29cbfb2a7dabd2b3126d06780aa8476dc048e0fe
         mutexRooms.unlock();
     }
     else if (data["type"] == "player_join_room"){
@@ -200,7 +204,7 @@ void ClientHandler::GetAnswerFromClient(json data,int clientFd,RoomHandler& room
         mutexRooms.lock();
         Room *room = roomHandler.getRoomFromFile(room_name);
         if (room!=nullptr){
-            room->updatePlayersPoints(clientFd,answer,clientInfoMap);
+            room->updatePlayersPoints(clientFd,answer);
             std::cout << "Player " << clientInfoMap[clientFd].nick << " answered: " << answer << ", points: "<< room->playersPoints[clientFd] << std::endl;
             roomHandler.roomsToFile(Rooms);
         }

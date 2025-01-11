@@ -120,9 +120,7 @@ json Room::getAllPoints(std::unordered_map<int, clientInfo> clientInfoMap){
     return data;
 }
 
-
-// Updateing player points after a guess
-void Room::updatePlayersPoints(int playerSocket, std::string answer, std::unordered_map<int, clientInfo> clientInfoMap) {
+void Room::updatePlayersPoints(int playerSocket, std::string answer) {
     if(answer == curQuestion.correctAnswer){
         playersPoints[playerSocket] += 1;
     }

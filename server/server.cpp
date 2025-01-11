@@ -135,8 +135,7 @@ int main() {
     RoomHandler roomHandler(clientHandler);
     while (true) {
         sockaddr_in clientAddr;
-        socklen_t clientAddrLen = sizeof(clientAddr);
-        // Accepting new client
+        // socklen_t clientAddrLen = sizeof(clientAddr);
         int clientSocket = accept(serverSocket, nullptr, nullptr);
         if (clientSocket < 0) {
             perror("Accept failed");
