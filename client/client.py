@@ -7,7 +7,7 @@ from gui.lobby import Lobby
 from gui.gameRoom import GameRoom
 from gui.frameManager import FrameManager
 import json
-SERVER_IP = "127.0.0.1"
+SERVER_IP = "172.18.43.116"
 SERVER_PORT = 8080
 
 class QuizClient:
@@ -15,7 +15,7 @@ class QuizClient:
         self.root = root
         self.root.title("Quiz Game")
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client_socket.connect((SERVER_IP, SERVER_PORT))
+        #self.client_socket.connect((SERVER_IP, SERVER_PORT))
         self.root.geometry('1000x600')
         self.root.resizable(0,0)
         self.rootHeight=self.root.winfo_height()
@@ -25,10 +25,12 @@ class QuizClient:
 
 
         self.frameManager = FrameManager(self.root,self.client_socket)
-        self.frameManager.initFrames()
+        self.frameManager.initLoginFrame()
+        #self.frameManager.initFrames()
         self.frameManager.showFrame("Login")
         listenForServerUpdate = threading.Thread(target=self.listenForServerUpdates)
-        listenForServerUpdate.start()
+        self.frameManager.getThread(listenForServerUpdate)
+        #listenForServerUpdate.start()
 
 
 
@@ -49,7 +51,7 @@ class QuizClient:
                             update = json.loads(json_str)
                             if update["type"] == "create_nickname":
                                   self.frameManager.frames["Login"].handleUpdateNick(update)
-                            elif update["type"] == "new_question" or  update["type"] =="game_finished":
+                            elif update["type"] == "new_question" or  update["type"] =="game_finished" or update["type"] == "answer_to_cur_question":
                                 self.frameManager.frames["QuizView"].handle_update(update)
                             else:
                                 self.frameManager.frames["Lobby"].handleUpdate(update)
