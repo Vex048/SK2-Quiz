@@ -379,7 +379,6 @@ void RoomHandler::handlePlayer(json data,int clientsocket){
                 // Update room info to clients in the same room and in lobby
                 clientHandler.sendToLobbyClientsRoomsInfo();
                 clientHandler.sendToRoomClientsRoomsInfo(name);
-                //clientHandler.sendToClientsRoomsInfo(clientsocket);
             }
             std::string responseStr = response.dump();
             // Send info to client if he was able to join room or not
@@ -446,7 +445,6 @@ void RoomHandler::StartGame(json data,int clientsocket){
                     // Sending informations about a game start to clients in lobby and to clients in this game room
                     clientHandler.sendToLobbyClientsRoomsInfo();
                     clientHandler.sendToRoomClientsRoomsInfo(name);
-                    //clientHandler.sendToClientsRoomsInfo(clientsocket);
 
                     mutexRooms.unlock(); // after room is found and started, unlock mutex and exit function
                     return;

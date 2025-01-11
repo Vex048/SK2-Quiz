@@ -75,11 +75,7 @@ void ClientHandler::manageMessage(json data,int clientFd,RoomHandler& roomHandle
     else if (data["type"] == "rooms_info"){
         //Sending information to client who asked about rooms
         mutexRooms.lock();
-<<<<<<< HEAD
         sendToClientInfoRooms(clientFd);
-=======
-        sendToClientsRoomsInfo();
->>>>>>> 29cbfb2a7dabd2b3126d06780aa8476dc048e0fe
         mutexRooms.unlock();
     }
     else if (data["type"] == "player_join_room"){
@@ -285,14 +281,6 @@ void ClientHandler::sendToClientInfoRooms(int clientsocket){
 }
 
 
-// Sending to all clients information about rooms.
-// same as sendtoAllClients mehtod it is not used, but was used and can be helpful with debugging
-void ClientHandler::sendToClientsRoomsInfo(int clientsocket){
-    std::string responseStr = getRoomsInfo();
-    responseStr = responseStr + "\n";
-    std::cout << responseStr << std::endl;
-    sendToAllClients(responseStr);
-    //send(clientsocket, responseStr.c_str(), responseStr.size(), 0); 
-}
+
 
 

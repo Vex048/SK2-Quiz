@@ -41,7 +41,6 @@ class ClientHandler{
     void GetAnswerFromClient(json data,int clientFd,RoomHandler& roomHandler);
     void disconnectClient(int clientFd,RoomHandler& roomHandler);
 
-    void sendToClientsRoomsInfo(int clientsocket);
     void sendToAllClients(std::string response);
     void sendToClient(int clientsocket,std::string message);
     void sendToLobbyClientsRoomsInfo(std::string response);
