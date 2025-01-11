@@ -6,7 +6,8 @@ void RoomHandler::handleRoom(std::string room_name){
     json questionsJson;
     questionsFile >> questionsJson;
     while(true){ 
-        sleep(1);
+        
+        std::this_thread::sleep_for(std::chrono::milliseconds(1500));
         mutexRooms.lock();
         Room* room = getRoomFromFile(room_name);
         if (room==nullptr){
@@ -39,9 +40,22 @@ void RoomHandler::handleRoom(std::string room_name){
 
                 if (elapsed_seconds2.count() > 15 || room->curQuestion.numOfAnswers == room->getNumberOfPlayers()){ 
                     std::cout << "15 second for question has finished" << std::endl;
+
+                    json response;
+                    response["type"] = "answer_to_cur_question";
+                    json quest;
+                    quest["correctAnswer"] = room->curQuestion.correctAnswer;
+                    quest["questionText"] = room->curQuestion.questionText;
+                    quest["options"] = room->curQuestion.options;
+                    quest["questionId"] = room->curQuestion.questionId;
+                    response["data"] = quest;
+
+                    std::string responseStr = response.dump();
+                    responseStr = responseStr + "\n";
+                    room->sendToClientsInRoom(responseStr,nicknameToSocket);
+                    sleep(5);
                     
                     json categoryQuestions = questionsJson["categories"][RoomCategory];
-
                     std::random_device dev;
                     std::mt19937 rng(dev());
                     int index = room->getIndex();

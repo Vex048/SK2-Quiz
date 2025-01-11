@@ -1,3 +1,26 @@
 {
-    "rooms": []
+    "rooms": [
+        {
+            "category": "geography",
+            "currentQuestionIndex": 3,
+            "gameMaster": "awdwad",
+            "maxPlayers": 5,
+            "name": "room1",
+            "players": [
+                "awdwad",
+                "wiktor"
+            ],
+            "questionInfo": {
+                "options": [
+                    "Canada",
+                    "United States",
+                    "Russia",
+                    "Brazil"
+                ],
+                "questionId": 4,
+                "questionText": "Which country has the most natural lakes?"
+            },
+            "status": "Waiting"
+        }
+    ]
 }
