@@ -22,21 +22,40 @@ class QuizClient:
         self.rootWidth=self.root.winfo_width()
         self.root.columnconfigure(0,weight=1)
         self.root.rowconfigure(0,weight=1)
+        self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
+        self.stop_thread = False  
+        
 
 
         self.frameManager = FrameManager(self.root,self.client_socket)
         self.frameManager.initLoginFrame()
         #self.frameManager.initFrames()
         self.frameManager.showFrame("Login")
-        listenForServerUpdate = threading.Thread(target=self.listenForServerUpdates)
+        listenForServerUpdate = threading.Thread(target=self.listenForServerUpdates,args=(lambda: self.frameManager.stop_thread,))
         self.frameManager.getThread(listenForServerUpdate)
-        #listenForServerUpdate.start()
 
 
 
-    def listenForServerUpdates(self):
+    def on_closing(self):
+        self.stop_thread = True 
+        self.frameManager.killThread()  
+        try:
+            answer_data = {
+                "type": "quit"
+            }
+            jsonStr = json.dumps(answer_data) + "\n"
+            self.client_socket.send(jsonStr.encode("utf-8"))
+        except Exception as e:
+            print(f"Error while sending quit message: {e}")
+        finally:
+            self.root.destroy()
+
+    def listenForServerUpdates(self,stop):      
         buffer=""
+        self.client_socket.settimeout(1.0) 
         while True:
+            if stop():
+                break
             try:
                 message = self.client_socket.recv(1024).decode()
                 if not message:  
@@ -58,6 +77,8 @@ class QuizClient:
                         except json.JSONDecodeError as e:
                             print(f"JSON decode error: {e}, received message: {json_str}")
                             break
+            except socket.timeout:
+                continue
             except Exception as e:
                 print(f"Error: {e}")
                 break    

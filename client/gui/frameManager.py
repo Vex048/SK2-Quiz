@@ -10,6 +10,7 @@ class FrameManager():
         self.states = {} # Do zrobienia
         self.socket=socket
         self.nick=None
+        self.stop_thread = False
 
     def initLoginFrame(self):
         frame_name = Login.__name__
@@ -38,6 +39,10 @@ class FrameManager():
         self.listen_thread=listen_thread
     def startListening(self):
         self.listen_thread.start()
+    def killThread(self):
+        self.stop_thread = True 
+        if self.listen_thread.is_alive():  
+            self.listen_thread.join()
 
     def showFrame(self,frame):
         #frame = self.frames[frame]
