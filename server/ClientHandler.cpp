@@ -118,6 +118,9 @@ void ClientHandler::manageMessage(json data,int clientFd,RoomHandler& roomHandle
         std::lock_guard<std::mutex> lock(roomCVMutex);
         roomCVMap[room_name].notify_one(); 
     }
+    else if (data["type"] == "quit"){
+        void disconnectClient(int clientFd,RoomHandler& roomHandler);
+    }
 }
 
 //Method that send message to all clients that are waiting in lobby
@@ -252,7 +255,6 @@ void ClientHandler::disconnectClient(int clientFd,RoomHandler& roomHandler){
     mutexClientInfoMap.unlock();
     mutexPlayerList.unlock();
     
-
 }
 // Downloading informations about rooms from rooms.json and returning it as string
 std::string ClientHandler::getRoomsInfo(){
