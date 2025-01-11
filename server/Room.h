@@ -26,7 +26,7 @@ class Room {
             name = roomName; 
             status = "Waiting";
             maxPlayers=5;
-            maxQuestions=3;
+            maxQuestions=10;
         };
         //Structure that represent a one question
         struct currentQuestion{
@@ -44,6 +44,10 @@ class Room {
         std::string gameMaster;
         int maxQuestions;
         std::vector <int> questionIndices; // indices of questions from chosen category to eliminate occurence of the same question
+<<<<<<< HEAD
+=======
+
+>>>>>>> f5b7633464fa97925c9271422ed9bfcc93fd32ea
         /* [0,1,2,3,4,5,6,7,8,9,10] get size of given category from json during start game->create vector of this size->
         ->draw question index based on the remaininng indices->proceed with the rest of already implemented code
         */
@@ -76,7 +80,21 @@ class Room {
         int getIndex();
 
         std::string getCategory();
+<<<<<<< HEAD
         void setCategory(std::string category);
+=======
+        std::string getRoomName();
+        int getMaxQustions();
+
+        void setZeroPlayerPoints();
+        void setTimeStampQuestionUpdate(std::chrono::time_point<std::chrono::system_clock> timestamp);
+        void setMaxQuestions(int maxQ);
+
+        void sendToClientsInRoom(std::string data,std::unordered_map<std::string, int> nicknameToSocket);
+        void removePlayer(int playerSocket,std::unordered_map<int, clientInfo> clientInfoMap);
+        void resetQuestionIndices(int categoryQuestionSize);
+        void removeQuestionIndex(int index);
+>>>>>>> f5b7633464fa97925c9271422ed9bfcc93fd32ea
         void setCurrentQuestion(int questionId, std::string questionText,std::vector<std::string>Options, 
                                 std::string correctAnswer);
         void setTimeStampQuestionUpdate(std::chrono::time_point<std::chrono::system_clock> timestamp);

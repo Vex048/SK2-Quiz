@@ -13,6 +13,7 @@
 void Room::setStatus(std::string newStatus) {
     status = newStatus;
 }
+<<<<<<< HEAD
 
 // Getiing new Game master 
 std::string Room::getNewGameMaster(){
@@ -29,26 +30,51 @@ void Room::setIndex(int index){
 }
 // Getter for current question index
 // If next question will be bigger than maxquestions its return 0 that means the game is fninished
+=======
+void Room::setIndex(int index){
+    currentQuestionIndex=index;
+}
+void Room::setCategory(std::string newCategory) {
+    category = newCategory;
+}
+void Room::setGameMaster(std::string player){
+    gameMaster = player;
+}
+void Room::setMaxQuestions(int maxQ){
+    maxQuestions = maxQ;
+}
+
+>>>>>>> f5b7633464fa97925c9271422ed9bfcc93fd32ea
 int Room::getIndex(){
     if (currentQuestionIndex+1>maxQuestions){
         return 0;
     }
     return currentQuestionIndex;
 }
+<<<<<<< HEAD
 
 // Below are some setters and getters 
 
 void Room::setCategory(std::string newCategory) {
     category = newCategory;
 }
+=======
+>>>>>>> f5b7633464fa97925c9271422ed9bfcc93fd32ea
 std::string Room::getRoomName(){
     return name;
 }
 std::string Room::getGameMaster(){
     return gameMaster;
 }
-void Room::setGameMaster(std::string player){
-    gameMaster = player;
+std::string Room::getNewGameMaster(){
+    int numberOfPlayers = players.size();
+    if (numberOfPlayers > 0){
+        return players.front();
+    } 
+    return "No players in room";
+}
+int Room::getMaxQustions(){
+    return maxQuestions;
 }
 int Room::getMaxQustions(){
     return maxQuestions;
@@ -131,12 +157,18 @@ void Room::updatePlayersPoints(int playerSocket, std::string answer) {
 // Setiing player points to 0, used when the game master dont want to use points from previous round
 void Room::setZeroPlayerPoints(){
     for (auto & element : playersPoints){
+<<<<<<< HEAD
     element.second = 0;
     }
 }
 // Setting new question and removing possibility for the same question again in a round 
+=======
+        element.second = 0;
+    }
+}
+>>>>>>> f5b7633464fa97925c9271422ed9bfcc93fd32ea
 void Room::setCurrentQuestion(int questionId, std::string questionText,std::vector<std::string>Options, 
-                                std::string correctAnswer){
+                              std::string correctAnswer){
     curQuestion.questionId = questionId;
     curQuestion.questionText = questionText;
     curQuestion.correctAnswer = correctAnswer;
@@ -144,19 +176,29 @@ void Room::setCurrentQuestion(int questionId, std::string questionText,std::vect
     curQuestion.numOfAnswers = 0;
     removeQuestionIndex(questionId-1); // indices start from 0, QuestionId starts from 1
 }
+<<<<<<< HEAD
 
 // Reseting indicies when the game ends
+=======
+>>>>>>> f5b7633464fa97925c9271422ed9bfcc93fd32ea
 void Room::resetQuestionIndices(int categoryQuestionSize){
     questionIndices.clear();
     for(int i=0;i<categoryQuestionSize;i++){
         questionIndices.push_back(i);
     }
 }
+<<<<<<< HEAD
 // Removing an questionId index, used for not having a repetitions in questions
 void Room::removeQuestionIndex(int index){
     questionIndices.erase(std::remove(questionIndices.begin(), questionIndices.end(),index),questionIndices.end());
 }
 //Setter and getter for game Status
+=======
+void Room::removeQuestionIndex(int index){
+    questionIndices.erase(std::remove(questionIndices.begin(), questionIndices.end(),index),questionIndices.end());
+}
+
+>>>>>>> f5b7633464fa97925c9271422ed9bfcc93fd32ea
 std::string Room::getStatus(){
     return status;
 }
