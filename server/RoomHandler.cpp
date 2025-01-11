@@ -15,7 +15,7 @@ void RoomHandler::handleRoom(std::string room_name){
     while(true){ 
         //sleep(1);
         // Using cv.wait_for, beocuse this method has to constantly check if the room is empty
-
+        
         bool notified = cv.wait_for(lock, std::chrono::seconds(1), [&]() {
             //returning true if some event like player joined this room, player exit room, game start or answer from client occured
             //otherwise false 
@@ -85,11 +85,28 @@ void RoomHandler::processGameEvent(Room* room,json questionsJson){
     std::chrono::duration<double> elapsed_seconds2 = now1 - room->getTimeStampPlayerQuestionUpdate();
     std::cout << "Elapsed time for question: " << elapsed_seconds2.count() << "s\n";
     // Check if 15 seconds passed or everyone has answered 
-    if (elapsed_seconds2.count() > 15 || room->curQuestion.numOfAnswers == room->getNumberOfPlayers()){ 
+    //if (elapsed_seconds2.count() > 15 || room->curQuestion.numOfAnswers == room->getNumberOfPlayers()){
+    if (elapsed_seconds2.count() > 15 ){ 
         std::cout << "15 second for question has finished" << std::endl;
         
         // Get questions from json
         json categoryQuestions = questionsJson["categories"][RoomCategory];
+
+        //Sending correct answer to clients
+        json response;
+        response["type"] = "answer_to_cur_question";
+        json quest;
+        quest["correctAnswer"] = room->curQuestion.correctAnswer;
+        quest["questionText"] = room->curQuestion.questionText;
+        quest["options"] = room->curQuestion.options;
+        quest["questionId"] = room->curQuestion.questionId;
+        response["data"] = quest;
+        std::string responseStr = response.dump();
+        responseStr = responseStr + "\n";
+        room->sendToClientsInRoom(responseStr,nicknameToSocket);
+        // Sleep is for clients to see if they did have correct answer or not
+        sleep(3);
+
 
         // Prepare a random number 
         std::random_device dev;
