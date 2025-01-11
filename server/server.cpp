@@ -76,7 +76,7 @@ void clearJsonFIle(const std::string& filePath){
     }
 }
 // Function to clear rooms.json after Ctrl+C
-void shutdownJson(int signal){
+void shutdownJson(int ){
     clearJsonFIle("serverJSONs/rooms.json");
     close(serverSocket);
     exit(0);
