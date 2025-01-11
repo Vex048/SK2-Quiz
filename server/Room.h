@@ -22,12 +22,13 @@ using json = nlohmann::json;
 class Room {
     public:
         Room(std::string roomName){ 
+            //Setting default values of room 
             name = roomName; 
             status = "Waiting";
             maxPlayers=5;
             maxQuestions=3;
         };
-
+        //Structure that represent a one question
         struct currentQuestion{
             int questionId;
             std::string questionText;
@@ -35,7 +36,6 @@ class Room {
             std::vector<std::string> options;
             int numOfAnswers;
         };
-
         std::string name;
         int maxPlayers;
         std::vector<std::string> players;
@@ -50,6 +50,7 @@ class Room {
         struct currentQuestion curQuestion;
         int currentQuestionIndex;
 
+        //Timestamps that are controlling seconds in both game and room 
         std::chrono::time_point<std::chrono::system_clock> timestamp_playerleftroom;
         std::chrono::time_point<std::chrono::system_clock> timestamp_questions;
 

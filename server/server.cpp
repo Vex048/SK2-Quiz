@@ -27,28 +27,17 @@
 #include <optional>
 //#include "globals.h"
 #include "ClientHandler.h"
+
+
+// Needed for using JSONs 
 using json = nlohmann::json;
 
-// std::mutex mutexRooms;
-// std::mutex mutexClientInfoMap;
-// std::mutex mutexPlayerList;
-// std::mutex mutexClientSockets;
-
-
-// std::vector<int> clientSockets;
-// std::vector<Room> Rooms;
-// std::set<std::string> playerList;
-
-
-// std::unordered_map<int, clientInfo> clientInfoMap;
-// std::unordered_map<std::string, int> nicknameToSocket;
-// std::unordered_map<int, std::vector<int>> lobbyInfoMap;
-
+// Global serversocket and port 
 int serverSocket;
 const int PORT = 8080;
 
 
-
+// Helper Function to print all clients, used when a new client connet to server, to show all players 
 void printAllClients(){
     mutexClientInfoMap.lock();
     std::cout << "Number of clients: " << clientInfoMap.size() << std::endl;
@@ -65,7 +54,7 @@ void printAllClients(){
     mutexClientInfoMap.unlock();
 }
 
-
+// Helper function
 void printVector(std::vector <int> vec){
     for(auto element: vec){
         std::cout << element << " ";
@@ -73,7 +62,7 @@ void printVector(std::vector <int> vec){
     std::cout << std::endl;
 }
 
-
+// Function that will clear file rooms.json before server start running and after server close
 void clearJsonFIle(const std::string& filePath){
     json emptyData;
     emptyData["rooms"] = json::array();
@@ -86,6 +75,7 @@ void clearJsonFIle(const std::string& filePath){
         std::cerr << "Failed to open file for clearing: " << filePath << std::endl;
     }
 }
+// Function to clear rooms.json after Ctrl+C
 void shutdownJson(int signal){
     clearJsonFIle("serverJSONs/rooms.json");
     close(serverSocket);
@@ -95,8 +85,13 @@ void shutdownJson(int signal){
 
 int main() {
     clearJsonFIle("serverJSONs/rooms.json");
-    serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+    
+    serverSocket = socket(AF_INET, SOCK_STREAM, 0); // Creating and endpoint for communication as File Descriptor and assigning it to serverSocket. 
+    //It uses IPv4 Internet Protocols and TCP protocol
+    //Mapping ctrl+c with function shutdownJson
     std::signal(SIGINT, shutdownJson);
+
+    // Checking if serverSocket failed to initialize
     if (serverSocket == 0) {
         perror("Socket failed");
         exit(EXIT_FAILURE);
@@ -109,18 +104,21 @@ int main() {
     }
 
 
+    // Creating a structure that will hold informations about server adress
     sockaddr_in address{};
     address.sin_family = AF_INET;
     //address.sin_addr.s_addr = inet_addr("172.18.43.116");
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(PORT);
 
+    // Binding serverSocket to the address above
     if (bind(serverSocket, (struct sockaddr*)&address, sizeof(address)) < 0) {
         perror("Bind failed");
         close(serverSocket);
         exit(EXIT_FAILURE);
     }
 
+    // Starting listening
     if (listen(serverSocket, 3) < 0) {
         perror("Listen failed");
         close(serverSocket);
@@ -130,12 +128,15 @@ int main() {
     std::cout << "Server is listening on port " << PORT << std::endl;
 
 
-    //Init both ClientHandler and RoomHandler
+    //Init both ClientHandler object and RoomHandler object
+    // Client handler handle communication with a client
+    //Room handler handle game logic
     ClientHandler clientHandler;
     RoomHandler roomHandler(clientHandler);
     while (true) {
         sockaddr_in clientAddr;
         socklen_t clientAddrLen = sizeof(clientAddr);
+        // Accepting new client
         int clientSocket = accept(serverSocket, nullptr, nullptr);
         if (clientSocket < 0) {
             perror("Accept failed");
@@ -143,13 +144,18 @@ int main() {
         }
         std::cout << "New client connected\n";
         std::cout << "Connecttion from " << inet_ntoa(clientAddr.sin_addr) << " On port:" <<ntohs(clientAddr.sin_port);
+
+        // Helpful unordered_map that will bind clientSocket with a struct ClientInfo that contains a nick
         clientInfoMap[clientSocket] = {};
+        //Vector that contain all client sockets
         clientSockets.push_back(clientSocket);
         printAllClients();
+        // Starting a new thread for a client, which are handled by clientHandler class
         std::thread([&clientHandler, clientSocket, &roomHandler]() {
             clientHandler.handleClient(clientSocket, roomHandler);
         }).detach();
     }
+    //Closing the server socket
     close(serverSocket);
     return 0;
 }

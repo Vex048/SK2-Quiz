@@ -36,12 +36,11 @@ class ClientHandler{
     void handleClient(int clientsocket,RoomHandler& roomHandler);
     int readMessage(int clientFd, char * buffer,int bufSize,RoomHandler& roomHandler);
     void manageMessage(json data,int clientFd,RoomHandler& roomHandler);
-    //void RemovePlayerFromRoom(json data,int clientsocket);
-    //void handlePlayer(json data,int clientsocket);
+
     void handleNickname(json data,int clientsocket);
     void GetAnswerFromClient(json data,int clientFd,RoomHandler& roomHandler);
     void disconnectClient(int clientFd,RoomHandler& roomHandler);
-    //void disconnectClient(int clientFd);
+
     void sendToClientsRoomsInfo(int clientsocket);
     void sendToAllClients(std::string response);
     void sendToClient(int clientsocket,std::string message);
@@ -51,5 +50,4 @@ class ClientHandler{
     void sendToRoomClientsRoomsInfo(std::string room_name);
     void sendToClientInfoRooms(int clientsocket);
     std::string getRoomsInfo();
-    //void checkIfGameMaster(int clientsocket,Room& room);
 };
