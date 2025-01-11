@@ -62,7 +62,8 @@ class Room {
         std::chrono::time_point<std::chrono::system_clock> getTimeStampPlayerLeftRoom();
         std::chrono::time_point<std::chrono::system_clock> getTimeStampPlayerQuestionUpdate();  
 
-    
+        
+
         void setGameMaster(std::string player);
         std::string getNewGameMaster();
         std::string getGameMaster(); 

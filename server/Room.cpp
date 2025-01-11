@@ -50,6 +50,7 @@ void Room::setMaxQuestions(int maxQ){
     maxQuestions = maxQ;
 }
 
+
 void Room::addPlayer(int playerSocket,std::unordered_map<int, clientInfo> &clientInfoMap) {
     if (players.size() < maxPlayers) {
         std::string playerNick = clientInfoMap[playerSocket].nick;

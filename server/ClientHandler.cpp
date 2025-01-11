@@ -122,7 +122,10 @@ void ClientHandler::GetAnswerFromClient(json data,int clientFd,RoomHandler& room
     return;
 }
 
-
+void ClientHandler::sendToClient(int clientsocket,std::string message){
+    message= message + "\n";
+    send(clientsocket, message.c_str(), message.size(), 0);
+}
 
 void ClientHandler::disconnectClient(int clientFd,RoomHandler& roomHandler){
     mutexClientInfoMap.lock();
@@ -164,7 +167,7 @@ void ClientHandler::sendToClientsRoomsInfo(int clientsocket){
         response["rooms"] = jf["rooms"];
     }
     else{
-        response["status"] = "failure";
+        response["status"] = "no_rooms";
     }
 
     std::string responseStr = response.dump();

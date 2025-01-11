@@ -44,5 +44,6 @@ class ClientHandler{
     //void disconnectClient(int clientFd);
     void sendToClientsRoomsInfo(int clientsocket);
     void sendToAllClients(std::string response);
+    void sendToClient(int clientsocket,std::string message);
     //void checkIfGameMaster(int clientsocket,Room& room);
 };

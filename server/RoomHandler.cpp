@@ -136,20 +136,46 @@ void RoomHandler::roomsToFile(std::vector<Room>& rooms){
     writeToFile(data);
 }
 
+bool RoomHandler::checkIfRoomNameOpen(std::string room_name){
+
+    if (Rooms.size() == 0){
+        return false;
+    }
+    for (Room& room : Rooms) {
+        std::string name = room.getRoomName();
+        if (name == room_name){
+            return true;
+        }      
+    }
+    return false;
+}
+
 void RoomHandler::handleRoomCreate(json data,int clientsocket){
     if (data["name"] != nullptr){
         mutexRooms.lock();
         std::string room_name = data["name"];
         std::cout << room_name << std::endl;
+        json response;
+        bool ifExist = checkIfRoomNameOpen(room_name);
+        if (ifExist == true){
+        response["status"] = "failure";
+        response["type"] = "room_create";
+        std::string responseStr = response.dump();
+        clientHandler.sendToClient(clientsocket,responseStr);
+        mutexRooms.unlock();
+        return;
+        }
+        else{
+            response["status"] = "succes";
+            response["type"] = "room_create";
+        }
         Room newRoom(room_name);
         newRoom.addPlayer(clientsocket,clientInfoMap);
         newRoom.setGameMaster(clientInfoMap[clientsocket].nick);
         Rooms.push_back(newRoom);
         std::cout << "Here room should be stored in json" << std::endl;
         roomsToFile(Rooms);
-        json response;
-        response["status"] = "success";
-        response["type"] = "room_create";
+        
         response["room_name"] = newRoom.name;
         response["players"] = newRoom.players;
         response["gameMaster"] = newRoom.getGameMaster();
@@ -161,6 +187,7 @@ void RoomHandler::handleRoomCreate(json data,int clientsocket){
         std::thread([this, roomName = newRoom.getRoomName()]() {
             this->handleRoom(roomName);
             }).detach();
+        
     }
     else{
         std::cout << "Room name is equall to null" << std::endl;
@@ -209,20 +236,32 @@ void RoomHandler::checkIfGameMaster(int clientsocket,Room& room){
 void RoomHandler::handlePlayer(json data,int clientsocket){
     std::string room_name = data["name"];
     mutexRooms.lock();
+    
     for (Room& room : Rooms) {
         std::string name = room.getRoomName();
-        if (name == room_name){
-            
+        if (name == room_name){ 
+            json response;
+            response["type"] = "player_join_room";
+            response["room_name"] = room.name;
             mutexClientInfoMap.lock();
-            room.addPlayer(clientsocket,clientInfoMap);
-            std::cout << "Player joined a lobby,number of players: " << room.getNumberOfPlayers() << std::endl;
-            if (room.getGameMaster() == ""){
-                room.setGameMaster(clientInfoMap[clientsocket].nick);
+            if (room.getNumberOfPlayers() >= 5){
+                response["status"] = "failure";
             }
-            mutexClientInfoMap.unlock();
-            roomsToFile(Rooms);
-            clientHandler.sendToClientsRoomsInfo(clientsocket);
-            
+            else{
+                response["status"] = "succes";
+                room.addPlayer(clientsocket,clientInfoMap);
+                std::cout << "Player joined a lobby,number of players: " << room.getNumberOfPlayers() << std::endl;
+                if (room.getGameMaster() == ""){
+                    room.setGameMaster(clientInfoMap[clientsocket].nick);
+                }
+                mutexClientInfoMap.unlock();
+                
+                roomsToFile(Rooms);
+                clientHandler.sendToClientsRoomsInfo(clientsocket);
+            }
+            std::string responseStr = response.dump();
+            clientHandler.sendToClient(clientsocket,responseStr);
+           
         }   
     }
     mutexRooms.unlock();

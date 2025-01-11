@@ -46,4 +46,5 @@ class RoomHandler{
     void handlePlayer(json data,int clientsocket);
     void StartGame(json data,int clientsocket);
     void toLowerCase(std::string &str);
+    bool checkIfRoomNameOpen(std::string room_name);
 };

@@ -41,16 +41,17 @@ class Lobby(tk.Frame):
         room_name = tk.simpledialog.askstring("Create Room", "Enter room name:")
         if room_name is None:
             return
-        messagebox.showinfo("Success", f"Room '{room_name}' created!")
+        
         message = {
             "type": "create_room",
             "name": room_name
         }
         jsonStringRoom = json.dumps(message) + "\n"
         self.socket.send(jsonStringRoom.encode("utf-8"))
-        self.refresh_rooms()  
-        self.frameManager.frames["GameRoom"].setRoomName(room_name)
-        self.frameManager.showFrame("GameRoom")
+        # self.refresh_rooms()
+        # messagebox.showinfo("Success", f"Room '{room_name}' created!")  
+        # self.frameManager.frames["GameRoom"].setRoomName(room_name)
+        # self.frameManager.showFrame("GameRoom")
         
 
     def join_room(self):
@@ -77,9 +78,9 @@ class Lobby(tk.Frame):
         }
         jsonStringPlayer = json.dumps(message) + "\n"
         self.socket.send(jsonStringPlayer.encode("utf-8"))
-        self.getCurrentRooms()
-        self.frameManager.frames["GameRoom"].setRoomName(room_name)
-        self.frameManager.showFrame("GameRoom")
+        #self.getCurrentRooms()
+        # self.frameManager.frames["GameRoom"].setRoomName(room_name)
+        # self.frameManager.showFrame("GameRoom")
 
     def getPlayersFromRoom(self,roomname):
         players = self.rooms[roomname]["players"]
@@ -94,23 +95,25 @@ class Lobby(tk.Frame):
 
     def handleUpdate(self,update):
         if update['type'] == "room_create":
-            room_name = update["room_name"]
-            players=update['players']
-            gameMaster = update['gameMaster']
-            d = {"name":room_name,"players":players,"status":"Waiting","gameMaster":gameMaster}
-            self.rooms.append(d)
-            for room in self.rooms:
-                if self.frameManager.getNick() in room["players"]:
-                    if self.frameManager.getNick() == gameMaster:
-                        self.frameManager.frames["GameRoom"].isGameMaster=True 
-                        self.frameManager.frames["GameRoom"].updateGameMasterButton()                                    
-                    self.frameManager.frames["GameRoom"].addPlayerListbox(room["players"])
-            self.refresh_rooms()
-        elif update['type'] == "room_update":
-            room_name = update["room_name"]
-            players=update['players']
-            self.rooms[room_name]["players"] = players
-            self.refresh_rooms()
+            if update['status'] == "succes":
+                room_name = update["room_name"]
+                players=update['players']
+                gameMaster = update['gameMaster']
+                d = {"name":room_name,"players":players,"status":"Waiting","gameMaster":gameMaster}
+                self.rooms.append(d)
+                for room in self.rooms:
+                    if self.frameManager.getNick() in room["players"]:
+                        if self.frameManager.getNick() == gameMaster:
+                            messagebox.showinfo("Succes", f"Room '{room_name}' created!")
+                            self.frameManager.frames["GameRoom"].setRoomName(room_name)
+                            self.frameManager.showFrame("GameRoom")
+                            self.frameManager.frames["GameRoom"].isGameMaster=True 
+                            self.frameManager.frames["GameRoom"].updateGameMasterButton()                                    
+                        self.frameManager.frames["GameRoom"].addPlayerListbox(room["players"])
+                self.refresh_rooms()
+            else:
+                messagebox.showerror("Error", "Couldnt create a room, try other room name")
+
         elif update['type'] == "rooms_info":
             if update["status"] == "succes":
                 self.rooms=[]
@@ -131,7 +134,18 @@ class Lobby(tk.Frame):
             else:
                 self.rooms=[]
                 self.refresh_rooms()
-                print("No rooms name")
+        elif update['type'] == "player_join_room":
+            if update["status"] == "succes":
+                room_name = update["room_name"]
+                self.getCurrentRooms()
+                self.frameManager.frames["GameRoom"].setRoomName(room_name)
+                self.frameManager.showFrame("GameRoom")
+            else:
+                messagebox.showerror("Error", "Trouble with joining to room, please try again")
+        else:
+            self.rooms=[]
+            self.refresh_rooms()
+            print("No rooms name")
 
 
 
