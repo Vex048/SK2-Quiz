@@ -60,6 +60,186 @@
                 "questionText": "Which country has won the most Olympic gold medals in hockey?",
                 "options": ["India", "Australia", "Germany", "Netherlands"],
                 "correctAnswer": "India"
+            },
+            {
+                "questionId": 11,
+                "questionText": "Which NFL team has won the most Super Bowls?",
+                "options": ["New England Patriots", "Pittsburgh Steelers", "San Francisco 49ers", "Dallas Cowboys"],
+                "correctAnswer": "New England Patriots"
+            },
+            {
+                "questionId": 12,
+                "questionText": "Who has won the most NBA championships as a player?",
+                "options": ["Michael Jordan", "LeBron James", "Bill Russell", "Kobe Bryant"],
+                "correctAnswer": "Bill Russell"
+            },
+            {
+                "questionId": 13,
+                "questionText": "Which country has won the most Cricket World Cups?",
+                "options": ["India", "Australia", "West Indies", "England"],
+                "correctAnswer": "Australia"
+            },
+            {
+                "questionId": 14,
+                "questionText": "What is the national sport of Canada?",
+                "options": ["Ice Hockey", "Lacrosse", "Basketball", "Baseball"],
+                "correctAnswer": "Lacrosse"
+            },
+            {
+                "questionId": 15,
+                "questionText": "Which boxer is known as 'The Greatest'?",
+                "options": ["Mike Tyson", "Muhammad Ali", "Floyd Mayweather", "Joe Frazier"],
+                "correctAnswer": "Muhammad Ali"
+            },
+            {
+                "questionId": 16,
+                "questionText": "Which city hosted the first modern Olympic Games in 1896?",
+                "options": ["Athens", "Paris", "London", "Rome"],
+                "correctAnswer": "Athens"
+            },
+            {
+                "questionId": 17,
+                "questionText": "Which footballer has won the most Ballon d'Or awards?",
+                "options": ["Lionel Messi", "Cristiano Ronaldo", "Michel Platini", "Johan Cruyff"],
+                "correctAnswer": "Lionel Messi"
+            },
+            {
+                "questionId": 18,
+                "questionText": "How long is an official marathon?",
+                "options": ["26.2 miles", "24.5 miles", "22.8 miles", "27.3 miles"],
+                "correctAnswer": "26.2 miles"
+            },
+            {
+                "questionId": 19,
+                "questionText": "Which country has won the most FIFA Women's World Cups?",
+                "options": ["USA", "Germany", "Norway", "Brazil"],
+                "correctAnswer": "USA"
+            },
+            {
+                "questionId": 20,
+                "questionText": "Which sport uses the terms 'love' and 'deuce'?",
+                "options": ["Tennis", "Badminton", "Table Tennis", "Squash"],
+                "correctAnswer": "Tennis"
+            },
+            {
+                "questionId": 21,
+                "questionText": "Who won the first ever NBA championship?",
+                "options": ["Boston Celtics", "Philadelphia Warriors", "Minneapolis Lakers", "Chicago Bulls"],
+                "correctAnswer": "Philadelphia Warriors"
+            },
+            {
+                "questionId": 22,
+                "questionText": "How many points is a touchdown worth in American football?",
+                "options": ["6", "3", "7", "5"],
+                "correctAnswer": "6"
+            },
+            {
+                "questionId": 23,
+                "questionText": "Who has won the most Tour de France titles?",
+                "options": ["Lance Armstrong", "Eddy Merckx", "Chris Froome", "Miguel Indurain"],
+                "correctAnswer": "Eddy Merckx"
+            },
+            {
+                "questionId": 24,
+                "questionText": "In which sport can you score a 'hole in one'?",
+                "options": ["Golf", "Tennis", "Cricket", "Baseball"],
+                "correctAnswer": "Golf"
+            },
+            {
+                "questionId": 25,
+                "questionText": "Which soccer player is known as 'O Rei' (The King)?",
+                "options": ["Diego Maradona", "Pelé", "Zinedine Zidane", "Ronaldinho"],
+                "correctAnswer": "Pelé"
+            },
+            {
+                "questionId": 26,
+                "questionText": "What is the name of the trophy awarded to the NHL champion?",
+                "options": ["Stanley Cup", "Claret Jug", "Lombardi Trophy", "Heisman Trophy"],
+                "correctAnswer": "Stanley Cup"
+            },
+            {
+                "questionId": 27,
+                "questionText": "How many players are on a standard soccer team?",
+                "options": ["9", "10", "11", "12"],
+                "correctAnswer": "11"
+            },
+            {
+                "questionId": 28,
+                "questionText": "Which country has won the most Rugby World Cups?",
+                "options": ["New Zealand", "South Africa", "Australia", "England"],
+                "correctAnswer": "New Zealand"
+            },
+            {
+                "questionId": 29,
+                "questionText": "Which athlete has won the most Olympic medals?",
+                "options": ["Michael Phelps", "Larisa Latynina", "Usain Bolt", "Simone Biles"],
+                "correctAnswer": "Michael Phelps"
+            },
+            {
+                "questionId": 30,
+                "questionText": "Which stadium is known as 'The Theatre of Dreams'?",
+                "options": ["Wembley Stadium", "Old Trafford", "Anfield", "Camp Nou"],
+                "correctAnswer": "Old Trafford"
+            },
+            {
+                "questionId": 31,
+                "questionText": "Which country won the 2022 FIFA World Cup?",
+                "options": ["Argentina", "France", "Brazil", "Germany"],
+                "correctAnswer": "Argentina"
+            },
+            {
+                "questionId": 32,
+                "questionText": "Which Grand Slam tournament is played on clay courts?",
+                "options": ["Wimbledon", "US Open", "French Open", "Australian Open"],
+                "correctAnswer": "French Open"
+            },
+            {
+                "questionId": 33,
+                "questionText": "Which city hosted the 2021 Summer Olympics?",
+                "options": ["Tokyo", "Beijing", "Paris", "London"],
+                "correctAnswer": "Tokyo"
+            },
+            {
+                "questionId": 34,
+                "questionText": "Which team has won the most English Premier League titles?",
+                "options": ["Manchester United", "Liverpool", "Arsenal", "Chelsea"],
+                "correctAnswer": "Manchester United"
+            },
+            {
+                "questionId": 35,
+                "questionText": "Which baseball team has won the most World Series titles?",
+                "options": ["Boston Red Sox", "New York Yankees", "Los Angeles Dodgers", "Chicago Cubs"],
+                "correctAnswer": "New York Yankees"
+            },
+            {
+                "questionId": 36,
+                "questionText": "Who is the all-time leading goal scorer in the FIFA World Cup?",
+                "options": ["Ronaldo Nazário", "Miroslav Klose", "Pelé", "Lionel Messi"],
+                "correctAnswer": "Miroslav Klose"
+            },
+            {
+                "questionId": 37,
+                "questionText": "What is the official distance of a standard Olympic swimming pool?",
+                "options": ["25 meters", "50 meters", "100 meters", "200 meters"],
+                "correctAnswer": "50 meters"
+            },
+            {
+                "questionId": 38,
+                "questionText": "Who is the most decorated gymnast in Olympic history?",
+                "options": ["Simone Biles", "Nadia Comaneci", "Larisa Latynina", "Shannon Miller"],
+                "correctAnswer": "Larisa Latynina"
+            },
+            {
+                "questionId": 39,
+                "questionText": "What is the maximum break in snooker?",
+                "options": ["147", "155", "200", "160"],
+                "correctAnswer": "147"
+            },
+            {
+                "questionId": 40,
+                "questionText": "Which sport is associated with Wimbledon?",
+                "options": ["Tennis", "Cricket", "Golf", "Badminton"],
+                "correctAnswer": "Tennis"
             }
         ],
         "history": [
@@ -122,6 +302,186 @@
                 "questionText": "What was the primary language spoken in the Roman Empire?",
                 "options": ["Latin", "Greek", "Italian", "Spanish"],
                 "correctAnswer": "Latin"
+            },
+            {
+                "questionId": 11,
+                "questionText": "Who wrote the Declaration of Independence?",
+                "options": ["Thomas Jefferson", "George Washington", "John Adams", "James Madison"],
+                "correctAnswer": "Thomas Jefferson"
+            },
+            {
+                "questionId": 12,
+                "questionText": "Which year did World War I begin?",
+                "options": ["1914", "1918", "1939", "1945"],
+                "correctAnswer": "1914"
+            },
+            {
+                "questionId": 13,
+                "questionText": "Who was the last Pharaoh of Egypt?",
+                "options": ["Cleopatra", "Ramses II", "Tutankhamun", "Hatshepsut"],
+                "correctAnswer": "Cleopatra"
+            },
+            {
+                "questionId": 14,
+                "questionText": "What was the name of the first successful English settlement in America?",
+                "options": ["Jamestown", "Plymouth", "Roanoke", "Boston"],
+                "correctAnswer": "Jamestown"
+            },
+            {
+                "questionId": 15,
+                "questionText": "Who was the first Emperor of China?",
+                "options": ["Qin Shi Huang", "Kublai Khan", "Liu Bang", "Sun Yat-sen"],
+                "correctAnswer": "Qin Shi Huang"
+            },
+            {
+                "questionId": 16,
+                "questionText": "Which U.S. President served the longest term?",
+                "options": ["Franklin D. Roosevelt", "George Washington", "Abraham Lincoln", "Theodore Roosevelt"],
+                "correctAnswer": "Franklin D. Roosevelt"
+            },
+            {
+                "questionId": 17,
+                "questionText": "Which event marked the start of the French Revolution?",
+                "options": ["Storming of the Bastille", "Reign of Terror", "Execution of Louis XVI", "Battle of Waterloo"],
+                "correctAnswer": "Storming of the Bastille"
+            },
+            {
+                "questionId": 18,
+                "questionText": "Who was the leader of the Soviet Union during World War II?",
+                "options": ["Joseph Stalin", "Vladimir Lenin", "Nikita Khrushchev", "Leon Trotsky"],
+                "correctAnswer": "Joseph Stalin"
+            },
+            {
+                "questionId": 19,
+                "questionText": "What year did the Berlin Wall fall?",
+                "options": ["1989", "1991", "1975", "1969"],
+                "correctAnswer": "1989"
+            },
+            {
+                "questionId": 20,
+                "questionText": "Which treaty ended World War I?",
+                "options": ["Treaty of Versailles", "Treaty of Paris", "Treaty of Tordesillas", "Treaty of Ghent"],
+                "correctAnswer": "Treaty of Versailles"
+            },
+            {
+                "questionId": 21,
+                "questionText": "Who was the first Tsar of Russia?",
+                "options": ["Ivan the Terrible", "Peter the Great", "Nicholas II", "Catherine the Great"],
+                "correctAnswer": "Ivan the Terrible"
+            },
+            {
+                "questionId": 22,
+                "questionText": "What was the name of the U.S. project to develop the atomic bomb?",
+                "options": ["Manhattan Project", "Apollo Program", "Operation Overlord", "Project Blue Book"],
+                "correctAnswer": "Manhattan Project"
+            },
+            {
+                "questionId": 23,
+                "questionText": "Which war was fought between the British and Zulu Kingdom in 1879?",
+                "options": ["Anglo-Zulu War", "Boer War", "Opium War", "Seven Years' War"],
+                "correctAnswer": "Anglo-Zulu War"
+            },
+            {
+                "questionId": 24,
+                "questionText": "Who was assassinated in Sarajevo in 1914, triggering World War I?",
+                "options": ["Archduke Franz Ferdinand", "Gavrilo Princip", "Otto von Bismarck", "Kaiser Wilhelm II"],
+                "correctAnswer": "Archduke Franz Ferdinand"
+            },
+            {
+                "questionId": 25,
+                "questionText": "What was the ancient Greek city-state known for its military prowess?",
+                "options": ["Sparta", "Athens", "Corinth", "Delphi"],
+                "correctAnswer": "Sparta"
+            },
+            {
+                "questionId": 26,
+                "questionText": "Which civilization built the Great Pyramid of Giza?",
+                "options": ["Egyptians", "Mayans", "Romans", "Babylonians"],
+                "correctAnswer": "Egyptians"
+            },
+            {
+                "questionId": 27,
+                "questionText": "Which document, signed in 1215, limited the power of the English monarch?",
+                "options": ["Magna Carta", "Bill of Rights", "Declaration of Independence", "Habeas Corpus"],
+                "correctAnswer": "Magna Carta"
+            },
+            {
+                "questionId": 28,
+                "questionText": "Which war was known as 'The Great War' before World War II?",
+                "options": ["World War I", "Napoleonic Wars", "Seven Years' War", "Crimean War"],
+                "correctAnswer": "World War I"
+            },
+            {
+                "questionId": 29,
+                "questionText": "Who was the longest reigning British monarch before Queen Elizabeth II?",
+                "options": ["Queen Victoria", "King George III", "Henry VIII", "Queen Anne"],
+                "correctAnswer": "Queen Victoria"
+            },
+            {
+                "questionId": 30,
+                "questionText": "What was the first dynasty of China?",
+                "options": ["Xia", "Qin", "Han", "Tang"],
+                "correctAnswer": "Xia"
+            },
+            {
+                "questionId": 31,
+                "questionText": "Who was the leader of Nazi Germany during World War II?",
+                "options": ["Adolf Hitler", "Joseph Goebbels", "Heinrich Himmler", "Hermann Göring"],
+                "correctAnswer": "Adolf Hitler"
+            },
+            {
+                "questionId": 32,
+                "questionText": "Which battle marked the end of Napoleon’s rule in 1815?",
+                "options": ["Battle of Waterloo", "Battle of Austerlitz", "Battle of Trafalgar", "Battle of Leipzig"],
+                "correctAnswer": "Battle of Waterloo"
+            },
+            {
+                "questionId": 33,
+                "questionText": "What ancient civilization built the Parthenon?",
+                "options": ["Greeks", "Romans", "Egyptians", "Persians"],
+                "correctAnswer": "Greeks"
+            },
+            {
+                "questionId": 34,
+                "questionText": "Who discovered America in 1492?",
+                "options": ["Christopher Columbus", "Marco Polo", "Leif Erikson", "Amerigo Vespucci"],
+                "correctAnswer": "Christopher Columbus"
+            },
+            {
+                "questionId": 35,
+                "questionText": "Which country was responsible for the Renaissance?",
+                "options": ["Italy", "France", "Germany", "England"],
+                "correctAnswer": "Italy"
+            },
+            {
+                "questionId": 36,
+                "questionText": "What was the name of the first artificial satellite launched into space?",
+                "options": ["Sputnik 1", "Apollo 11", "Voyager 1", "Luna 2"],
+                "correctAnswer": "Sputnik 1"
+            },
+            {
+                "questionId": 37,
+                "questionText": "Which civilization invented the wheel?",
+                "options": ["Mesopotamians", "Romans", "Chinese", "Greeks"],
+                "correctAnswer": "Mesopotamians"
+            },
+            {
+                "questionId": 38,
+                "questionText": "Who was the first person to circumnavigate the globe?",
+                "options": ["Ferdinand Magellan", "James Cook", "Marco Polo", "Vasco da Gama"],
+                "correctAnswer": "Ferdinand Magellan"
+            },
+            {
+                "questionId": 39,
+                "questionText": "Which war was fought between the U.S. and Vietnam?",
+                "options": ["Vietnam War", "Korean War", "Gulf War", "World War II"],
+                "correctAnswer": "Vietnam War"
+            },
+            {
+                "questionId": 40,
+                "questionText": "Which empire was ruled by Julius Caesar?",
+                "options": ["Roman Empire", "Ottoman Empire", "Byzantine Empire", "Persian Empire"],
+                "correctAnswer": "Roman Empire"
             }
         ],
 
@@ -185,7 +545,188 @@
             "questionText": "Which ocean is the largest by surface area?",
             "options": ["Pacific Ocean", "Atlantic Ocean", "Indian Ocean", "Arctic Ocean"],
             "correctAnswer": "Pacific Ocean"
+        },
+        {
+            "questionId": 11,
+            "questionText": "Which U.S. state has the most islands?",
+            "options": ["Alaska", "Hawaii", "Florida", "California"],
+            "correctAnswer": "Alaska"
+        },
+        {
+            "questionId": 12,
+            "questionText": "What is the longest mountain range in the world?",
+            "options": ["Andes", "Himalayas", "Rockies", "Alps"],
+            "correctAnswer": "Andes"
+        },
+        {
+            "questionId": 13,
+            "questionText": "Which country has the most time zones?",
+            "options": ["France", "Russia", "USA", "China"],
+            "correctAnswer": "France"
+        },
+        {
+            "questionId": 14,
+            "questionText": "Which river flows through Egypt?",
+            "options": ["Nile", "Amazon", "Yangtze", "Mississippi"],
+            "correctAnswer": "Nile"
+        },
+        {
+            "questionId": 15,
+            "questionText": "Which continent has the most countries?",
+            "options": ["Africa", "Asia", "Europe", "South America"],
+            "correctAnswer": "Africa"
+        },
+        {
+            "questionId": 16,
+            "questionText": "What is the capital of Canada?",
+            "options": ["Ottawa", "Toronto", "Vancouver", "Montreal"],
+            "correctAnswer": "Ottawa"
+        },
+        {
+            "questionId": 17,
+            "questionText": "Which is the only country that borders both the Atlantic and Pacific Oceans?",
+            "options": ["Colombia", "United States", "Mexico", "Panama"],
+            "correctAnswer": "Colombia"
+        },
+        {
+            "questionId": 18,
+            "questionText": "What is the official language of Brazil?",
+            "options": ["Portuguese", "Spanish", "English", "French"],
+            "correctAnswer": "Portuguese"
+        },
+        {
+            "questionId": 19,
+            "questionText": "What is the driest place on Earth?",
+            "options": ["Atacama Desert", "Sahara Desert", "Antarctica", "Gobi Desert"],
+            "correctAnswer": "Atacama Desert"
+        },
+        {
+            "questionId": 20,
+            "questionText": "Which African country has the largest population?",
+            "options": ["Nigeria", "Egypt", "South Africa", "Ethiopia"],
+            "correctAnswer": "Nigeria"
+        },
+        {
+            "questionId": 21,
+            "questionText": "Which U.S. state has the longest coastline?",
+            "options": ["Alaska", "California", "Florida", "Texas"],
+            "correctAnswer": "Alaska"
+        },
+        {
+            "questionId": 22,
+            "questionText": "What is the name of the large reef system off the coast of Australia?",
+            "options": ["Great Barrier Reef", "Coral Triangle", "Mesoamerican Reef", "Belize Barrier Reef"],
+            "correctAnswer": "Great Barrier Reef"
+        },
+        {
+            "questionId": 23,
+            "questionText": "What is the capital of South Africa?",
+            "options": ["Pretoria", "Cape Town", "Johannesburg", "Durban"],
+            "correctAnswer": "Pretoria"
+        },
+        {
+            "questionId": 24,
+            "questionText": "Which country has the highest number of volcanoes?",
+            "options": ["Indonesia", "Japan", "United States", "Philippines"],
+            "correctAnswer": "Indonesia"
+        },
+        {
+            "questionId": 25,
+            "questionText": "What is the name of the largest island in the world?",
+            "options": ["Greenland", "New Guinea", "Borneo", "Madagascar"],
+            "correctAnswer": "Greenland"
+        },
+        {
+            "questionId": 26,
+            "questionText": "Which country is known as the Land of a Thousand Lakes?",
+            "options": ["Finland", "Canada", "Sweden", "Norway"],
+            "correctAnswer": "Finland"
+        },
+        {
+            "questionId": 27,
+            "questionText": "Which is the most populated city in the world?",
+            "options": ["Tokyo", "Shanghai", "Delhi", "São Paulo"],
+            "correctAnswer": "Tokyo"
+        },
+        {
+            "questionId": 28,
+            "questionText": "Which continent is the coldest?",
+            "options": ["Antarctica", "North America", "Europe", "Asia"],
+            "correctAnswer": "Antarctica"
+        },
+        {
+            "questionId": 29,
+            "questionText": "What is the capital of Argentina?",
+            "options": ["Buenos Aires", "Santiago", "Lima", "Montevideo"],
+            "correctAnswer": "Buenos Aires"
+        },
+        {
+            "questionId": 30,
+            "questionText": "Which European country has the most castles?",
+            "options": ["Germany", "France", "United Kingdom", "Poland"],
+            "correctAnswer": "Germany"
+        },
+        {
+            "questionId": 31,
+            "questionText": "What is the deepest ocean trench in the world?",
+            "options": ["Mariana Trench", "Tonga Trench", "Java Trench", "Puerto Rico Trench"],
+            "correctAnswer": "Mariana Trench"
+        },
+        {
+            "questionId": 32,
+            "questionText": "Which sea separates Europe from Africa?",
+            "options": ["Mediterranean Sea", "Red Sea", "Black Sea", "Baltic Sea"],
+            "correctAnswer": "Mediterranean Sea"
+        },
+        {
+            "questionId": 33,
+            "questionText": "Which two countries share the longest international border?",
+            "options": ["USA & Canada", "Russia & China", "Brazil & Argentina", "India & Pakistan"],
+            "correctAnswer": "USA & Canada"
+        },
+        {
+            "questionId": 34,
+            "questionText": "Which desert covers most of northern Africa?",
+            "options": ["Sahara", "Kalahari", "Gobi", "Mojave"],
+            "correctAnswer": "Sahara"
+        },
+        {
+            "questionId": 35,
+            "questionText": "Which country has the tallest waterfall in the world?",
+            "options": ["Venezuela", "Norway", "Canada", "USA"],
+            "correctAnswer": "Venezuela"
+        },
+        {
+            "questionId": 36,
+            "questionText": "Which capital city is closest to the equator?",
+            "options": ["Quito", "Nairobi", "Jakarta", "Brasília"],
+            "correctAnswer": "Quito"
+        },
+        {
+            "questionId": 37,
+            "questionText": "Which U.S. state has the most national parks?",
+            "options": ["California", "Alaska", "Utah", "Colorado"],
+            "correctAnswer": "California"
+        },
+        {
+            "questionId": 38,
+            "questionText": "Which country is home to Mount Kilimanjaro?",
+            "options": ["Tanzania", "Kenya", "Uganda", "South Africa"],
+            "correctAnswer": "Tanzania"
+        },
+        {
+            "questionId": 39,
+            "questionText": "Which is the only continent without a desert?",
+            "options": ["Europe", "Asia", "South America", "North America"],
+            "correctAnswer": "Europe"
+        },
+        {
+            "questionId": 40,
+            "questionText": "Which country has the longest coastline in the world?",
+            "options": ["Canada", "Australia", "USA", "Russia"],
+            "correctAnswer": "Canada"
         }
+
 ],
         "music": [
         {
@@ -247,7 +788,188 @@
             "questionText": "Which band is known for the song 'Hotel California'?",
             "options": ["Eagles", "Fleetwood Mac", "The Doors", "The Beach Boys"],
             "correctAnswer": "Eagles"
+    },
+    {
+        "questionId": 11,
+        "questionText": "Who was the lead singer of Queen?",
+        "options": ["Freddie Mercury", "Mick Jagger", "David Bowie", "Robert Plant"],
+        "correctAnswer": "Freddie Mercury"
+    },
+    {
+        "questionId": 12,
+        "questionText": "Which musician is known for the song 'Purple Rain'?",
+        "options": ["Prince", "David Bowie", "Michael Jackson", "Elton John"],
+        "correctAnswer": "Prince"
+    },
+    {
+        "questionId": 13,
+        "questionText": "Who is known as the 'Queen of Soul'?",
+        "options": ["Aretha Franklin", "Whitney Houston", "Tina Turner", "Mariah Carey"],
+        "correctAnswer": "Aretha Franklin"
+    },
+    {
+        "questionId": 14,
+        "questionText": "Which instrument does Yo-Yo Ma play?",
+        "options": ["Cello", "Violin", "Piano", "Flute"],
+        "correctAnswer": "Cello"
+    },
+    {
+        "questionId": 15,
+        "questionText": "Which singer was known as 'Ol' Blue Eyes'?",
+        "options": ["Frank Sinatra", "Elvis Presley", "Dean Martin", "Bing Crosby"],
+        "correctAnswer": "Frank Sinatra"
+    },
+    {
+        "questionId": 16,
+        "questionText": "Who wrote the song 'Imagine'?",
+        "options": ["John Lennon", "Paul McCartney", "George Harrison", "Elton John"],
+        "correctAnswer": "John Lennon"
+    },
+    {
+        "questionId": 17,
+        "questionText": "What was Elvis Presley’s first hit song?",
+        "options": ["Heartbreak Hotel", "Hound Dog", "Jailhouse Rock", "Blue Suede Shoes"],
+        "correctAnswer": "Heartbreak Hotel"
+    },
+    {
+        "questionId": 18,
+        "questionText": "Which band performed 'Smells Like Teen Spirit'?",
+        "options": ["Nirvana", "Pearl Jam", "Foo Fighters", "Soundgarden"],
+        "correctAnswer": "Nirvana"
+    },
+    {
+        "questionId": 19,
+        "questionText": "Who composed 'Swan Lake'?",
+        "options": ["Pyotr Ilyich Tchaikovsky", "Ludwig van Beethoven", "Wolfgang Amadeus Mozart", "Johann Strauss II"],
+        "correctAnswer": "Pyotr Ilyich Tchaikovsky"
+    },
+    {
+        "questionId": 20,
+        "questionText": "Which rapper is known as 'Slim Shady'?",
+        "options": ["Eminem", "Jay-Z", "Kanye West", "Dr. Dre"],
+        "correctAnswer": "Eminem"
+    },
+    {
+        "questionId": 21,
+        "questionText": "Which band released 'Stairway to Heaven'?",
+        "options": ["Led Zeppelin", "The Rolling Stones", "The Beatles", "Pink Floyd"],
+        "correctAnswer": "Led Zeppelin"
+    },
+    {
+        "questionId": 22,
+        "questionText": "What is the best-selling single of all time?",
+        "options": ["White Christmas", "Candle in the Wind", "Shape of You", "I Will Always Love You"],
+        "correctAnswer": "White Christmas"
+    },
+    {
+        "questionId": 23,
+        "questionText": "Who won the first season of American Idol?",
+        "options": ["Kelly Clarkson", "Carrie Underwood", "Jennifer Hudson", "Fantasia Barrino"],
+        "correctAnswer": "Kelly Clarkson"
+    },
+    {
+        "questionId": 24,
+        "questionText": "What was The Beatles’ first number-one hit in the U.S.?",
+        "options": ["I Want to Hold Your Hand", "Love Me Do", "She Loves You", "Help!"],
+        "correctAnswer": "I Want to Hold Your Hand"
+    },
+    {
+        "questionId": 25,
+        "questionText": "Who wrote the ballet 'The Nutcracker'?",
+        "options": ["Pyotr Ilyich Tchaikovsky", "Johann Strauss II", "Ludwig van Beethoven", "Frederic Chopin"],
+        "correctAnswer": "Pyotr Ilyich Tchaikovsky"
+    },
+    {
+        "questionId": 26,
+        "questionText": "Which band released 'Sweet Child O' Mine'?",
+        "options": ["Guns N' Roses", "Bon Jovi", "Aerosmith", "Van Halen"],
+        "correctAnswer": "Guns N' Roses"
+    },
+    {
+        "questionId": 27,
+        "questionText": "Who is the lead singer of Coldplay?",
+        "options": ["Chris Martin", "Thom Yorke", "Bono", "Brandon Flowers"],
+        "correctAnswer": "Chris Martin"
+    },
+    {
+        "questionId": 28,
+        "questionText": "Which artist holds the record for the most Grammy wins?",
+        "options": ["Beyoncé", "Stevie Wonder", "Georg Solti", "Quincy Jones"],
+        "correctAnswer": "Georg Solti"
+    },
+    {
+        "questionId": 29,
+        "questionText": "Who composed the opera 'The Magic Flute'?",
+        "options": ["Wolfgang Amadeus Mozart", "Ludwig van Beethoven", "Giuseppe Verdi", "Richard Wagner"],
+        "correctAnswer": "Wolfgang Amadeus Mozart"
+    },
+    {
+        "questionId": 30,
+        "questionText": "Which singer released the album '25'?",
+        "options": ["Adele", "Taylor Swift", "Beyoncé", "Lana Del Rey"],
+        "correctAnswer": "Adele"
+    },
+    {
+        "questionId": 31,
+        "questionText": "Who wrote the song 'Hallelujah'?",
+        "options": ["Leonard Cohen", "Jeff Buckley", "Bob Dylan", "Paul Simon"],
+        "correctAnswer": "Leonard Cohen"
+    },
+    {
+        "questionId": 32,
+        "questionText": "Which classical composer wrote 'Moonlight Sonata'?",
+        "options": ["Ludwig van Beethoven", "Johann Sebastian Bach", "Franz Schubert", "Wolfgang Amadeus Mozart"],
+        "correctAnswer": "Ludwig van Beethoven"
+    },
+    {
+        "questionId": 33,
+        "questionText": "Who is known for the song 'Rolling in the Deep'?",
+        "options": ["Adele", "Rihanna", "Taylor Swift", "Lady Gaga"],
+        "correctAnswer": "Adele"
+    },
+    {
+        "questionId": 34,
+        "questionText": "Which country did the band ABBA originate from?",
+        "options": ["Sweden", "Norway", "Denmark", "Finland"],
+        "correctAnswer": "Sweden"
+    },
+    {
+        "questionId": 35,
+        "questionText": "Which artist sang 'Like a Rolling Stone'?",
+        "options": ["Bob Dylan", "Bruce Springsteen", "Johnny Cash", "Elton John"],
+        "correctAnswer": "Bob Dylan"
+    },
+    {
+        "questionId": 36,
+        "questionText": "Who is the best-selling female artist of all time?",
+        "options": ["Madonna", "Whitney Houston", "Celine Dion", "Mariah Carey"],
+        "correctAnswer": "Madonna"
+    },
+    {
+        "questionId": 37,
+        "questionText": "Which artist is known for the song 'Uptown Funk'?",
+        "options": ["Mark Ronson", "Bruno Mars", "Justin Timberlake", "Pharrell Williams"],
+        "correctAnswer": "Mark Ronson"
+    },
+    {
+        "questionId": 38,
+        "questionText": "Which instrument is Yo-Yo Ma famous for playing?",
+        "options": ["Cello", "Violin", "Piano", "Trumpet"],
+        "correctAnswer": "Cello"
+    },
+    {
+        "questionId": 39,
+        "questionText": "Which artist was known as the 'Thin White Duke'?",
+        "options": ["David Bowie", "Elton John", "Freddie Mercury", "Iggy Pop"],
+        "correctAnswer": "David Bowie"
+    },
+    {
+        "questionId": 40,
+        "questionText": "What was Taylor Swift’s debut album called?",
+        "options": ["Taylor Swift", "Fearless", "Red", "Speak Now"],
+        "correctAnswer": "Taylor Swift"
     }
+
 ],
         "cultural": [
     {
@@ -309,6 +1031,186 @@
         "questionText": "Which language is primarily spoken in Brazil?",
         "options": ["Portuguese", "Spanish", "French", "English"],
         "correctAnswer": "Portuguese"
+    },
+    {
+        "questionId": 11,
+        "questionText": "Which country is famous for the carnival festival held in Rio de Janeiro?",
+        "options": ["Brazil", "Spain", "Italy", "Mexico"],
+        "correctAnswer": "Brazil"
+    },
+    {
+        "questionId": 12,
+        "questionText": "Which country is known for its cherry blossom festivals?",
+        "options": ["Japan", "South Korea", "China", "Taiwan"],
+        "correctAnswer": "Japan"
+    },
+    {
+        "questionId": 13,
+        "questionText": "Which culture is credited with inventing the first written language?",
+        "options": ["Sumerians", "Egyptians", "Chinese", "Greeks"],
+        "correctAnswer": "Sumerians"
+    },
+    {
+        "questionId": 14,
+        "questionText": "What is the national flower of China?",
+        "options": ["Peony", "Cherry Blossom", "Lotus", "Orchid"],
+        "correctAnswer": "Peony"
+    },
+    {
+        "questionId": 15,
+        "questionText": "Which country is known for its traditional art of origami?",
+        "options": ["Japan", "China", "South Korea", "Thailand"],
+        "correctAnswer": "Japan"
+    },
+    {
+        "questionId": 16,
+        "questionText": "Which traditional Russian doll is designed to fit inside a larger one?",
+        "options": ["Matryoshka", "Babushka", "Nesting Doll", "Kachina"],
+        "correctAnswer": "Matryoshka"
+    },
+    {
+        "questionId": 17,
+        "questionText": "Which ancient civilization built the pyramids of Giza?",
+        "options": ["Egyptians", "Mayans", "Aztecs", "Romans"],
+        "correctAnswer": "Egyptians"
+    },
+    {
+        "questionId": 18,
+        "questionText": "What is the national sport of Japan?",
+        "options": ["Sumo Wrestling", "Judo", "Karate", "Baseball"],
+        "correctAnswer": "Sumo Wrestling"
+    },
+    {
+        "questionId": 19,
+        "questionText": "Which country is known for its cuisine that includes sushi and sashimi?",
+        "options": ["Japan", "China", "Thailand", "Vietnam"],
+        "correctAnswer": "Japan"
+    },
+    {
+        "questionId": 20,
+        "questionText": "What is the most widely spoken language in the world?",
+        "options": ["English", "Mandarin Chinese", "Spanish", "Hindi"],
+        "correctAnswer": "Mandarin Chinese"
+    },
+    {
+        "questionId": 21,
+        "questionText": "Which holiday celebrates the end of slavery in the United States?",
+        "options": ["Juneteenth", "Independence Day", "Martin Luther King Jr. Day", "Labor Day"],
+        "correctAnswer": "Juneteenth"
+    },
+    {
+        "questionId": 22,
+        "questionText": "Which African country is famous for its ancient pyramids besides Egypt?",
+        "options": ["Sudan", "Ethiopia", "Nigeria", "Morocco"],
+        "correctAnswer": "Sudan"
+    },
+    {
+        "questionId": 23,
+        "questionText": "Which European country is famous for its highland bagpipes?",
+        "options": ["Scotland", "Ireland", "Wales", "Germany"],
+        "correctAnswer": "Scotland"
+    },
+    {
+        "questionId": 24,
+        "questionText": "Which religion celebrates Hanukkah?",
+        "options": ["Judaism", "Christianity", "Islam", "Hinduism"],
+        "correctAnswer": "Judaism"
+    },
+    {
+        "questionId": 25,
+        "questionText": "Which festival is famous for its giant tomato fight in Spain?",
+        "options": ["La Tomatina", "San Fermin", "Las Fallas", "Semana Santa"],
+        "correctAnswer": "La Tomatina"
+    },
+    {
+        "questionId": 26,
+        "questionText": "What is the traditional hat worn by cowboys?",
+        "options": ["Stetson", "Sombrero", "Beret", "Fez"],
+        "correctAnswer": "Stetson"
+    },
+    {
+        "questionId": 27,
+        "questionText": "Which Italian city is famous for its canals?",
+        "options": ["Venice", "Rome", "Milan", "Florence"],
+        "correctAnswer": "Venice"
+    },
+    {
+        "questionId": 28,
+        "questionText": "Which country is known for its traditional Maori culture?",
+        "options": ["New Zealand", "Australia", "Fiji", "Hawaii"],
+        "correctAnswer": "New Zealand"
+    },
+    {
+        "questionId": 29,
+        "questionText": "Which South American country is famous for its tango dance?",
+        "options": ["Argentina", "Brazil", "Chile", "Peru"],
+        "correctAnswer": "Argentina"
+    },
+    {
+        "questionId": 30,
+        "questionText": "What is the main ingredient in a traditional Mexican guacamole?",
+        "options": ["Avocado", "Tomato", "Corn", "Beans"],
+        "correctAnswer": "Avocado"
+    },
+    {
+        "questionId": 31,
+        "questionText": "What is the national drink of Scotland?",
+        "options": ["Whisky", "Tea", "Ale", "Cider"],
+        "correctAnswer": "Whisky"
+    },
+    {
+        "questionId": 32,
+        "questionText": "Which U.S. state is known for hula dancing and luaus?",
+        "options": ["Hawaii", "California", "Florida", "Texas"],
+        "correctAnswer": "Hawaii"
+    },
+    {
+        "questionId": 33,
+        "questionText": "Which African country is famous for its coffee production?",
+        "options": ["Ethiopia", "Kenya", "Ivory Coast", "South Africa"],
+        "correctAnswer": "Ethiopia"
+    },
+    {
+        "questionId": 34,
+        "questionText": "Which country is known for its Oktoberfest celebrations?",
+        "options": ["Germany", "Austria", "Switzerland", "Belgium"],
+        "correctAnswer": "Germany"
+    },
+    {
+        "questionId": 35,
+        "questionText": "Which U.S. state is famous for its Mardi Gras celebrations?",
+        "options": ["Louisiana", "Florida", "Texas", "Mississippi"],
+        "correctAnswer": "Louisiana"
+    },
+    {
+        "questionId": 36,
+        "questionText": "Which country is known for its Samurai warrior tradition?",
+        "options": ["Japan", "China", "Mongolia", "South Korea"],
+        "correctAnswer": "Japan"
+    },
+    {
+        "questionId": 37,
+        "questionText": "Which continent is home to the indigenous Inuits?",
+        "options": ["North America", "Asia", "Europe", "Australia"],
+        "correctAnswer": "North America"
+    },
+    {
+        "questionId": 38,
+        "questionText": "Which dance is closely associated with Brazil?",
+        "options": ["Samba", "Tango", "Flamenco", "Waltz"],
+        "correctAnswer": "Samba"
+    },
+    {
+        "questionId": 39,
+        "questionText": "What is the primary religion in Thailand?",
+        "options": ["Buddhism", "Islam", "Christianity", "Hinduism"],
+        "correctAnswer": "Buddhism"
+    },
+    {
+        "questionId": 40,
+        "questionText": "Which country is known for its love of cricket?",
+        "options": ["India", "Brazil", "Japan", "United States"],
+        "correctAnswer": "India"
     }
 ]
 
