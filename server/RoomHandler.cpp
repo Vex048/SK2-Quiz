@@ -126,6 +126,7 @@ void RoomHandler::processGameEvent(Room* room,json questionsJson){
             std::string responseStr = response.dump();
             responseStr = responseStr + "\n";
             // Send points to all clients in room and set a status to waiting
+            clientHandler.sendToRoomClientsRoomsInfo(room->getRoomName());
             room->sendToClientsInRoom(responseStr,nicknameToSocket);
             room->setStatus("Waiting");    
             roomFlagsEvents[room->getRoomName()] = true;
@@ -311,7 +312,10 @@ void RoomHandler::RemovePlayerFromRoom(json data,int clientsocket){
 
                 // Send to client in lobby and this room updated information 
                 clientHandler.sendToLobbyClientsRoomsInfo();
-                clientHandler.sendToRoomClientsRoomsInfo(name);
+                if (room.getStatus() != "Started"){
+                    clientHandler.sendToRoomClientsRoomsInfo(name);
+                }
+                
             }
     
         }

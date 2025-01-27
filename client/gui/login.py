@@ -26,15 +26,22 @@ class Login(tk.Frame):
             messagebox.showerror("Name error", "You cant enter a game as empty space.")
             return
         try:
-            self.socket.connect((self.addres_entry.get(), 8080))
-            self.frameManager.initFrames()
-            self.frameManager.startListening()
+            if not self.is_socket_connected():
+                self.socket.connect((self.addres_entry.get(), 8080))
+                self.addres_entry.config(state="disabled")
+                self.frameManager.initFrames()
+                self.frameManager.startListening()
             self.sendNickToserver(name)
         except Exception as e:
             print(e)
             messagebox.showerror("Network error", "Couldnt find a host.")
         
-
+    def is_socket_connected(self):
+        try:
+            self.socket.send(b'')
+            return True
+        except:
+            return False
 
     def sendNickToserver(self,nick):
         nickname = {

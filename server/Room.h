@@ -26,7 +26,7 @@ class Room {
             name = roomName; 
             status = "Waiting";
             maxPlayers=5;
-            maxQuestions=15;
+            maxQuestions=2;
         };
         //Structure that represent a one question
         struct currentQuestion{
