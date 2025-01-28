@@ -76,11 +76,12 @@ void Room::printRoomInfo(){
     // std::cout << Room::getGameMaster() << std::endl;
     std::cout << "Room Name: " << name << std::endl;
     std::cout << "Game Master: " << gameMaster << std::endl;
+    std::cout << "Number of players: "<<players.size() << std::endl;
 }
 
 
 // Removing player from room 
-void Room::removePlayer(int playerSocket,std::unordered_map<int, clientInfo> clientInfoMap) {
+void Room:: removePlayer(int playerSocket,std::unordered_map<int, clientInfo> clientInfoMap) {
     std::string playerNick = clientInfoMap[playerSocket].nick;
     players.erase(std::remove(players.begin(), players.end(), playerNick), players.end());
     playersPoints.erase(playerSocket);

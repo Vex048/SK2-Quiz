@@ -327,7 +327,7 @@ void RoomHandler::checkIfGameMaster(int clientsocket,Room& room){
     std::string player = room.getGameMaster();
     std::cout << "Current Game master: " << player << std::endl;
     mutexClientInfoMap.lock();
-    if (player == clientInfoMap[clientsocket].nick){
+    if (player == clientInfoMap[clientsocket].nick){ // 
         std::string newGameMaster = room.getNewGameMaster();
         std::cout << "New Game master: " << newGameMaster << std::endl;
         if (newGameMaster != "No players in room"){
@@ -339,6 +339,7 @@ void RoomHandler::checkIfGameMaster(int clientsocket,Room& room){
         
     }
     mutexClientInfoMap.unlock();  
+    std::cout << " DebugNew Game master: " << room.getGameMaster() << std::endl;
 }
 
 

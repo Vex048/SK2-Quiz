@@ -233,7 +233,19 @@ void ClientHandler::disconnectClient(int clientFd,RoomHandler& roomHandler){
         auto it = std::find(room.players.begin(),room.players.end(),nick);
         std::cout << "Player removed from room: " << room.getRoomName() << std::endl;
         if(it!=room.players.end()){
+
             room.removePlayer(clientFd,clientInfoMap);
+            std::cout << "Player removed from a lobby,number of players: " << room.getNumberOfPlayers() << std::endl;
+            mutexClientInfoMap.unlock();
+            // Check if he is a game master
+            // If he is then method below select a new one 
+            roomHandler.checkIfGameMaster(clientFd,room);
+            roomHandler.roomsToFile(Rooms);
+            sendToLobbyClientsRoomsInfo();
+            if (room.getStatus() != "Started"){
+                sendToRoomClientsRoomsInfo(room.getRoomName());
+            }
+
             mutexRoomClients.lock();
             roomClients[room.getRoomName()].erase(clientFd);
             mutexRoomClients.unlock();
@@ -245,7 +257,7 @@ void ClientHandler::disconnectClient(int clientFd,RoomHandler& roomHandler){
             mutexLobbyClients.unlock();
         }
     }
-    roomHandler.roomsToFile(Rooms);
+    
     mutexRooms.unlock();
 
     playerList.erase(nick);
