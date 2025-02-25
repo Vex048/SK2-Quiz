@@ -62,6 +62,6 @@ This project is a multiplayer quiz game implemented in C++ and Python Players ca
 
 ## Authors
 *  **[Wiktor](https://github.com/veektorf1)**
-*  **Marcin**
+*  **[Marcin](https://github.com/Vex048)**
 
 
